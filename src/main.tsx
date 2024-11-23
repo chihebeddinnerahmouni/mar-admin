@@ -49,8 +49,8 @@ const router = createBrowserRouter([
       },
       { path: "/listings", element: <MakeListings /> },
       { path: "listings/check-details/:listingId", element: <CheckListing /> },
-      { path: "bookings", element: <Bookings /> },
-      { path: "bookings/:bookingId", element: <Bookings /> },
+      { path: "inquiries", element: <Bookings /> },
+      { path: "inquiries/:bookingId", element: <Bookings /> },
     ],
   },
   {
@@ -62,8 +62,9 @@ const router = createBrowserRouter([
     ],
   },
   {
-    path: "*", element: <NoPage />
-  }
+    path: "*",
+    element: <NoPage />,
+  },
 ]);
 
 

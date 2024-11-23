@@ -73,9 +73,9 @@ const classes = [
   },
   {
     id: 10,
-    title: "bookings",
+    title: "inquiries",
     icon: LocalLibraryIcon,
-    url: "bookings",
+    url: "inquiries",
   },
 ];
 

@@ -32,7 +32,7 @@ const TopBar = () => {
         <div className="right flex items-center">
           <SwitchLanguagePc />
           <img
-            src="/profilePic.png"
+            src="/anonyme.jpg"
             className="w-[40px] h-[40px] rounded-50 object-cover object-center lg:w-[50px] lg:h-[50px]"
             alt="profilePic"
           />

@@ -26,7 +26,7 @@ const MakeListings = () => {
       .then((res) => {
         setRequests(res.data);
         console.log(res.data);
-        // setLoading(false);
+        setLoading(false);
       })
       .catch((err) => {
         if (err.message === "Network Error") {

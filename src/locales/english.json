@@ -1,0 +1,15 @@
+{
+  "home": "Home",
+  "dahsboard": "Dashboard",
+  "categories": "Categories",
+  "users": "Users",
+  "features": "Features",
+  "listing": "Listing",
+  "regions": "Regions",
+  "admin": "Admin", 
+  "total_users": "Total Users",
+  "total_boats": "Total Boats",
+  "total_inquiries": "Total Inquiries",
+  "total_trips": "Total Trips",
+  "from": "From"
+}

@@ -1,0 +1,255 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&family=Georama:ital,wght@0,100..900;1,100..900&family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+* {
+  box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --main: #FF385C;
+}
+
+body {
+    background-color: #F5F6FA;
+    font-family: "Cairo", sans-serif;
+}
+
+
+/* scrollbar */
+::-webkit-scrollbar {
+  width: 3px;
+  height: 2px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f100;
+  border-radius: 50px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d6d6d6;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #c6c6c6;
+}
+
+
+/* the height of the main div */
+.mainCss {
+min-height: calc(100vh - 60px);
+margin-top:60px ;
+}
+@media screen and (min-width: 1045px) {
+  .mainCss {
+    min-height: calc(100vh - 80px);
+    margin-top:80px ;
+  }
+}
+
+
+
+
+/* switch language button pc*/
+.toggle-btn {
+    width: 90px;
+    height: 35px;
+    position: relative;
+    display: inline-block;
+}
+
+.toggle-btn input[type="checkbox"] {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 30px;
+    box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.24);
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+    transition: all 300ms ease-in-out;
+    outline: none;
+    background-color: #ffffff;
+    z-index: 1;
+    overflow: hidden;
+}
+
+.toggle-btn input[type="checkbox"]::before {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 100%;
+    border-radius: 30px;
+    background-color: var(--main);
+    left: 0;
+    top: 0;
+    z-index: -1;
+    transition: width 300ms ease-in-out;
+}
+
+.toggle-btn .toggle-text {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    top: 22%;
+    left: 7px;
+    transform: translateY(-0%);
+    background-color: transparent;
+    transition: all 300ms ease-in-out;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.toggle-btn .toggle-text::before {
+    content: "English";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    color: var(--main);
+    text-align: center;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 300ms ease-in-out;
+    transition-delay: 100ms;
+    font-family: sans-serif;
+}
+
+.toggle-btn input[type="checkbox"]:checked::before {
+    width: 100%;
+}
+
+.toggle-btn input[type="checkbox"]:checked~.toggle-text {
+    left: 48px;
+}
+
+.toggle-btn input[type="checkbox"]:checked~.toggle-text::before {
+    content: "العربية";
+    color: #fff;
+}
+
+
+
+/* switch language button mobile */
+.toggle-btn-mobile {
+    width: 70px;
+    height: 25px;
+    position: relative;
+    display: inline-block;
+}
+
+.toggle-btn-mobile input[type="checkbox"] {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 20px;
+    box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.24);
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+    transition: all 300ms ease-in-out;
+    outline: none;
+    background-color: #ffffff;
+    z-index: 1;
+    overflow: hidden;
+}
+
+.toggle-btn-mobile input[type="checkbox"]::before {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 100%;
+    border-radius: 20px;
+    background-color: var(--main);
+    left: 0;
+    top: 0;
+    z-index: -1;
+    transition: width 300ms ease-in-out;
+}
+
+.toggle-btn-mobile .toggle-text-mobile {
+    position: absolute;
+    width: 7px;
+    height: 7px;
+    top: 25%;
+    left: 5px;
+    transform: translateY(-0%);
+    background-color: transparent;
+    transition: all 300ms ease-in-out;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.toggle-btn-mobile .toggle-text-mobile::before {
+    content: "English";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    color: var(--main);
+    text-align: center;
+    font-weight: 600;
+    font-size: 10px;
+    transition: all 300ms ease-in-out;
+    transition-delay: 100ms;
+    font-family: sans-serif;
+}
+
+.toggle-btn-mobile input[type="checkbox"]:checked::before {
+    width: 100%;
+}
+
+.toggle-btn-mobile input[type="checkbox"]:checked~.toggle-text-mobile {
+    left: 52px;
+}
+
+.toggle-btn-mobile input[type="checkbox"]:checked~.toggle-text-mobile::before {
+    content: "العربية";
+    color: #fff;
+}
+
+
+
+/* elipses text */
+.ellipsesCss {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* unselect text */
+.unselectableCss {
+user-select: none;
+    -webkit-user-select: none;
+    /* Safari */
+    -moz-user-select: none;
+    /* Firefox */
+    -ms-user-select: none;
+    /* Internet Explorer/Edge */
+}
+
+/* html editor */
+.ckeditor-container {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.ckeditor-editor {
+  min-height: 200px;
+}
+
+.inboxListCss {
+    height: calc(100vh - 60px);
+}
+@media screen and (min-width: 1045px) {
+    .inboxListCss {
+        height: calc(100vh - 80px);
+    } 
+}

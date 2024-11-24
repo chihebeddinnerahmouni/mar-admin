@@ -213,7 +213,7 @@ const AddFeature: React.FC<UpdatePricesProps> = ({ setClose }) => {
             setLoading(false);
             Swal.fire({
               title: t("great"),
-              text: t("prices_updated_successfully"),
+              text: t("success"),
               icon: "success",
               timer: 2000,
               showConfirmButton: false,
@@ -275,7 +275,7 @@ const AddFeature: React.FC<UpdatePricesProps> = ({ setClose }) => {
         </label>
 
         <TextField
-          label={t("feature_name_in_english")}
+          label={t("english_name")}
           value={engName}
           onChange={(e) => setEngName(e.target.value)}
           variant="outlined"
@@ -303,7 +303,7 @@ const AddFeature: React.FC<UpdatePricesProps> = ({ setClose }) => {
         />
 
         <TextField
-          label={t("feature_name_in_arabic")}
+          label={t("arabic_name")}
           value={arName}
           onChange={(e) => setArName(e.target.value)}
           variant="outlined"

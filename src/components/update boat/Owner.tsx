@@ -1,6 +1,10 @@
+import { useTranslation } from "react-i18next";
+
+
 
 const Owner = ({ details }: any) => {
   const url = import.meta.env.VITE_SERVER_URL_USERS;
+  const { t } = useTranslation();
 
 
   return (
@@ -12,7 +16,7 @@ const Owner = ({ details }: any) => {
       />
 
       <p className="lg:text-[18px]">
-        <span className="font-semibold">Owner: </span>
+        <span className="font-semibold">{t("owner")}: </span>
         <span className="text-writingGrey">
           {details.owner.name} {details.owner.surname}
         </span>

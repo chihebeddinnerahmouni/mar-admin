@@ -16,7 +16,7 @@ const UpdateImages: React.FC<UpdatePricesProps> = ({ setIsOpen, images }) => {
     const { t } = useTranslation();
       const [imageList, setImageList] = useState(images);
   // const { myBoatId } = useParams<{ myBoatId: string }>();
-  // const url = import.meta.env.VITE_SERVER_URL_LISTING;
+  const url = import.meta.env.VITE_SERVER_URL_LISTING;
 
   const removeImage = (index: number) => {
     const newImageList = imageList.filter((_: any, i: any) => i !== index);
@@ -37,7 +37,7 @@ const UpdateImages: React.FC<UpdatePricesProps> = ({ setIsOpen, images }) => {
       
         if (imageList.length < 5) {
           Swal.fire({
-            title: t("oops"),
+            title: t("ops"),
             text: t("please_add_at_least_5_images"),
             timer: 3000,
             timerProgressBar: true,
@@ -99,7 +99,7 @@ const UpdateImages: React.FC<UpdatePricesProps> = ({ setIsOpen, images }) => {
         {imageList.map((image: any, index: number) => (
           <div key={index} className="relative">
             <img
-              src={image.url}
+              src={image.id ? url + "/" + image.url : image.url}
               alt={`Boat image ${index + 1}`}
               className="w-full h-24 md:h-32 object-cover object-center rounded-lg shadow-sm"
             />

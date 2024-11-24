@@ -38,31 +38,25 @@ const UpdateName: React.FC<UpdatePricesProps> = ({
       })
       .then(() => {
         Swal.fire({
-          title: t("great"),
-          text: t("prices_updated_successfully"),
           icon: "success",
-          timer: 2000,
-          showConfirmButton: false,
-          timerProgressBar: true,
-          customClass: {
-            confirmButton: "custom-confirm-button",
-          },
+          title: t("greate"),
         });
         setIsOpen(false);
         window.location.reload();
       })
       .catch((err) => {
-        console.log(err);
-        Swal.fire({
-          title: t("oops"),
-          text: t("something_went_wrong_try_again"),
-          icon: "error",
-          timer: 2000,
-          timerProgressBar: true,
-          customClass: {
-            confirmButton: "custom-confirm-button",
-          },
-        });
+       if (err.message === "Network Error") {
+         Swal.fire({
+           icon: "error",
+           title: t("network_error"),
+           text: t("please_try_again"),
+           customClass: {
+             confirmButton: "custom-confirm-button",
+           },
+         }).then(() => {
+           window.location.reload();
+         });
+       }
       });
   };
 

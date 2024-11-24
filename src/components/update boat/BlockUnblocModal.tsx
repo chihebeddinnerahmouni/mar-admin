@@ -48,9 +48,11 @@ const handleBlock = (e: React.MouseEvent) => {
             .then(() => {
             setLoading(false);
             Swal.fire(
-              t("Blocked!"),
-              t("The listing has been blocked."),
-              "success"
+              {
+                icon: "success",
+                title: t("greate"),
+                showConfirmButton: false,
+              }
             );
             window.location.reload();
             // console.log(res.data);
@@ -82,10 +84,16 @@ const handleBlock = (e: React.MouseEvent) => {
             }
           )
           .then(() => {
+             Swal.fire({
+               icon: "success",
+               title: t("greate"),
+               showConfirmButton: false,
+             });
             window.location.reload();
             // console.log(res.data);
           })
           .catch((err) => {
+            // console.log(err);
              if (err.message === "Network Error") {
                Swal.fire({
                  icon: "error",
@@ -116,15 +124,15 @@ const handleBlock = (e: React.MouseEvent) => {
       {!blocked && (
         <>
           <h1 className="text-2xl font-bold text-center lg:text-3xl">
-            Block Listing
+            {t("block_boat")}
           </h1>
           <p className="text-gray-500 text-center mt-5 lg:text-lg">
-            Do you want to <strong className="text-red-400">Block</strong>{" "}
-            {title} ?
+            {t("are_you_sure_you_want_to")}{" "}
+            <strong className="text-red-400">{t("block")}</strong> {title} ?
           </p>
 
           <TextField
-            label="Reason for Blocking"
+            label={t("reason_for_block")}
             value={reason}
             onChange={(e) => setReason(e.target.value)}
             variant="outlined"
@@ -159,7 +167,7 @@ const handleBlock = (e: React.MouseEvent) => {
                 setClose(false);
               }}
             >
-              Cancel
+              {t("cancel")}
             </button>
             <button
               className="w-full bg-red-500 text-white px-4 py-2 rounded-lg flex items-center justify-center"
@@ -170,7 +178,7 @@ const handleBlock = (e: React.MouseEvent) => {
                 <LoadingButton />
               ) : (
                 <>
-                  <span className="mx-1">Block</span>
+                  <span className="mx-1">{t("block")}</span>
                   <MdBlock />
                 </>
               )}
@@ -182,41 +190,12 @@ const handleBlock = (e: React.MouseEvent) => {
       {blocked && (
         <>
           <h1 className="text-2xl font-bold text-center lg:text-3xl">
-            Unblock Listing
+            {t("unblock_boat")}
           </h1>
           <p className="text-gray-500 text-center mt-2 lg:text-lg">
-            Do you want to <strong className="text-green-400">Unblock</strong>{" "}
-            {title} ?
+            {t("are_you_sure_you_want_to")}{" "}
+            <strong className="text-green-400">{t("unblock")}</strong> {title} ?
           </p>
-
-          {/* <TextField
-            label="Reason for deletion"
-            value={reason}
-            onChange={(e) => setReason(e.target.value)}
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                "& fieldset": {
-                  borderColor: "grey",
-                },
-                "&:hover fieldset": {
-                  borderColor: "grey",
-                },
-                "&.Mui-focused fieldset": {
-                  borderColor: mainColor,
-                },
-              },
-              "& .MuiInputLabel-root": {
-                color: "gray",
-              },
-              "& .MuiInputLabel-root.Mui-focused": {
-                color: mainColor,
-              },
-            }}
-          /> */}
-
           <div className="buttons flex w-full mt-6 gap-2">
             <button
               className="w-full bg-gray-200 text-gray-700 px-4 py-2 rounded-lg"
@@ -225,18 +204,20 @@ const handleBlock = (e: React.MouseEvent) => {
                 setClose(false);
               }}
             >
-              Cancel
+              {t("cancel")}
             </button>
             <button
               className="w-full bg-green-500 text-white px-4 py-2 rounded-lg flex items-center justify-center"
-                onClick={handleUnblock}
+              onClick={handleUnblock}
               disabled={loading}
             >
               {loading ? (
                 <LoadingButton />
               ) : (
                 <>
-                  <span className="mx-1">Unblock</span>
+                    <span className="mx-1">
+                        {t("unblock")}
+                  </span>
                   <CgUnblock />
                 </>
               )}

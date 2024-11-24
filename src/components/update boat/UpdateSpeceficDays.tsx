@@ -1,94 +1,68 @@
 import ReactModal from "react-modal";
-import { useTranslation } from "react-i18next";
 import React from "react";
 import Swal from "sweetalert2";
 import "react-datepicker/dist/react-datepicker.css";
 import { useState } from "react";
-// import { HiOutlineMinus } from "react-icons/hi";
-// import { format } from "date-fns";
+import { useTranslation } from "react-i18next";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import NumbersHandlers from "../../components/ui/NumbersHandlers";
 
-
 interface UpdatePricesProps {
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-    prices: any;
+  prices: any;
 }
 
 const UpdateSpeceficDays: React.FC<UpdatePricesProps> = ({
   setIsOpen,
-  prices
+  prices,
 }) => {
   const { t } = useTranslation();
   // const [startDate, setStartDate] = useState<Date | null>(null);
   // const [endDate, setEndDate] = useState<Date | null>(null);
   const url = import.meta.env.VITE_SERVER_URL_LISTING;
-    const { myBoatId } = useParams<{ myBoatId: string }>();
-        const [showForm, setShowForm] = useState(false);
-        const [date, setDate] = useState<Date | null>(null);
-        const [price, setPrice] = useState<any>("");
-        const [minHours, setMinHours] = useState(0);
-    const [maxHours, setMaxHours] = useState(0);
-    const [specificDates, setSpecificDates] = useState<any>(
-      prices[0].date_specific_price
-    );
+  const { myBoatId } = useParams<{ myBoatId: string }>();
+  const [showForm, setShowForm] = useState(false);
+  const [date, setDate] = useState<Date | null>(null);
+  const [price, setPrice] = useState<any>("");
+  const [minHours, setMinHours] = useState(0);
+  const [maxHours, setMaxHours] = useState(0);
+  const [specificDates, setSpecificDates] = useState<any>(
+    prices[0].date_specific_price
+  );
 
-    
-    
-     const handleAddDate = () => {
-       setShowForm(true);
-     };
+  const handleAddDate = () => {
+    setShowForm(true);
+  };
 
-     const handleSaveDate = () => {
-       const check = !date || price <= 0 || minHours <= 0 || maxHours <= 0;
-       if (check) {
-         return Swal.fire({
-           title: "Oops...",
-           text: "Please enter valid values for all fields!",
-           customClass: {
-             confirmButton: "custom-confirm-button",
-           },
-         });
-       }
-       if (minHours > maxHours) {
-         return Swal.fire({
-           title: "Oops...",
-           text: "Minimum hours should be less than maximum hours!",
-           customClass: {
-             confirmButton: "custom-confirm-button",
-           },
-         });
-       }
-       const newDate: any = {
-         date: date.toISOString().split("T")[0],
-         price,
-         min_hours: minHours,
-         max_hours: maxHours,
-       };
+  const handleSaveDate = () => {
+    const check = !date || price <= 0 || minHours <= 0 || maxHours <= 0;
+    if (check) return alert(t("please_fill_all_fields"));
+    if (minHours > maxHours)
+      return alert(t("min_hours_cannot_be_greater_than_max_hours"));
 
-       setSpecificDates([...specificDates, newDate]);
-       setShowForm(false);
-       setDate(null);
-       setPrice(0);
-       setMinHours(0);
-       setMaxHours(0);
-     };
+    const newDate: any = {
+      date: date.toISOString().split("T")[0],
+      price,
+      min_hours: minHours,
+      max_hours: maxHours,
+    };
 
- 
-    // console.log(specificDates)
+    setSpecificDates([...specificDates, newDate]);
+    setShowForm(false);
+    setDate(null);
+    setPrice(0);
+    setMinHours(0);
+    setMaxHours(0);
+  };
 
+  // console.log(specificDates)
 
   // send the data to the server
-    const send = () => {
-      
-
-        prices[0].date_specific_price = specificDates;
-        // console.log(prices)
-
+  const send = () => {
+    prices[0].date_specific_price = specificDates;
     const formData = new FormData();
     formData.append("prices", JSON.stringify(prices));
-
     axios
       .put(`${url}/api/listing/listings/${myBoatId}`, formData, {
         headers: {
@@ -97,21 +71,25 @@ const UpdateSpeceficDays: React.FC<UpdatePricesProps> = ({
       })
       .then(() => {
         Swal.fire({
-          title: t("great"),
-          text: t("availability_updated_successfully"),
+          title: t("greate"),
           icon: "success",
-          timer: 2000,
-          showConfirmButton: false,
-          timerProgressBar: true,
-          customClass: {
-            confirmButton: "custom-confirm-button",
-          },
         });
         setIsOpen(false);
         window.location.reload();
       })
       .catch((err) => {
-        console.log(err);
+        if (err.message === "Network Error") {
+          Swal.fire({
+            icon: "error",
+            title: t("network_error"),
+            text: t("please_try_again"),
+            customClass: {
+              confirmButton: "custom-confirm-button",
+            },
+          }).then(() => {
+            window.location.reload();
+          });
+        }
       });
   };
 
@@ -167,7 +145,7 @@ const UpdateSpeceficDays: React.FC<UpdatePricesProps> = ({
               type="number"
               value={price}
               id="pricePerHour"
-              placeholder="Enter price"
+              placeholder={t("price_per_hour")}
               className="mt-1 w-full border border-gray-300 rounded-10 p-2 focus:bg-emptyInput outline-main "
               onChange={(e) =>
                 setPrice(
@@ -188,7 +166,7 @@ const UpdateSpeceficDays: React.FC<UpdatePricesProps> = ({
             </div>
           </div>
 
-          <div className="mt-6 flex justify-center">
+          <div className="mt-6 flex justify-center gap-3">
             <button
               onClick={() => setShowForm(false)}
               className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md mr-2 hover:bg-gray-400"
@@ -199,7 +177,7 @@ const UpdateSpeceficDays: React.FC<UpdatePricesProps> = ({
               onClick={handleSaveDate}
               className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
             >
-              {t("save_date")}
+              {t("save")}
             </button>
           </div>
         </div>

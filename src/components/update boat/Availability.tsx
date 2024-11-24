@@ -5,6 +5,7 @@ import { format } from 'date-fns';
 import { ar } from 'date-fns/locale';
 // import UpdateAvailability from "./UpdateAvailability";
 import { useState } from "react";
+import UpdateAvailability from "./UpdateAvailability";
 
 const Availability = ({ availabilities }: any) => {
   const { t, i18n } = useTranslation();
@@ -25,6 +26,8 @@ const Availability = ({ availabilities }: any) => {
 
   return (
     <div className="w-full p-6 bg-white mt-5 rounded-lg shadow-sm relative">
+
+      {isOpen && <UpdateAvailability setIsOpen={setIsOpen} availabilities={availabilities} />}  
       <p className="text-lg font-semibold text-gray-800">
         {t("out_of_service")}
       </p>

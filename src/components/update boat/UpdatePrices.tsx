@@ -26,19 +26,12 @@ const { myBoatId } = useParams<{ myBoatId: string }>();
 
     const handleContinue = () => {
         const check = [price, minHours, maxHours].every((val) => val !== 0);
-        if (!check) {
-            return Swal.fire({
-              title: t("ops"),
-              text: t("please_enter_valid_values_for_all_fields"),
-              customClass: {
-                confirmButton: "custom-confirm-button",
-              },
-            });
-        }
+        if (!check) return alert(t("please_fill_all_fields"));
+    
         if (minHours > maxHours) {
             return Swal.fire({
               title: t("ops"),
-              text: "Minimum hours should be less than maximum hours!",
+              text: t("min_hours_cannot_be_greater_than_max_hours"),
               customClass: {
                 confirmButton: "custom-confirm-button",
               },
@@ -66,30 +59,25 @@ const { myBoatId } = useParams<{ myBoatId: string }>();
       })
         .then(() => { 
           Swal.fire({
-            title: t("great"),
-            text: t("prices_updated_successfully"),
             icon: "success",
-            timer: 2000,
-            showConfirmButton: false,
-            timerProgressBar: true,
-            customClass: {
-              confirmButton: "custom-confirm-button",
-            },
+            title: t("greate"),
           });
           setIsOpen(false);
          window.location.reload();
         })
-        .catch(() => {
-          Swal.fire({
-            title: t("oops"),
-            text: t("something_went_wrong_try_again"),
-            icon: "error",
-            timer: 2000,
-            timerProgressBar: true,
-            customClass: {
-              confirmButton: "custom-confirm-button",
-            },
-          });
+        .catch((err) => {
+          if (err.message === "Network Error") {
+            Swal.fire({
+              icon: "error",
+              title: t("network_error"),
+              text: t("please_try_again"),
+              customClass: {
+                confirmButton: "custom-confirm-button",
+              },
+            }).then(() => {
+              window.location.reload();
+            });
+          }
         });
     };
 
@@ -111,7 +99,7 @@ const { myBoatId } = useParams<{ myBoatId: string }>();
           </label>
           <input
             type="number"
-            placeholder="Enter price"
+            placeholder={t("price_per_hour") + "..."}
             value={price}
             id="pricePerHour"
             className="mt-1 w-full border border-gray-300 rounded-10 p-2 outline-main focus:bg-emptyInput"
@@ -137,7 +125,7 @@ const { myBoatId } = useParams<{ myBoatId: string }>();
                 onClick={handleContinue}
               className="w-full mt-5 py-2 bg-main text-white rounded-10"
           >
-              {t("send")}
+              {t("save")}
             </button>
     </ReactModal>
   );

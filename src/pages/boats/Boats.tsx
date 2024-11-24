@@ -3,6 +3,7 @@ import CategoriesCont from "../../containers/boats/CategoriesCont";
 import BoatsCont from "../../containers/boats/BoatsCont";
 import axios from "axios";
 import LoadingLine from "../../components/ui/LoadingLine";
+import { useTranslation } from "react-i18next";
 
 
 const Boats = () => {
@@ -12,6 +13,7 @@ const Boats = () => {
   const [selectedType, setSelectedType] = useState();
   const [loading, setLoading] = useState(true);
   const url = import.meta.env.VITE_SERVER_URL_CATEGORY;
+  const { t } = useTranslation();
 
 
   useEffect(() => {
@@ -44,11 +46,10 @@ const Boats = () => {
   return (
     <div className="p-4 md:p-8 mx-auto px-4 md:px-[40px] lg:px-[100px] lg:max-w-[1700px] ">
       <h1 className="text-3xl md:text-4xl font-extrabold mb-4 text">
-        Listing Management
+        {t("boats_management")}
       </h1>
       <p className="text-sm md:text-base text-gray-600 mb-8">
-        Explore and manage all boats with detailed insights into each boat
-        available for rental.
+        {t("boats_management_description")}
       </p>
       <CategoriesCont
         shipsTypes={ctegoriesArray}

@@ -10,12 +10,14 @@ import IconButton from "@mui/material/IconButton";
 import { IoTrashSharp } from "react-icons/io5";
 import DeleteFeatureModal from "./DeleteFeatureModal";
 import AddFeature from "./AddFeature";
+import { useTranslation } from "react-i18next";
 
 export default function BasicTable({ rows }: any) {
   const [selectedRowId, setSelectedRowId] = useState<any>(null);
   const [isDeleteOpen, setIsDeleteopen] = useState<boolean>(false);
   const [isAddOpen, setIsAddOpen] = useState<boolean>(false);
   const url = import.meta.env.VITE_SERVER_URL_LISTING;
+  const { t } = useTranslation();
 
   return (
     <>
@@ -31,13 +33,13 @@ export default function BasicTable({ rows }: any) {
           <TableHead>
             <TableRow>
               <TableCell align="center" sx={{ fontWeight: "bold" }}>
-                Picture
+                {t("image")}
               </TableCell>
               <TableCell align="center" sx={{ fontWeight: "bold" }}>
-                English name
+                {t("english_name")}
               </TableCell>
               <TableCell align="center" sx={{ fontWeight: "bold" }}>
-                Arabic name
+                {t("arabic_name")}
               </TableCell>
               <TableCell
                 align="center"

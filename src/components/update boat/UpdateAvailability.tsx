@@ -33,15 +33,7 @@ const UpdateAvailability: React.FC<UpdatePricesProps> = ({
   >(availabilities);
 
   const handleSaveDate = () => {
-    if (!startDate || !endDate) {
-      return Swal.fire({
-        title: "Oops...",
-        text: "Please select valid start and end dates!",
-        customClass: {
-          confirmButton: "custom-confirm-button",
-        },
-      });
-    }
+    if (!startDate || !endDate) return alert(t("please_fill_all_fields"));
     const newDate = {
       start_date: startDate.toISOString().split("T")[0],
       end_date: endDate.toISOString().split("T")[0],
@@ -50,7 +42,6 @@ const UpdateAvailability: React.FC<UpdatePricesProps> = ({
     setSpecificDatesOff([...specificDatesOff, newDate]);
     setStartDate(null);
     setEndDate(null);
-    
   };
 
   const handleRemoveDate = (index: number) => {
@@ -58,34 +49,37 @@ const UpdateAvailability: React.FC<UpdatePricesProps> = ({
     setSpecificDatesOff(updatedDates);
   };
 
-
-
-// send the data to the server
-  const send = () => { 
+  // send the data to the server
+  const send = () => {
     const formData = new FormData();
     formData.append("availability", JSON.stringify(specificDatesOff));
-    axios.put(`${url}/api/listing/listings/${myBoatId}`, formData, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-      },
-    })
+    axios
+      .put(`${url}/api/listing/listings/${myBoatId}`, formData, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+        },
+      })
       .then(() => {
         Swal.fire({
           title: t("great"),
-          text: t("availability_updated_successfully"),
           icon: "success",
-          timer: 2000,
-          showConfirmButton: false,
-          timerProgressBar: true,
-          customClass: {
-            confirmButton: "custom-confirm-button",
-          },
         });
         setIsOpen(false);
-     window.location.reload();
+        window.location.reload();
       })
       .catch((err) => {
-        console.log(err);
+        if (err.message === "Network Error") {
+          Swal.fire({
+            icon: "error",
+            title: t("network_error"),
+            text: t("please_try_again"),
+            customClass: {
+              confirmButton: "custom-confirm-button",
+            },
+          }).then(() => {
+            window.location.reload();
+          });
+        }
       });
   };
 
@@ -113,7 +107,7 @@ const UpdateAvailability: React.FC<UpdatePricesProps> = ({
             isClearable
             todayButton="Today"
             dateFormat={"dd MMM yyyy"}
-            placeholderText="Select a date"
+            placeholderText={t("select_a_date")}
             onChange={(date) => setStartDate(date)}
             className="p-3 border border-gray-300 rounded-lg focus:border-main focus:ring focus:ring-indigo-200 focus:ring-opacity-50 transition duration-200 ease-in-out outline-none w-[130%] md:w-[147%]"
           />
@@ -127,7 +121,7 @@ const UpdateAvailability: React.FC<UpdatePricesProps> = ({
             minDate={startDate || new Date()}
             isClearable
             dateFormat={"dd MMM yyyy"}
-            placeholderText="Select a date"
+            placeholderText={t("select_a_date")}
             onChange={(date) => setEndDate(date)}
             className="p-3 border border-gray-300 rounded-lg focus:border-main focus:ring focus:ring-indigo-200 focus:ring-opacity-50 transition duration-200 ease-in-out outline-none w-[130%] md:w-[147%]"
           />
@@ -139,7 +133,7 @@ const UpdateAvailability: React.FC<UpdatePricesProps> = ({
         <table className="min-w-full bg-white  border-collapse">
           <thead>
             <tr>
-              <th className="px-4 py-2 border-b text-start">from</th>
+              <th className="px-4 py-2 border-b text-start">{t("from")}</th>
               <th className="px-4 py-2 border-b text-center">{t("to")}</th>
               <th className="px-4 py-2 border-b text-end">{t("remove")}</th>
             </tr>
@@ -154,16 +148,10 @@ const UpdateAvailability: React.FC<UpdatePricesProps> = ({
                   {format(new Date(specificDate.end_date), "dd MMM yyyy")}
                 </td>
                 <td className="text-center px-4 py-2 flex justify-center">
-                  {/* <button
-                    onClick={() => handleRemoveDate(index)}
-                    className="text-red-400 w-[30px] h-[20px] bg-red-200 flex items-center justify-center rounded-full"
-                  > */}
                   <HiOutlineMinus
                     className="text-[20px] bg-red-200 text-red-500 rounded-50"
                     onClick={() => handleRemoveDate(index)}
                   />
-                  {/* </button> */}
-                  {/* ana */}
                 </td>
               </tr>
             ))}
@@ -176,7 +164,7 @@ const UpdateAvailability: React.FC<UpdatePricesProps> = ({
           onClick={handleSaveDate}
           className="w-full py-2 text-main border border-main rounded-lg shadow-md hover:border-mainHover hover:text-mainHover transition duration-200 ease-in-out"
         >
-          {t("save_date")}
+          {t("save")}
         </button>
         <button
           onClick={send}

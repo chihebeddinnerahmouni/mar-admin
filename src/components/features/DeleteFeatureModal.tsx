@@ -10,8 +10,8 @@ import Swal from "sweetalert2";
 interface DeleteModalProps {
   setClose: (isOpen: boolean) => void;
   feature: {
-      arabicName: string,
-    englishName: string,
+    name: string;
+    arabic_name: string;
       id: number
   };
 }
@@ -23,7 +23,7 @@ const DeleteFeatureModal: React.FC<DeleteModalProps> = ({
   feature,
 }) => {
 
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
   const [loading, setLoading] = useState<boolean>(false);
   const url = import.meta.env.VITE_SERVER_URL_LISTING;
 
@@ -44,8 +44,7 @@ const DeleteFeatureModal: React.FC<DeleteModalProps> = ({
       })
       .catch((error) => {
         Swal.fire({
-          icon: "error",
-          title: "Oops...",
+          title: t("ops"),
           text: error.response.data.message,
         });
         setLoading(false);
@@ -64,12 +63,12 @@ const DeleteFeatureModal: React.FC<DeleteModalProps> = ({
       }
     >
       <Typography variant="h4" component="h2" gutterBottom>
-        Delete feature
+        {t("delete_feature")}
       </Typography>
       <Typography variant="body1" gutterBottom>
-        Are you sure you want to delete the feature{" "}
+        {t("are_you_sure_you_want_to")} <span className="text-red-500 font-semibold">{t("delete")}</span> {" "}
         <strong>
-          {i18n.language === "ar" ? feature.arabicName : feature.englishName}
+          {i18n.language === "ar" ? feature.arabic_name : feature.name}
         </strong>
         ?
       </Typography>
@@ -84,7 +83,7 @@ const DeleteFeatureModal: React.FC<DeleteModalProps> = ({
               borderColor: "#FF385C",
             }}
           >
-            Cancel
+            {t("cancel")}
           </Button>
           <Button
             variant="contained"
@@ -99,7 +98,7 @@ const DeleteFeatureModal: React.FC<DeleteModalProps> = ({
             }}
             type="submit"
           >
-            {loading ? <LodaingButton /> : "Delete"}
+            {loading ? <LodaingButton /> : t("delete")}
           </Button>
         </Box>
       </form>

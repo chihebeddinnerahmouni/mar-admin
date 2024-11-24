@@ -23,13 +23,16 @@ const ShipDetails = ({ ship }: any) => {
   const handleDelete = (e: React.MouseEvent) => {
     e.stopPropagation();
     Swal.fire({
-      title: t("Are you sure?"),
-      text: t(`You want to delete ${ship.title} won't be able to revert this!`),
-      icon: "warning",
+      title: t("are_you_sure"),
+      text: `${t("are_you_sure_you_want_to")} ${t("delete")} ${ship.title} ?`,
       showCancelButton: true,
       confirmButtonColor: "#d33",
       cancelButtonColor: "#3085d6",
-      confirmButtonText: t("Yes, delete it!"),
+      confirmButtonText: t("yes"),
+      cancelButtonText: t("no"),
+      customClass: {
+        confirmButton: "custom-confirm-button",
+      },
     }).then((result) => {
       if (result.isConfirmed) {
         axios
@@ -39,12 +42,22 @@ const ShipDetails = ({ ship }: any) => {
             },
           })
           .then(() => {
-            Swal.fire(t("Deleted!"), t("Your file has been deleted."), "success");
             window.location.reload();
           })
           .catch((err) => {
-            console.log(err);
-            Swal.fire("Error!", err.message, "error");
+            if (err.message === "Network Error") {
+              Swal.fire({
+                icon: "error",
+                title: t("network_error"),
+                text: t("please_try_again"),
+                customClass: {
+                  confirmButton: "custom-confirm-button",
+                },
+              }).then(() => {
+                window.location.reload();
+              });
+            }
+            Swal.fire("Error!", err.response.data.message, "error");
           });
       }
     });
@@ -93,7 +106,9 @@ const ShipDetails = ({ ship }: any) => {
         </p>
         <div className="priceGuests flex items-center justify-between mt-2">
           <p className="text-writingMainDark font-bold text-[16px]">
-            ${ship.Prices[0].min_price}-{ship.Prices[0].max_price} {t("hour")}
+            {ship.Prices[0].min_price}-{ship.Prices[0].max_price} {" "}
+            {t("sar")}/
+            {t("hour")}
           </p>
           <p className="text-writingGrey text-[13px] lg:text-[13px]">
             {ship.guests} {t("guests")}

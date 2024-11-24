@@ -34,15 +34,16 @@ const UpdateBoat = () => {
     axios
       .get(`${url}/api/listing/listings/${boatId}`)
       .then((res) => {
-        console.log(res.data);
+        // console.log(res.data);
         setDetails(res.data);
         setLoading(false);
       })
       .catch((err) => {
         if (err.status === 404) {
-          Swal.fire("error", "theres_no_boat_match_this_id", "error").then(
+          Swal.fire("error", "theres_no_boat_match_this_id", "error")
+            .then(
             () => {
-              navigate("/");
+              navigate("/boats");
             }
           );
         } else if (err.message === "Network Error") {

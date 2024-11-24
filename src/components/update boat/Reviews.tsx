@@ -20,7 +20,7 @@ const Reviews = ({ reviews }: any) => {
       <p className="font-bold">{t("reviews")}</p>
       <div className="mt-3 flex flex-col gap-7">
         {reviews.length === 0 ? (
-          <p className="text-writingGrey mx-auto">No reviews yet</p>
+          <p className="text-writingGrey mx-auto">{t("no_reviews_yet")}</p>
         ) : (
           reviews.map((review: any, index: number) => (
             <CommentComp key={index} comment={review} />

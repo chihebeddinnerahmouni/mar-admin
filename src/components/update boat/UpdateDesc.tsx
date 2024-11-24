@@ -33,15 +33,8 @@ const UpdateName: React.FC<UpdatePricesProps> = ({
       })
       .then(() => {
         Swal.fire({
-          title: t("great"),
-          text: t("prices_updated_successfully"),
           icon: "success",
-          timer: 2000,
-          showConfirmButton: false,
-          timerProgressBar: true,
-          customClass: {
-            confirmButton: "custom-confirm-button",
-          },
+          title: t("greate"),
         });
         setIsOpen(false);
         window.location.reload();
@@ -72,7 +65,7 @@ const UpdateName: React.FC<UpdatePricesProps> = ({
         <textarea
           value={newTitle}
           onChange={(e) => setTitle(e.target.value)}
-          placeholder={t("boat_name")}
+          placeholder={t("boat_description")}
           className="bg-emptyInput w-full h-14 p-1 rounded-[5px] border-1 border-gray-300 outline-main md:h-20 lg:h-28 lg:text-[18px] lg:p-2"
         />
         <button

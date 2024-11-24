@@ -20,12 +20,12 @@ interface ItemP {
 const UsersStat: React.FC<ItemP> = ({ Item }) => {
 
   const IconComponent = Item.icon;
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
 
   return (
     <div className="min-w-[200px] p-4 bg-white shadow-sm border rounded-10 relative transition-transform transform hover:scale-[102%] cursor-default md:flex-grow ">
       <p className="text-sm text-nowrap font-semibold opacity-70 lg:text-base">
-        {Item.title}
+        {t(Item.title)}
       </p>
       <p className="font-bold text-[22px] lg:text-[32px] mt-2">{Item.number}</p>
 
@@ -52,7 +52,7 @@ const UsersStat: React.FC<ItemP> = ({ Item }) => {
         >
           {Item.growth}%
         </p>
-        <p className="text-sm lg:text-lg">From {Item.from}</p>
+        <p className="text-sm lg:text-lg">{t("from")} {Item.from}</p>
       </div>
     </div>
   );

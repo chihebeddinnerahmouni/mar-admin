@@ -11,5 +11,49 @@
   "total_boats": "Total Boats",
   "total_inquiries": "Total Inquiries",
   "total_trips": "Total Trips",
-  "from": "From"
+  "from": "From",
+  "boats": "Boats",
+  "submissions": "Submissions",
+  "documents": "Documents",
+  "listings": "Listings",
+  "inquiries": "Inquiries",
+  "help": "Help",
+
+  "network_error": "Network Error",
+  "please_try_again": "Please try again",
+  "save": "Save",
+  "please_fill_all_fields": "Please fill all fields",
+
+  "categories_management": "Categories Management",
+  "categories_management_description": "Explore and manage boat categories with detailed insights into each type of boat available for rental.",
+  "image": "Image",
+  "english_name": "English Name",
+  "arabic_name": "Arabic Name",
+  "add_category": "Add Category",
+  "category_name_in_english": "Category Name in English",
+  "category_name_in_arabic": "Category Name in Arabic",
+  "delete_category": "Delete Category",
+  "are_you_sure_you_want_to_delete_the_category": "Are you sure you want to delete the category?",
+  "cancel": "Cancel",
+  "delete": "Delete",
+
+  "user_management": "User Management",
+  "user_management_description": "Manage all the users in the system.",
+  "total_captains": "Total Captains",
+  "profile_picture": "Profile Picture",
+  "name": "Name",
+  "phone": "Phone",
+  "role": "Role",
+  "email": "Email",
+  "search_by_name": "Search by Name",
+  "confirm_password": "Confirm Password",
+  "password": "Password",
+  "first_name": "First Name",
+  "last_name": "Last Name",
+  "are_you_sure_you_want_to": "Are you sure you want to",
+  "block": "Block",
+
+
+
+  "a": "A"
 }

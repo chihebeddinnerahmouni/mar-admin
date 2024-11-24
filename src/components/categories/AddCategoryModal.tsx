@@ -39,7 +39,7 @@ const AddCategoryModal: React.FC<UpdatePricesProps> = ({
     // console.log(engName, arName, image);
 
     const check = !engName || !image || !arName
-    if (check) return;
+    if (check) return alert(t("please_fill_all_fields"));
 
     setLoading(true); 
 
@@ -60,33 +60,23 @@ const AddCategoryModal: React.FC<UpdatePricesProps> = ({
       .then(() => {
         // console.log(res);
         setLoading(false);
-        Swal.fire({
-          title: t("great"),
-          text: t("prices_updated_successfully"),
-          icon: "success",
-          timer: 2000,
-          showConfirmButton: false,
-          timerProgressBar: true,
-          customClass: {
-            confirmButton: "custom-confirm-button",
-          },
-        });
         setClose(false);
         window.location.reload();
       })
       .catch((err) => {
         // console.log(err);
         setLoading(false);
-        Swal.fire({
-          title: t("oops"),
-          text: t(err.response.data.error),
-          icon: "error",
-          timer: 2000,
-          timerProgressBar: true,
-          customClass: {
-            confirmButton: "custom-confirm-button",
-          },
-        });
+         if (err.message === "Network Error") {
+           Swal.fire({
+             title: t("network_error"),
+             text: t("please_try_again"),
+             customClass: {
+               confirmButton: "custom-confirm-button",
+             },
+           }).then(() => {
+             window.location.reload();
+           });
+         }
       });
   };
 

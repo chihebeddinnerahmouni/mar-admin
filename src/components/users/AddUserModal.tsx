@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import ReactModal from "react-modal";
 import { TextField, Button, Box, IconButton, Avatar } from "@mui/material";
 import { CameraAlt } from "@mui/icons-material";
+import { useTranslation } from "react-i18next";
 
 interface DeleteModalProps {
     setClose: (isOpen: number) => void;
@@ -15,23 +16,18 @@ const AddUserModal: React.FC<DeleteModalProps> = ({ setClose }) => {
     const [phone, setPhone] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
-    const [profilePic, setProfilePic] = useState<File | null>(null);
+  const [profilePic, setProfilePic] = useState<File | null>(null);
+  const mainColor = "#FF385C";
+  const { t } = useTranslation();
 
-    const handleAddUser = () => {
-        if (
-            firstName &&
-            lastName &&
-            email &&
-            phone &&
-            password &&
-            confirmPassword
-        ) {
-            // Add user logic here
-            console.log("User added");
-        } else {
+  const handleAddUser = () => {
+    const check = !firstName || !lastName || !email || !phone || !password || !confirmPassword;
+        if (check) {
             alert("Please fill in all fields");
         }
-    };
+  };
+  
+
 
     const handleProfilePicChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files && event.target.files[0]) {
@@ -48,12 +44,7 @@ const AddUserModal: React.FC<DeleteModalProps> = ({ setClose }) => {
           "fixed bg-black bg-opacity-10 backdrop-blur-[7px] inset-0 flex items-center justify-center p-4"
         }
       >
-        <Box
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-            // onClick={(e)=>e.stopPropagation()}
-        >
+        <Box display="flex" flexDirection="column" alignItems="center">
           <IconButton component="label">
             <input
               type="file"
@@ -80,13 +71,13 @@ const AddUserModal: React.FC<DeleteModalProps> = ({ setClose }) => {
               sx={{
                 "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
                   {
-                    borderColor: "#FF385C",
+                    borderColor: mainColor,
                   },
                 "& .MuiInputLabel-root.Mui-focused": {
-                  color: "#FF385C",
+                  color: mainColor,
                 },
               }}
-              label="First Name"
+              label={t("first_name")}
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
             />
@@ -94,13 +85,13 @@ const AddUserModal: React.FC<DeleteModalProps> = ({ setClose }) => {
               sx={{
                 "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
                   {
-                    borderColor: "#FF385C",
+                    borderColor: mainColor,
                   },
                 "& .MuiInputLabel-root.Mui-focused": {
-                  color: "#FF385C",
+                  color: mainColor,
                 },
               }}
-              label="Last Name"
+              label={t("last_name")}
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
             />
@@ -111,13 +102,13 @@ const AddUserModal: React.FC<DeleteModalProps> = ({ setClose }) => {
               sx={{
                 "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
                   {
-                    borderColor: "#FF385C",
+                    borderColor: mainColor,
                   },
                 "& .MuiInputLabel-root.Mui-focused": {
-                  color: "#FF385C",
+                  color: mainColor,
                 },
               }}
-              label="Email"
+              label={t("email")}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
@@ -125,13 +116,13 @@ const AddUserModal: React.FC<DeleteModalProps> = ({ setClose }) => {
               sx={{
                 "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
                   {
-                    borderColor: "#FF385C",
+                    borderColor: mainColor,
                   },
                 "& .MuiInputLabel-root.Mui-focused": {
-                  color: "#FF385C",
+                  color: mainColor,
                 },
               }}
-              label="Phone"
+              label={t("phone")}
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
             />
@@ -142,13 +133,13 @@ const AddUserModal: React.FC<DeleteModalProps> = ({ setClose }) => {
               sx={{
                 "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
                   {
-                    borderColor: "#FF385C",
+                    borderColor: mainColor,
                   },
                 "& .MuiInputLabel-root.Mui-focused": {
-                  color: "#FF385C",
+                  color: mainColor,
                 },
               }}
-              label="Password"
+              label={t("password")}
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -157,13 +148,13 @@ const AddUserModal: React.FC<DeleteModalProps> = ({ setClose }) => {
               sx={{
                 "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
                   {
-                    borderColor: "#FF385C",
+                    borderColor: mainColor,
                   },
                 "& .MuiInputLabel-root.Mui-focused": {
-                  color: "#FF385C",
+                  color: mainColor,
                 },
               }}
-              label="Confirm Password"
+              label={t("confirm_password")}
               type="password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
@@ -173,9 +164,15 @@ const AddUserModal: React.FC<DeleteModalProps> = ({ setClose }) => {
           <Button
             variant="contained"
             onClick={handleAddUser}
-            sx={{ mt: 3, backgroundColor: "#FF385C", color: "white", width: "100%" }}
+            sx={{
+              mt: 3,
+              backgroundColor: mainColor,
+              color: "white",
+              width: "100%",
+              height: 40,
+            }}
           >
-            Add
+            {t("save")}
           </Button>
         </Box>
       </ReactModal>

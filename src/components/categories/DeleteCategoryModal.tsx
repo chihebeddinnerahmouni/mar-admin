@@ -4,13 +4,14 @@ import { Button, Box, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import LoadingButton from "../ui/LoadingButton";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 interface DeleteModalProps {
   setClose: (isOpen: boolean) => void;
   category: {
     id: number;
-    arName: string;
-    enName: string;
+    name: string;
+    arabic_name: string;
   };
 }
 
@@ -21,9 +22,10 @@ const DeleteCategoryModal: React.FC<DeleteModalProps> = ({
   category
 }) => {
 
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const url = import.meta.env.VITE_SERVER_URL_CATEGORY;
+  const mainColor = "#FF385C";
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,7 +40,17 @@ const DeleteCategoryModal: React.FC<DeleteModalProps> = ({
           window.location.reload();
         })
         .catch((err) => {
-          console.log(err);
+          if (err.message === "Network Error") {
+            Swal.fire({
+              title: t("network_error"),
+              text: t("please_try_again"),
+              customClass: {
+                confirmButton: "custom-confirm-button",
+              },
+            }).then(() => {
+              window.location.reload();
+            });
+          }
           setLoading(false);
         });
   };
@@ -53,12 +65,12 @@ const DeleteCategoryModal: React.FC<DeleteModalProps> = ({
       }
     >
       <Typography variant="h4" component="h2" gutterBottom>
-        Delete Category
+        {t("delete_category")}
       </Typography>
       <Typography variant="body1" gutterBottom>
-        Are you sure you want to delete the region{" "}
+        {t("are_you_sure_you_want_to_delete_the_category")}{" "}
         <strong>
-          {i18n.language === "ar" ? category.arName : category.enName}
+          {i18n.language === "ar" ? category.arabic_name : category.name}
         </strong>
         ?
       </Typography>
@@ -68,12 +80,14 @@ const DeleteCategoryModal: React.FC<DeleteModalProps> = ({
             variant="outlined"
             onClick={() => setClose(false)}
             sx={{
-              color: "#FF385C",
+              color: mainColor,
               backgroundColor: "white",
-              borderColor: "#FF385C",
+              borderColor: mainColor,
+              width: "90px",
+              height: "40px",
             }}
           >
-            Cancel
+            {t("cancel")}
           </Button>
           <Button
             disabled={loading}
@@ -82,15 +96,14 @@ const DeleteCategoryModal: React.FC<DeleteModalProps> = ({
               color: "white",
               width: "90px",
               height: "40px",
-              backgroundColor: "#FF385C",
+              backgroundColor: mainColor,
               "&:hover": {
-                backgroundColor: "#FF1E3C",
+                backgroundColor: mainColor,
               },
             }}
             type="submit"
           >
-            {/* Delete */}
-            {loading ? <LoadingButton /> : "Delete"}
+            {loading ? <LoadingButton /> : t("delete")}
           </Button>
         </Box>
       </form>

@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import CategoriesTable from "../components/categories/CategoriesTable";
 import LoadingLine from "../components/ui/LoadingLine";
 import axios from "axios";
+import { useTranslation } from "react-i18next";
 
 
 
@@ -20,6 +21,7 @@ const Categories: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const url = import.meta.env.VITE_SERVER_URL_CATEGORY;
+  const { t } = useTranslation();
 
   useEffect(() => {
     axios.get(url + "/categories")
@@ -47,16 +49,13 @@ const Categories: React.FC = () => {
 
 
   return (
-    <div
-      className={`md:p-8 mx-auto p-4 md:px-[40px] lg:max-w-[700px]`}
-    >
+    <div className={`md:p-8 mx-auto p-4 md:px-[40px] lg:max-w-[700px]`}>
       <div className="">
         <h1 className="text-3xl md:text-4xl font-extrabold mb-4 text">
-          Categories Management
+          {t("categories_management")}
         </h1>
         <p className="text-sm md:text-base text-gray-600 mb-8">
-          Explore and manage boat categories with detailed insights into each
-          type of boat available for rental.
+          {t("categories_management_description")}
         </p>
         <CategoriesTable categories={categories} />
       </div>

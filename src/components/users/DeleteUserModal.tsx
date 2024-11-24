@@ -2,6 +2,8 @@ import ReactModal from 'react-modal';
 import React from 'react';
 import axios from 'axios';
 import LoadingButton from '../ui/LoadingButton';
+import Swal from 'sweetalert2';
+import { useTranslation } from 'react-i18next';
 
 
 
@@ -18,6 +20,7 @@ const DeleteModal: React.FC<DeleteModalProps> = ({ setClose, user }) => {
     // console.log(user);
   const url = import.meta.env.VITE_SERVER_URL_USERS;
   const [loading, setLoading] = React.useState(false);
+  const { t } = useTranslation();
 
   const block = async (e: any) => {
     e.stopPropagation();
@@ -28,7 +31,18 @@ const DeleteModal: React.FC<DeleteModalProps> = ({ setClose, user }) => {
       // setClose(0);
     })
     .catch((err) => {
-      console.log(err);
+    if (err.message === "Network Error") {
+      Swal.fire({
+        icon: "error",
+        title: t("network_error"),
+        text: t("please_try_again"),
+        customClass: {
+          confirmButton: "custom-confirm-button",
+        },
+      }).then(() => {
+        window.location.reload();
+      });
+    }
     })
 
    }
@@ -51,8 +65,7 @@ const DeleteModal: React.FC<DeleteModalProps> = ({ setClose, user }) => {
 
         <h1 className="text-2xl font-bold text-center mt-4 lg:text-3xl">{user.name}</h1>
         <p className="text-gray-500 text-center mt-1 lg:text-lg">
-          Are you sure you want to <span className='text-red-500 font-semibold'>Block</span> this user? <br /> This action cannot
-          be undone
+          {t("are_you_sure_you_want_to")} <span className='text-red-500 font-semibold'>{t("block")}</span> <span className='font-semibold'>{user.name + " " + user.surname}</span>
         </p>
 
         <div className="buttons flex w-full mt-7 gap-2">
@@ -63,13 +76,13 @@ const DeleteModal: React.FC<DeleteModalProps> = ({ setClose, user }) => {
               setClose(0);
             }}
           >
-            Cancel
+            {t("cancel")}
           </button>
           <button
             className="w-full bg-red-500 text-white px-4 py-2 rounded-lg"
             onClick={block}
           >
-           {loading ? <LoadingButton /> : "Block"}
+           {loading ? <LoadingButton /> : t("block")}
           </button>
         </div>
       </ReactModal>

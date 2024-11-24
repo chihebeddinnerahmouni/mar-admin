@@ -14,6 +14,8 @@ import {
 import DeleteCategoryModal from "./DeleteCategoryModal";
 import { useState } from "react";
 import AddCategoryModal from "./AddCategoryModal";
+import { useTranslation } from "react-i18next";
+
 
 const CategoriesTable = ({
   categories,
@@ -23,6 +25,7 @@ const CategoriesTable = ({
   const [selectedCategory, setSelectedCategory] = useState<any>(null);
   const [isFormVisible, setIsFormVisible] = useState<boolean>(false);
   const url = import.meta.env.VITE_SERVER_URL_CATEGORY;
+  const { t } = useTranslation();
 
 
   const handleDeleteClick = (category: any) => {
@@ -48,21 +51,21 @@ const CategoriesTable = ({
                 align="center"
                 sx={{ fontWeight: "bold" }}
               >
-                Picture
+                {t("image")}
               </TableCell>
               <TableCell
                 className="text-nowrap"
                 align="center"
                 sx={{ fontWeight: "bold" }}
               >
-                English Name
+                {t("english_name")}
               </TableCell>
               <TableCell
                 className="text-nowrap"
                 align="center"
                 sx={{ fontWeight: "bold" }}
               >
-                Arabic Name
+                {t("arabic_name")}
               </TableCell>
               <TableCell align="center" sx={{ fontWeight: "bold" }}>
                 <IconButton

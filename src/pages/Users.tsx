@@ -6,6 +6,7 @@ import { FaUser } from "react-icons/fa";
 import axios from "axios";
 import { useState, useEffect } from 'react';
 import LoadingLine from '../components/ui/LoadingLine';
+import { useTranslation } from 'react-i18next';
 
 
 
@@ -16,6 +17,7 @@ const Users = () => {
   const [loading, setLoading] = useState(true);
   const [users, setUsers] = useState([]);
   const url = import.meta.env.VITE_SERVER_URL_USERS;
+  const { t } = useTranslation();
 
   useEffect(() => {
     axios.get(url + "/admin/user/users?block=false&suspend=false")
@@ -43,9 +45,11 @@ const Users = () => {
     return (
       <div className="p-4 md:p-8 lg:max-w-[1100px] mx-auto px-4 md:px-[40px] lg:px-[100px]">
         <div className="">
-          <h1 className="text-2xl md:text-4xl font-bold">User Management</h1>
-          <p className="text-sm md:text-base text-gray-600">
-            Manage all the users in the system
+          <h1 className="text-2xl md:text-4xl font-bold">
+            {t("user_management")}
+          </h1>
+          <p className="text-sm md:text-base mt-2 text-gray-600">
+            {t("user_management_description")}
           </p>
         </div>
 
@@ -65,7 +69,7 @@ export default Users;
 const users_array = () => [
   {
     id: 1,
-    title: "Total users",
+    title: "total_users",
     icon: FaUsers,
     number: 1000,
     growth: 10,
@@ -76,7 +80,7 @@ const users_array = () => [
   },
   {
     id: 2,
-    title: "Total Captains",
+    title: "total_captains",
     icon: GiCaptainHatProfile,
     number: 100,
     growth: 5,
@@ -87,7 +91,7 @@ const users_array = () => [
   },
   {
     id: 3,
-    title: "Total Users",
+    title: "total_users",
     icon: FaUser,
     number: 900,
     growth: 5,

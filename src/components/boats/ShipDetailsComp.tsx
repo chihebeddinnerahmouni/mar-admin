@@ -3,7 +3,6 @@ import StarRatings from "react-star-ratings";
 import { useTranslation } from "react-i18next";
 import Swal from "sweetalert2";
 import {
-  // FaEdit,
   FaTrash,
 } from "react-icons/fa";
 import axios from "axios";
@@ -53,26 +52,6 @@ const ShipDetails = ({ ship }: any) => {
 
 
 
-  // Update function
-  // const handleUpdate = (e: React.MouseEvent) => {
-  //   e.stopPropagation();
-  //   Swal.fire({
-  //     title: t("Do you want to update this boat?"),
-  //     icon: "question",
-  //     showCancelButton: true,
-  //     confirmButtonColor: "#3085d6",
-  //     cancelButtonColor: "#d33",
-  //     confirmButtonText: t("Yes, update it!"),
-  //   }).then((result) => {
-  //     if (result.isConfirmed) {
-  //       window.open(`/boats/update-boat/${ship.id}`, "_blank");
-  //     }
-  //   });
-  // };
-
-
-
-
   return (
     <div
       className="relative w-full group rounded-[12px] cursor-pointer max-w-[500px] 2xl:max-w-[500px] bg-creme transition-transform duration-300 hover:scale-[102%]"
@@ -80,31 +59,18 @@ const ShipDetails = ({ ship }: any) => {
     >
       <div className="relative">
         <img
-          // src={ship.Images[0].url}
           src={`${url}/${ship.Images[0].url}`}
           className="w-full h-[200px] object-cover object-center rounded-[12px] lg:h-[190px] 2xl:h-[250px] transition-opacity duration-300 hover:opacity-100"
           alt="boat"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-75 rounded-[12px] transition-opacity duration-300 hover:opacity-0"></div>
         <div className="absolute top-2 right-2 flex gap-2 opacity-100 group-hover:opacity-100 transition duration-300 lg:opacity-0">
-          {/* <button
-            className="text-white bg-main p-2 rounded-full hover:bg-mainHover"
-            onClick={handleUpdate}
-          >
-            <FaEdit />
-          </button> */}
           <button
             className="text-white bg-main p-2 rounded-full hover:bg-mainHover"
             onClick={handleDelete}
           >
             <FaTrash />
           </button>
-          {/* <button
-            className="text-white bg-main p-2 rounded-full hover:bg-mainHover"
-            onClick={handleBlock}
-          >
-            <FaBan />
-          </button> */}
         </div>
       </div>
       <div className="texts mt-3 text-writingMainDark px-3">

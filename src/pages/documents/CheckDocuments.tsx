@@ -6,6 +6,7 @@ import { useParams } from "react-router-dom";
 import LoadingButton from "../../components/ui/LoadingButton";
 import Swal from "sweetalert2";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 
 
 
@@ -18,6 +19,7 @@ const CheckDocuments = () => {
   const url = import.meta.env.VITE_SERVER_URL_LISTING;
   const { userId } = useParams<{ userId: string }>();
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
 
   useEffect(() => {
@@ -44,7 +46,17 @@ const CheckDocuments = () => {
            }).then(() => {
              window.location.reload();
            });
-         }
+        }
+        if (err.response.data.message === "No documents found for this user")
+          Swal.fire({
+            title: "No documents found",
+            text: "This user has not uploaded any documents yet",
+            customClass: {
+            confirmButton: "custom-confirm-button",
+            },
+          }).then(() => {
+            navigate("/documents");
+          })
       });
   }, []);
 

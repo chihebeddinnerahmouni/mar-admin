@@ -1,4 +1,3 @@
-// import users from "../../assets/files/users_array";
 import * as React from "react";
 import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
@@ -6,16 +5,10 @@ import TableRow from "@mui/material/TableRow";
 import TableSortLabel from "@mui/material/TableSortLabel";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import Checkbox from "@mui/material/Checkbox";
 import IconButton from "@mui/material/IconButton";
-// import Tooltip from "@mui/material/Tooltip";
-// import DeleteIcon from "@mui/icons-material/Delete";
 import { visuallyHidden } from "@mui/utils";
-// import EditIcon from "@mui/icons-material/Edit";
 import { IoSearchSharp } from "react-icons/io5";
 import DeleteModal from "./DeleteUserModal";
-// import UpdateUserModal from "./UpdateUserModal";
-// import DeleteAllUsersModal from "./DeleteAllUsersModal";
 import AddUserModal from "./AddUserModal";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import BlockIcon from "@mui/icons-material/Block";
@@ -52,12 +45,12 @@ const headCells: readonly HeadCell[] = [
     id: "profilePic",
     numeric: false,
     disablePadding: true,
-    label: "Profile Picture",
+    label: "profile_picture",
   },
-  { id: "name", numeric: false, disablePadding: false, label: "Name" },
-  { id: "role", numeric: false, disablePadding: false, label: "Role" },
-  { id: "phone", numeric: false, disablePadding: false, label: "Phone" },
-  { id: "email", numeric: false, disablePadding: false, label: "Email" },
+  { id: "name", numeric: false, disablePadding: false, label: "name" },
+  { id: "role", numeric: false, disablePadding: false, label: "role" },
+  { id: "phone", numeric: false, disablePadding: false, label: "phone" },
+  { id: "email", numeric: false, disablePadding: false, label: "email" },
 ];
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
@@ -79,26 +72,22 @@ function getComparator<Key extends keyof any>(
 }
 
 interface EnhancedTableProps {
-  numSelected: number;
   onRequestSort: (
     event: React.MouseEvent<unknown>,
     property: keyof Data
   ) => void;
-  onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void;
   order: Order;
   orderBy: string;
-  rowCount: number;
 }
 
 function EnhancedTableHead(props: EnhancedTableProps) {
   const {
-    onSelectAllClick,
     order,
     orderBy,
-    numSelected,
-    rowCount,
     onRequestSort,
   } = props;
+
+  const { t } = useTranslation();
   const createSortHandler =
     (property: keyof Data) => (event: React.MouseEvent<unknown>) => {
       onRequestSort(event, property);
@@ -107,29 +96,11 @@ function EnhancedTableHead(props: EnhancedTableProps) {
   return (
     <TableHead>
       <TableRow>
-        <TableCell padding="checkbox">
-          <Checkbox
-            sx={{
-              "&.Mui-checked": {
-                color: "red",
-              },
-              "&.MuiCheckbox-indeterminate": {
-                color: "red",
-              },
-            }}
-            indeterminate={numSelected > 0 && numSelected < rowCount}
-            checked={rowCount > 0 && numSelected === rowCount}
-            onChange={onSelectAllClick}
-            inputProps={{
-              "aria-label": "select all users",
-            }}
-          />
-        </TableCell>
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
-            align={headCell.numeric ? "right" : "left"}
-            padding={headCell.disablePadding ? "none" : "normal"}
+            align="center"
+            padding="normal"
             sortDirection={orderBy === headCell.id ? order : false}
             sx={{ fontWeight: "bold" }}
             className="text-nowrap"
@@ -139,7 +110,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
               direction={orderBy === headCell.id ? order : "asc"}
               onClick={createSortHandler(headCell.id)}
             >
-              {headCell.label}
+              {t(headCell.label)}
               {orderBy === headCell.id ? (
                 <Box component="span" sx={visuallyHidden}>
                   {order === "desc" ? "sorted descending" : "sorted ascending"}
@@ -154,18 +125,14 @@ function EnhancedTableHead(props: EnhancedTableProps) {
 }
 
 interface EnhancedTableToolbarProps {
-  numSelected: number;
   searchQuery: string;
   setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
-  selected: readonly number[];
 }
 
 function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
-  const { numSelected, searchQuery, setSearchQuery } = props;
-
-  // const [deleteAllModal, setDeleteAllModal] = React.useState(false);
+  const { searchQuery, setSearchQuery } = props;
   const [addUserModal, setAddUserModal] = React.useState(false);
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
 
   return (
     <Toolbar
@@ -174,31 +141,17 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
           pl: { sm: 2 },
           pr: { xs: 1, sm: 1 },
         },
-
-        numSelected > 0 && {
-          bgcolor: "rgba(255, 0, 0, 0.1)",
-        },
       ]}
     >
-      {numSelected > 0 ? (
-        <Typography
-          sx={{ flex: "1 1 100%" }}
-          color="inherit"
-          variant="subtitle1"
-          component="div"
-        >
-          {numSelected} selected
-        </Typography>
-      ) : (
-        <Typography
-          sx={{ flex: "1 1 100%" }}
-          variant="h6"
-          id="tableTitle"
-          component="div"
-        >
-          Users
-        </Typography>
-      )}
+      <Typography
+        sx={{ flex: "1 1 100%" }}
+        variant="h6"
+        id="tableTitle"
+        component="div"
+        padding={2}
+      >
+        {t("users")}
+      </Typography>
       <IconButton onClick={() => setAddUserModal(true)}>
         <PersonAddIcon className="text-main hover:text-mainHover" />
       </IconButton>
@@ -208,7 +161,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
           type="text"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Search users by name"
+          placeholder={t("search_by_name") + "..."}
           className={`p-2 w-[130px] border rounded-40 outline-main font-semibold bg-emptyInput md:w-[200px] ${
             i18n.language === "ar" ? "pr-7" : "pl-7"
           }`}
@@ -219,22 +172,6 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
           }`}
         />
       </div>
-
-      {/* {numSelected > 0 ? (
-        <Tooltip title="Delete">
-          <>
-            <IconButton onClick={() => setDeleteAllModal(true)}>
-              <BlockIcon className="text-main hover:text-mainHover" />
-            </IconButton>
-            {deleteAllModal && (
-              <DeleteAllUsersModal
-                setClose={() => setDeleteAllModal(false)}
-                selected={selected as number[]}
-              />
-            )}
-          </>
-        </Tooltip>
-      ) : null} */}
     </Toolbar>
   );
 }
@@ -243,18 +180,13 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
 export default function EnhancedTable({ users }: any) {
   const [order, setOrder] = React.useState<Order>("asc");
   const [orderBy, setOrderBy] = React.useState<keyof Data>("name");
-  const [selected, setSelected] = React.useState<readonly number[]>([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [searchQuery, setSearchQuery] = React.useState("");
   const [deleteModalUserId, setDeleteModalUserId] = React.useState<
     number | null
     >(0);
-    const url = import.meta.env.VITE_SERVER_URL_USERS;
-
-  // const [updateModalUserId, setUpdateModalUserId] = React.useState<number | null>(0);
-
-  // console.log(selected);
+  const url = import.meta.env.VITE_SERVER_URL_USERS;
 
   const handleRequestSort = (
     _event: React.MouseEvent<unknown>,
@@ -265,33 +197,6 @@ export default function EnhancedTable({ users }: any) {
     setOrderBy(property);
   };
 
-  const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.checked) {
-      const newSelected = users.map((n: any) => n.id);
-      setSelected(newSelected);
-      return;
-    }
-    setSelected([]);
-  };
-
-  const handleClick = (_event: React.MouseEvent<unknown>, id: number) => {
-    const selectedIndex = selected.indexOf(id);
-    let newSelected: readonly number[] = [];
-
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, id);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1)
-      );
-    }
-    setSelected(newSelected);
-  };
 
   const handleChangePage = (_event: unknown, newPage: number) => {
     setPage(newPage);
@@ -322,40 +227,29 @@ export default function EnhancedTable({ users }: any) {
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
         <EnhancedTableToolbar
-          numSelected={selected.length}
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
-          selected={selected}
         />
         <TableContainer>
           <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
             <EnhancedTableHead
-              numSelected={selected.length}
               order={order}
               orderBy={orderBy}
-              onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
-              rowCount={users.length}
             />
             <TableBody>
               {visibleRows.map((user, index) => {
-                const isItemSelected = selected.includes(user.id);
                 const labelId = `enhanced-table-checkbox-${index}`;
 
                 return (
                   <TableRow
                     hover
-                    onClick={(event) => handleClick(event, user.id)}
                     role="checkbox"
-                    aria-checked={isItemSelected}
                     tabIndex={-1}
                     key={user.id}
-                    selected={isItemSelected}
                     sx={{
                       cursor: "pointer",
-                      bgcolor: isItemSelected
-                        ? "rgba(255, 0, 0, 0.1)"
-                        : "inherit",
+                      bgcolor: "inherit",
                       "&.Mui-selected": {
                         bgcolor: "rgba(255, 0, 0, 0.1) !important",
                       },
@@ -364,38 +258,52 @@ export default function EnhancedTable({ users }: any) {
                       },
                     }}
                   >
-                    <TableCell padding="checkbox">
-                      <Checkbox
-                        sx={{
-                          "&.Mui-checked": {
-                            color: "red",
-                          },
-                        }}
-                        checked={isItemSelected}
-                        inputProps={{
-                          "aria-labelledby": labelId,
-                        }}
-                      />
-                    </TableCell>
                     <TableCell
                       component="th"
                       id={labelId}
                       scope="row"
-                      padding="none"
+                      padding="normal"
+                      align="center"
                     >
                       <img
-                        src={user.profilePicture ? url + "/" + user.profilePicture : "/anonyme.jpg"}
+                        src={
+                          user.profilePicture
+                            ? url + "/" + user.profilePicture
+                            : "/anonyme.jpg"
+                        }
                         alt={`${user.name}'s profile`}
-                        className="w-[40px] h-[40px] rounded-full"
+                        className="w-[40px] h-[40px] rounded-full object-cover object-center mx-auto"
                       />
                     </TableCell>
-                    <TableCell className="text-nowrap">{user.name}</TableCell>
-                    <TableCell className="text-nowrap">{user.role}</TableCell>
-                    <TableCell className="text-nowrap">
+                    <TableCell
+                      className="text-nowrap"
+                      align="center"
+                      padding="normal"
+                    >
+                      {user.name}
+                    </TableCell>
+                    <TableCell
+                      padding="normal"
+                      align="center"
+                      className="text-nowrap"
+                    >
+                      {user.role}
+                    </TableCell>
+                    <TableCell
+                      padding="normal"
+                      align="center"
+                      className="text-nowrap"
+                    >
                       {user.phoneNumber}
                     </TableCell>
-                    <TableCell className="text-nowrap">{user.email}</TableCell>
-                    <TableCell align="right">
+                    <TableCell
+                      padding="normal"
+                      align="center"
+                      className="text-nowrap"
+                    >
+                      {user.email}
+                    </TableCell>
+                    <TableCell align="center">
                       <Box
                         sx={{
                           display: "flex",
@@ -403,14 +311,6 @@ export default function EnhancedTable({ users }: any) {
                           alignItems: "center",
                         }}
                       >
-                        {/* <IconButton
-                          onClick={(event) => {
-                            event.stopPropagation();
-                            setUpdateModalUserId(user.id);
-                          }}
-                        >
-                          <EditIcon className="text-main hover:text-mainHover" />
-                        </IconButton> */}
                         <IconButton
                           onClick={(event) => {
                             event.stopPropagation();
@@ -427,12 +327,6 @@ export default function EnhancedTable({ users }: any) {
                         user={user}
                       />
                     )}
-                    {/* {updateModalUserId === user.id && (
-                      <UpdateUserModal
-                        setClose={() => setUpdateModalUserId(null)}
-                        user={user}
-                      />
-                    )} */}
                   </TableRow>
                 );
               })}

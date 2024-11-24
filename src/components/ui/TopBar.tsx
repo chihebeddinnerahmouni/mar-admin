@@ -5,7 +5,8 @@ import { useState } from "react";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import DropDownMenuModal from "../top bar/DropDownMenuModal";
 import SwitchLanguagePc from "../top bar/SwitchLanguagePc";
-
+import { useContext } from "react";
+import { AppContext } from "../../App";
 
 
 
@@ -13,6 +14,8 @@ const TopBar = () => {
 
   const [open, setOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { profilePicture } = useContext(AppContext);
+  const url = import.meta.env.VITE_SERVER_URL_USERS as string;
 
 
   return (
@@ -32,11 +35,15 @@ const TopBar = () => {
         <div className="right flex items-center">
           <SwitchLanguagePc />
           <img
-            src="/anonyme.jpg"
+            src={profilePicture ? url + "/" + profilePicture : "/anonyme.jpg"}
+            // src="/anonyme.jpg"
             className="w-[40px] h-[40px] rounded-50 object-cover object-center lg:w-[50px] lg:h-[50px]"
             alt="profilePic"
           />
-          <button className="items-center gap-2" onClick={()=>setIsMenuOpen(true)}>
+          <button
+            className="items-center gap-2"
+            onClick={() => setIsMenuOpen(true)}
+          >
             <HiOutlineDotsVertical className="text-[28px]" />
           </button>
         </div>

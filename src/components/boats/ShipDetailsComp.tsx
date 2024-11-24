@@ -1,13 +1,14 @@
 import React from "react";
 import StarRatings from "react-star-ratings";
-import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import Swal from "sweetalert2";
-import { FaEdit, FaTrash, FaBan } from "react-icons/fa";
+import {
+  // FaEdit,
+  FaTrash,
+} from "react-icons/fa";
 import axios from "axios";
 
 const ShipDetails = ({ ship }: any) => {
-  const navigate = useNavigate();
   const { t } = useTranslation();
   const url = import.meta.env.VITE_SERVER_URL_LISTING;
   const urlUser = import.meta.env.VITE_SERVER_URL_USERS;
@@ -15,7 +16,7 @@ const ShipDetails = ({ ship }: any) => {
 // console.log(ship);
 
   const navigateTo = () => {
-    navigate(`boat-details/${ship.id}`);
+    window.open(`/boats/update-boat/${ship.id}`, "_blank");
   };
 
 
@@ -51,68 +52,23 @@ const ShipDetails = ({ ship }: any) => {
   };
 
 
-  // Block function
-  const handleBlock = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    Swal.fire({
-      title: t("Do you want to block this listing?"),
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#d33",
-      cancelButtonColor: "#3085d6",
-      confirmButtonText: t("Yes, block it!"),
-    }).then((result) => {
-      if (result.isConfirmed) {
-        axios
-          .put(
-            `${url}/api/listing/listings/${ship.id}/status`,
-            {
-              validated: true,
-              blocked: true,
-              block_reason: "This is a test reason",
-            },
-            {
-              headers: {
-                Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-              },
-            }
-          )
-          .then((res) => {
-            Swal.fire(
-              t("Blocked!"),
-              t("The listing has been blocked."),
-              "success"
-            );
-            // window.location.reload();
-            console.log(res.data);
-          })
-          .catch((err) => {
-            console.log(err);
-            Swal.fire("Error!", err.message, "error");
-          });
-
-      }
-    });
-  };
-
-
 
   // Update function
-  const handleUpdate = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    Swal.fire({
-      title: t("Do you want to update this boat?"),
-      icon: "question",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: t("Yes, update it!"),
-    }).then((result) => {
-      if (result.isConfirmed) {
-        window.open(`/boats/update-boat/${ship.id}`, "_blank");
-      }
-    });
-  };
+  // const handleUpdate = (e: React.MouseEvent) => {
+  //   e.stopPropagation();
+  //   Swal.fire({
+  //     title: t("Do you want to update this boat?"),
+  //     icon: "question",
+  //     showCancelButton: true,
+  //     confirmButtonColor: "#3085d6",
+  //     cancelButtonColor: "#d33",
+  //     confirmButtonText: t("Yes, update it!"),
+  //   }).then((result) => {
+  //     if (result.isConfirmed) {
+  //       window.open(`/boats/update-boat/${ship.id}`, "_blank");
+  //     }
+  //   });
+  // };
 
 
 
@@ -131,24 +87,24 @@ const ShipDetails = ({ ship }: any) => {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-75 rounded-[12px] transition-opacity duration-300 hover:opacity-0"></div>
         <div className="absolute top-2 right-2 flex gap-2 opacity-100 group-hover:opacity-100 transition duration-300 lg:opacity-0">
-          <button
+          {/* <button
             className="text-white bg-main p-2 rounded-full hover:bg-mainHover"
             onClick={handleUpdate}
           >
             <FaEdit />
-          </button>
+          </button> */}
           <button
             className="text-white bg-main p-2 rounded-full hover:bg-mainHover"
             onClick={handleDelete}
           >
             <FaTrash />
           </button>
-          <button
+          {/* <button
             className="text-white bg-main p-2 rounded-full hover:bg-mainHover"
             onClick={handleBlock}
           >
             <FaBan />
-          </button>
+          </button> */}
         </div>
       </div>
       <div className="texts mt-3 text-writingMainDark px-3">

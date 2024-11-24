@@ -32,6 +32,7 @@ const CheckDocuments = () => {
       setLoading(false);
       })
       .catch((err) => {
+        console.log(err);
          if (err.message === "Network Error") {
            Swal.fire({
              icon: "error",

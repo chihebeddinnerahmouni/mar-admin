@@ -24,11 +24,12 @@ const BoatsCont = ({ selectedType }: any) => {
     // }, []);
 
   const url = import.meta.env.VITE_SERVER_URL_LISTING;
-  const fetchData = () => {
+  const fetchData = (currentPage: number) => {
     axios
       .get(
-        // `${url}/api/listing/listings?page=1&categoryId=${selectedType}`
-        `${url}/api/listing/listings?page=1${selectedType ? `&categoryId=${selectedType}` : ""}`
+        `${url}/api/listing/listings?page=${currentPage}${
+          selectedType ? `&categoryId=${selectedType}` : ""
+        }`
       )
       .then((response) => {
         setShipsArray(response.data.listings);
@@ -79,7 +80,7 @@ const BoatsCont = ({ selectedType }: any) => {
 
   useEffect(() => {
     // setLoading(true);
-    fetchData();
+    fetchData(currentPage);
   }, [selectedType, currentPage]);
 
   useEffect(() => {

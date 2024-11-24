@@ -34,7 +34,7 @@ const UpdateBoat = () => {
     axios
       .get(`${url}/api/listing/listings/${boatId}`)
       .then((res) => {
-        // console.log(res.data);
+        console.log(res.data);
         setDetails(res.data);
         setLoading(false);
       })
@@ -78,7 +78,11 @@ const UpdateBoat = () => {
         </p>
 
         <Owner details={details} />
-        <Validated validated={details.validated} />
+        <Validated
+          blocked={details.blocked}
+          title={details.title}
+          id={details.id}
+        />
         <NamePic
           title={details.title}
           image={`${url}/${details.Images[0].url}`}

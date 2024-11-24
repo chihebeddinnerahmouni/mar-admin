@@ -22,7 +22,7 @@ const AddQst: React.FC<AddQstProps> = ({ setClose, categoriesArray }) => {
   const [category, setCategory] = useState<any>([]);
   const [step, setStep] = useState(1);
   const mainColor = "#FF385C";
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
   const url = import.meta.env.VITE_SERVER_URL_HELP;
 
   // console.log(question);
@@ -65,7 +65,7 @@ const AddQst: React.FC<AddQstProps> = ({ setClose, categoriesArray }) => {
       {step === 1 && (
         <>
           <Typography variant="h4" component="h2" gutterBottom>
-            Wich Category
+            {t("wich_category")}?
           </Typography>
           <Select
             label="Question"
@@ -106,7 +106,7 @@ const AddQst: React.FC<AddQstProps> = ({ setClose, categoriesArray }) => {
             }}
           >
             <MenuItem value="" disabled>
-              Select Question category
+              {t("select_category")}
             </MenuItem>
             {categoriesArray.map((category: any, index: number) => (
               <MenuItem key={index} value={category}>
@@ -125,13 +125,13 @@ const AddQst: React.FC<AddQstProps> = ({ setClose, categoriesArray }) => {
             }}
             onClick={() => {
               if (category === "") {
-                alert("Please select a category");
+                alert(t("select_category"));
                 return;
               }
               setStep(2);
             }}
           >
-            Next
+            {t("next")}
           </Button>
         </>
       )}
@@ -139,10 +139,10 @@ const AddQst: React.FC<AddQstProps> = ({ setClose, categoriesArray }) => {
       {step === 2 && (
         <>
           <Typography variant="h4" component="h2" gutterBottom>
-            Set the qst and answer in english
+            {t("set_the_qst_and_answer_in_english")}
           </Typography>
           <TextField
-            label="Question in english"
+            label={t("question-in_english")}
             variant="outlined"
             fullWidth
             value={question}
@@ -216,7 +216,7 @@ const AddQst: React.FC<AddQstProps> = ({ setClose, categoriesArray }) => {
                 },
               },
             }}
-            initialValue="Answer in english..."
+            initialValue={`${t("answer_in_english")}...`}
             onEditorChange={(content) => setAnswer(content)}
           />
 
@@ -230,26 +230,24 @@ const AddQst: React.FC<AddQstProps> = ({ setClose, categoriesArray }) => {
             }}
             onClick={() => {
               if (question === "" || answer === "") {
-                alert("Please fill all fields");
+                alert(t("please_fill_all_fields"));
                 return;
               }
-             setStep(3)
+              setStep(3);
             }}
           >
-            Next
+            {t("next")}
           </Button>
         </>
       )}
 
-
-
       {step === 3 && (
         <>
           <Typography variant="h4" component="h2" gutterBottom>
-            Set the qst and answer in arabic
+            {t("set_the_qst_and_answer_in_arabic")}
           </Typography>
           <TextField
-            label="Question in arabic"
+            label={t("question-in_arabic")}
             variant="outlined"
             fullWidth
             value={arabic_question}
@@ -323,7 +321,7 @@ const AddQst: React.FC<AddQstProps> = ({ setClose, categoriesArray }) => {
                 },
               },
             }}
-            initialValue="Answer in english..."
+            initialValue={`${t("answer_in_arabic")}...`}
             onEditorChange={(content) => setArabicAnswer(content)}
           />
 
@@ -340,10 +338,10 @@ const AddQst: React.FC<AddQstProps> = ({ setClose, categoriesArray }) => {
                 alert("Please fill all fields");
                 return;
               }
-               handleSubmit();
+              handleSubmit();
             }}
           >
-            Next
+            {t("save")}
           </Button>
         </>
       )}

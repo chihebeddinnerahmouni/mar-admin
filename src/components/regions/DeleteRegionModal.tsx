@@ -4,6 +4,7 @@ import { Button, Box, Typography } from "@mui/material";
 import LoadingButton from "../ui/LoadingButton";
 import axios from "axios";
 import { useTranslation } from "react-i18next";
+import Swal from "sweetalert2";
 
 interface DeleteModalProps {
     setClose: (isOpen: boolean) => void;
@@ -25,7 +26,8 @@ const DeleteRegionModal: React.FC<DeleteModalProps> = ({
     // console.log(region);
     const [loading, setLoading] = useState(false);
     const url = import.meta.env.VITE_SERVER_URL_LISTING;
-    const {i18n} = useTranslation();
+    const { i18n, t } = useTranslation();
+    const mainColor = "#FF385C";
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -35,11 +37,26 @@ const DeleteRegionModal: React.FC<DeleteModalProps> = ({
                 Authorization: `Bearer ${localStorage.getItem("jwt")}`,
             }
         })
-        .then(() => {
+            .then(() => {
+                Swal.fire({
+                    title: t("greate"),
+                    icon: "success",
+                });
             window.location.reload();
         })
-        .catch((error) => {
-            console.log(error);
+        .catch((err) => {
+            if (err.message === "Network Error") {
+              Swal.fire({
+                icon: "error",
+                title: t("network_error"),
+                text: t("please_try_again"),
+                customClass: {
+                  confirmButton: "custom-confirm-button",
+                },
+              }).then(() => {
+                window.location.reload();
+              });
+            }
             setLoading(false);
         });
     };
@@ -48,16 +65,16 @@ const DeleteRegionModal: React.FC<DeleteModalProps> = ({
         <ReactModal
             isOpen={true}
             onRequestClose={() => setClose(false)}
-            className={"bg-white rounded-lg p-6 shadow-lg max-w-md mx-auto"}
+            className={"bg-white w-full rounded-lg p-6 shadow-lg max-w-md mx-auto md:w-[400px]"}
             overlayClassName={
                 "fixed bg-black bg-opacity-10 backdrop-blur-[7px] inset-0 flex items-center justify-center p-4"
             }
         >
             <Typography variant="h4" component="h2" gutterBottom>
-                Delete Region
+                {t("delete_region")}
             </Typography>
             <Typography variant="body1" gutterBottom>
-                Are you sure you want to delete the region <strong>{i18n.language === "ar" ? region.arabic_name : region.name}</strong>?
+                {t("are_you_sure_you_want_to")} <span className="text-red-500 font-semibold">{t("delete")}</span> <strong>{i18n.language === "ar" ? region.arabic_name : region.name}</strong>?
             </Typography>
             <form onSubmit={handleSubmit}>
                 <Box display="flex" justifyContent="flex-end" gap={2} mt={4}>
@@ -65,12 +82,12 @@ const DeleteRegionModal: React.FC<DeleteModalProps> = ({
                         variant="outlined"
                         onClick={() => setClose(false)}
                         sx={{
-                            color: "#FF385C",
+                            color: mainColor,
                             backgroundColor: "white",
-                            borderColor: "#FF385C",
+                            borderColor: mainColor,
                         }}
                     >
-                        Cancel
+                        {t("cancel")}
                     </Button>
                     <Button
                         variant="contained"
@@ -78,14 +95,14 @@ const DeleteRegionModal: React.FC<DeleteModalProps> = ({
                         sx={{
                             color: "white",
                             width: "90px",
-                            backgroundColor: "#FF385C",
+                            backgroundColor: mainColor,
                             '&:hover': {
                                 backgroundColor: "#FF1E3C",
                             },
                         }}
                         type="submit"
                     >
-                        {loading ? <LoadingButton /> : "Delete"}
+                        {loading ? <LoadingButton /> : t("delete")}
                     </Button>
                 </Box>
             </form>

@@ -21,9 +21,10 @@ const DeleteCategoryQst: React.FC<DeleteModalProps> = ({
   setClose,
   cat,
 }) => {
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
   const [loading, setLoading] = useState<boolean>(false);
   const url = import.meta.env.VITE_SERVER_URL_HELP;
+  const mainColor = "#FF385C";
 
   // console.log(cat);
 
@@ -37,15 +38,25 @@ const DeleteCategoryQst: React.FC<DeleteModalProps> = ({
         },
       })
       .then(() => {
+        Swal.fire({
+          icon: "success",
+          title: t("greate")
+        });
         window.location.reload();
       })
-        .catch((error) => {
-          console.log(error);
-        Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          text: error.response.data.message,
-        });
+        .catch((err) => {
+           if (err.message === "Network Error") {
+             Swal.fire({
+               icon: "error",
+               title: t("network_error"),
+               text: t("please_try_again"),
+               customClass: {
+                 confirmButton: "custom-confirm-button",
+               },
+             }).then(() => {
+               window.location.reload();
+             });
+           }
         setLoading(false);
       });
   };
@@ -55,20 +66,18 @@ const DeleteCategoryQst: React.FC<DeleteModalProps> = ({
     <ReactModal
       isOpen={true}
       onRequestClose={() => setClose(false)}
-      className={"bg-white rounded-lg p-6 shadow-lg max-w-md mx-auto"}
+      className={"bg-white w-full rounded-lg p-6 shadow-lg max-w-md mx-auto md:w-[300px]"}
       overlayClassName={
         "fixed bg-black bg-opacity-10 backdrop-blur-[7px] inset-0 flex items-center justify-center p-4 z-10"
       }
     >
       <Typography variant="h4" component="h2" gutterBottom>
-        Delete Category
+        {t("delete_category")}
       </Typography>
       <Typography variant="body1" gutterBottom>
-        Are you sure you want to <span className="text-red-500 font-semibold">Delete</span> the feature{" "}
-        <strong>
-          {i18n.language === "ar" ? cat.arabic_name : cat.name}
-        </strong>
-        ?
+        {t("are_you_sure_you_want_to")}{" "}
+        <span className="text-red-500 font-semibold">{t("delete")}</span> {" "}
+        <strong>{i18n.language === "ar" ? cat.arabic_name : cat.name}</strong>?
       </Typography>
       <form onSubmit={handleSubmit}>
         <Box display="flex" justifyContent="flex-end" gap={2} mt={4}>
@@ -76,12 +85,12 @@ const DeleteCategoryQst: React.FC<DeleteModalProps> = ({
             variant="outlined"
             onClick={() => setClose(false)}
             sx={{
-              color: "#FF385C",
+              color: mainColor,
               backgroundColor: "white",
-              borderColor: "#FF385C",
+              borderColor: mainColor,
             }}
           >
-            Cancel
+            {t("cancel")}
           </Button>
           <Button
             variant="contained"
@@ -89,14 +98,14 @@ const DeleteCategoryQst: React.FC<DeleteModalProps> = ({
             sx={{
               width: "90px",
               color: "white",
-              backgroundColor: "#FF385C",
+              backgroundColor: mainColor,
               "&:hover": {
                 backgroundColor: "#FF1E3C",
               },
             }}
             type="submit"
           >
-            {loading ? <LodaingButton /> : "Delete"}
+            {loading ? <LodaingButton /> :  t("delete")}
           </Button>
         </Box>
       </form>

@@ -107,6 +107,26 @@
   "start": "البدء",
   "end": "الانتهاء",
 
+   "regions_management": "إدارة المناطق",
+  "regions_management_description": "استكشاف وإدارة المناطق مع رؤى مفصلة حول كل نوع من القوارب المتاحة للإيجار.",
+  "add_region": "إضافة منطقة",
+  "upload_photo": "تحميل الصورة",
+  "delete_region": "حذف المنطقة",
+
+   "help_questions_management_description": "استكشاف وإدارة أسئلة المساعدة مع رؤى مفصلة حول كل استفسار متاح للمساعدة.",
+  "help_questions_management": "إدارة أسئلة المساعدة",
+  "question": "السؤال",
+  "do_you_want_to_delete_this_question": "هل تريد حذف هذا السؤال ؟",
+  "wich_category": "أي فئة",
+   "select_category": "اختر الفئة",
+  "next": "التالي",
+   "set_the_qst_and_answer_in_english": "حدد السؤال والإجابة باللغة الإنجليزية",
+  "question-in_english": "السؤال باللغة الإنجليزية",
+  "set_the_qst_and_answer_in_arabic": "حدد السؤال والإجابة باللغة العربية",
+  "question-in_arabic": "السؤال باللغة العربية",
+  "answer_in_english": "الإجابة باللغة الإنجليزية",
+  "answer_in_arabic": "الإجابة باللغة العربية",
+
 
 
   "a": "أ"

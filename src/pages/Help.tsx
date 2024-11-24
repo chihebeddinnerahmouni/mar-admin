@@ -3,6 +3,8 @@ import CatQsts from '../containers/help/CatQsts';
 import axios from 'axios';
 import LoadingLine from '../components/ui/LoadingLine';
 import TableOfQuestions from '../components/help/QuestionsTable';
+import { useTranslation } from 'react-i18next';
+import Swal from 'sweetalert2';
 
 
 
@@ -15,6 +17,7 @@ const Help = () => {
   const [loading, setLoading] = useState(true);
   const [helpCat, setHelpCat] = useState<any[]>([]);
   const url = import.meta.env.VITE_SERVER_URL_HELP;
+  const { t } = useTranslation();
 
     const handleCategoryClick = (id: number) => {
         setSelectedCat(id);
@@ -29,7 +32,18 @@ const Help = () => {
         setLoading(false);
       })
       .catch((err) => {
-        console.log(err);
+        if (err.message === "Network Error") {
+          Swal.fire({
+            icon: "error",
+            title: t("network_error"),
+            text: t("please_try_again"),
+            customClass: {
+              confirmButton: "custom-confirm-button",
+            },
+          }).then(() => {
+            window.location.reload();
+          });
+        }
       })
   }, []);
   
@@ -45,11 +59,10 @@ const Help = () => {
     return (
       <div className="p-4 md:p-8 lg:max-w-[1000px] mx-auto px-4 md:px-[40px] lg:px-[100px]">
         <h1 className="text-3xl md:text-4xl font-extrabold mb-4 text">
-          Help Questions Management
+          {t("help_questions_management")}
         </h1>
         <p className="text-sm md:text-base text-gray-600 mb-8">
-          Explore and manage help questions with detailed insights into each
-          query available for assistance.
+          {t("help_questions_management_description")}
         </p>
         <CatQsts
           helpCat={helpCat}

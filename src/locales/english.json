@@ -111,6 +111,26 @@
   "start": "Start",
   "end": "End",
 
+  "regions_management": "Regions Management",
+  "regions_management_description": "Explore and manage regions with detailed insights into each type of boat available for rental.",
+  "add_region": "Add Region",
+  "upload_photo": "Upload Photo",
+  "delete_region": "Delete Region",
+
+  "help_questions_management_description": "Explore and manage help questions with detailed insights into each query available for assistance.",
+  "help_questions_management": "Help Questions Management",
+  "do_you_want_to_delete_this_question": "Do you want to delete this question ?",
+  "wich_category": "Wich Category",
+  "select_category": "Select Category",
+  "next": "Next",
+  "set_the_qst_and_answer_in_english": "Set the question and answer in English",
+  "question-in_english": "Question in English",
+  "set_the_qst_and_answer_in_arabic": "Set the question and answer in Arabic",
+  "question-in_arabic": "Question in Arabic",
+  "answer_in_english": "Answer in english",
+  "answer_in_arabic": "Answer in arabic",
+
+
 
 
   "a": "A"

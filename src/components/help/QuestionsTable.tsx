@@ -3,6 +3,8 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { FaTrash } from "react-icons/fa";
 import AddQst from "./AddQst";
+import { useTranslation } from "react-i18next";
+
 
 const TableOfQuestions = ({
   categoryId,
@@ -18,17 +20,28 @@ const TableOfQuestions = ({
   const [questions, setQuestions] = useState<any[]>([]);
   const [isAddQstOpen, setIsAddQstOpen] = useState(false);
   const url = import.meta.env.VITE_SERVER_URL_HELP;
+  const { t } = useTranslation();
 
   useEffect(() => {
     setQuestions([]);
     axios
       .get(url + `/categories/${categoryId}/questions`)
       .then((res) => {
-        // console.log(res.data);
         setQuestions(res.data);
       })
       .catch((err) => {
-        console.log(err);
+         if (err.message === "Network Error") {
+           Swal.fire({
+             icon: "error",
+             title: t("network_error"),
+             text: t("please_try_again"),
+             customClass: {
+               confirmButton: "custom-confirm-button",
+             },
+           }).then(() => {
+             window.location.reload();
+           });
+         };
       });
   }, [categoryId]);
 
@@ -38,27 +51,39 @@ const TableOfQuestions = ({
 
   const handleDelete = (id: number) => {
     Swal.fire({
-      title: "Are you sure?",
-      text: "Do you want to delete this question?",
-      icon: "warning",
+      title: t("are_you_sure"),
+      text: t("do_you_want_to_delete_this_question"),
       showCancelButton: true,
-      confirmButtonText: "Yes, delete it!",
-      cancelButtonText: "No, keep it",
+      confirmButtonText: t("yes"),
+      cancelButtonText: t("no"),
+      confirmButtonColor: "#f00",
+      cancelButtonColor: "#3085d6",
     }).then((result) => {
       if (result.isConfirmed) {
-        axios.delete(`${url}/questions/${id}`)
+        axios
+          .delete(`${url}/questions/${id}`)
           .then(() => {
             // console.log(res.data);
-                    Swal.fire(
-                      "Success",
-                      "The question has been deleted!",
-                      "success"
-                    );
-                   window.location.reload();
+            Swal.fire({
+              icon: "success",
+              title: t("greate"),
+            });
+            window.location.reload();
           })
           .catch((err) => {
-            console.error(err);
-          })
+             if (err.message === "Network Error") {
+               Swal.fire({
+                 icon: "error",
+                 title: t("network_error"),
+                 text: t("please_try_again"),
+                 customClass: {
+                   confirmButton: "custom-confirm-button",
+                 },
+               }).then(() => {
+                 window.location.reload();
+               });
+             }
+          });
       }
     });
   };
@@ -72,7 +97,7 @@ const TableOfQuestions = ({
       <table className="min-w-full bg-white">
         <thead>
           <tr>
-            <th className="py-2 border-b">Question</th>
+            <th className="py-2 border-b">{t("question")}</th>
             <th className="py-2 px-4 border-b">
               <button
                 className="text-main text-[18px]"

@@ -44,7 +44,8 @@ const DeleteCategoryQst: React.FC<DeleteModalProps> = ({
         });
         window.location.reload();
       })
-        .catch((err) => {
+      .catch((err) => {
+          // console.log(err);
            if (err.message === "Network Error") {
              Swal.fire({
                icon: "error",

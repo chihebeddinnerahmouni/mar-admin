@@ -12,6 +12,7 @@ import {
   collection, onSnapshot, query,
   // where
 } from "firebase/firestore";
+import ButtomTrip from "../../components/booking/ButtomTrip";
 import { useNavigate } from "react-router-dom";
 
 
@@ -65,12 +66,13 @@ const BookingDetailsCont = () => {
 
   return (
     <div
-      className={`flex-grow flex flex-col items-center pb-10 md:px-10 inboxListCss overflow-auto`}
+      className={`flex-grow flex flex-col items-center pb-14 md:px-10 inboxListCss overflow-auto`}
     >{details.length !== 0 && (
       <>
       <Top selected={selected} setSelected={setSelected} details={details[0]} />
           {selected === "details" && <Bookingdetails details={details} />}
           {selected === "messages" && <BookingMessages details={details} />}
+          <ButtomTrip setSelected={setSelected} details={details[0]} />
         </>
       )}
     </div>

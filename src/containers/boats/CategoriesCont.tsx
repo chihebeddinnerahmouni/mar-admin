@@ -5,6 +5,9 @@ const CategoriesCont = ({
   selectedType,
   setSelectedType,
 }: any) => {
+
+  // not used
+
   return (
     <div className="relative flex items-center justify-center w-full h-16 pt-2 lg:h-24 lg:justify-center">
       <div className="components flex items-center h-full gap-6 lg:gap-10">

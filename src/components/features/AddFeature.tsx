@@ -193,7 +193,7 @@ const AddFeature: React.FC<UpdatePricesProps> = ({ setClose }) => {
   const handleContinue = () => {
     
     const check = !engName || !image || !arName;
-    if (check) return;
+    if (check) return alert(t("please_fill_all_fields"));
 
     setLoading(true);
 

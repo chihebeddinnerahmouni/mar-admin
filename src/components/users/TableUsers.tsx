@@ -12,7 +12,7 @@ import DeleteModal from "./DeleteUserModal";
 import AddUserModal from "./AddUserModal";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import BlockIcon from "@mui/icons-material/Block";
-import {
+import EditIcon from "@mui/icons-material/Edit";import {
   TablePagination,
   Box,
   Paper,
@@ -21,6 +21,7 @@ import {
   TableBody,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
+
 
 interface Data {
   id: number;
@@ -311,6 +312,14 @@ export default function EnhancedTable({ users }: any) {
                           alignItems: "center",
                         }}
                       >
+                        <IconButton
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            window.open(`/users/user/${user.id}`, "_blank");
+                          }}
+                        >
+                          <EditIcon className="text-gray-400 hover:text-gray-500" />
+                        </IconButton>
                         <IconButton
                           onClick={(event) => {
                             event.stopPropagation();

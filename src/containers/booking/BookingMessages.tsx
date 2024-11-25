@@ -58,18 +58,6 @@ const BookingMessages = ({ details }: any) => {
           {messages.map((message: any, index: number) => (
             <div key={index} className="flex flex-col space-y-2">
               <div className="flex items-center gap-2">
-                {/* <img
-                  src={
-                    message.senderId === userId
-                      ? profilePic
-                        ? `${url}/${profilePic}`
-                        : "/anonyme.jpg"
-                      : ownerPic
-                      ? `${url}/${ownerPic}`
-                      : "/anonyme.jpg"
-                  }
-                  className="w-8 h-8 rounded-full bg-gray-300 object-cover object-center lg:h-10 lg:w-10"
-                /> */}
                 <div className="flex flex-col">
                   <span className="font-semibold text-sm lg:text-base">
                     {message.senderName}

@@ -7,30 +7,30 @@ import { useNavigate, useLocation } from "react-router-dom";
 import Swal from "sweetalert2";
 import { useTranslation } from "react-i18next";
 // import boats_array from "../../assets/files/boats_array";
+import SearchBarsCont from "./SearchBarsCont";
 
-const BoatsCont = ({ selectedType }: any) => {
+
+const BoatsCont = () => {
   const [shipsArray, setShipsArray] = useState<any>([]);
   const [loading, setLoading] = useState(true);
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
+  const [boatSearch, setBoatSearch] = useState("");
+  const [ownerSearch, setOwnerSearch] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
-    const { t } = useTranslation();
-    
-    // useEffect(() => {
-    //     setShipsArray(boats_array.listings);
-    //   setLoading(false);
-    //   setTotalPages(boats_array.pagination.totalPages);
-    // }, []);
+  const { t } = useTranslation();
+
+  // useEffect(() => {
+  //     setShipsArray(boats_array.listings);
+  //   setLoading(false);
+  //   setTotalPages(boats_array.pagination.totalPages);
+  // }, []);
 
   const url = import.meta.env.VITE_SERVER_URL_LISTING;
   const fetchData = (currentPage: number) => {
     axios
-      .get(
-        `${url}/api/listing/listings?page=${currentPage}${
-          selectedType ? `&categoryId=${selectedType}` : ""
-        }`
-      )
+      .get(`${url}/api/listing/listings?page=${currentPage}`)
       .then((response) => {
         setShipsArray(response.data.listings);
         setTotalPages(response.data.pagination.totalPages);
@@ -81,7 +81,7 @@ const BoatsCont = ({ selectedType }: any) => {
   useEffect(() => {
     // setLoading(true);
     fetchData(currentPage);
-  }, [selectedType, currentPage]);
+  }, [currentPage]);
 
   useEffect(() => {
     navigate(`?page=${currentPage}`, { replace: true });
@@ -96,6 +96,7 @@ const BoatsCont = ({ selectedType }: any) => {
 
   return (
     <>
+      <SearchBarsCont boatSearch={boatSearch} ownerSearch={ownerSearch} setBoatSearch={setBoatSearch} setOwnerSearch={setOwnerSearch} />
       <div className="w-full mt-[65px] flex justify-center items-center">
         <div className="w-full grid grid-cols-1 justify-items-center gap-y-16 md:grid-cols-2 md:gap-x-4 lg:grid-cols-3 xl:grid-cols-4 lg:gap-y-16 lg:gap-x-4 2xl:grid-cols-4">
           {shipsArray.map((ship: any, index: number) => (

@@ -110,6 +110,8 @@
   "hide": "Hide",
   "start": "Start",
   "end": "End",
+    "search_by_boat_name": "Search by Boat Name",
+  "search_by_owner_name": "Search by Owner Name",
 
   "regions_management": "Regions Management",
   "regions_management_description": "Explore and manage regions with detailed insights into each type of boat available for rental.",
@@ -182,6 +184,7 @@
   "with_captain": "With Captain",
   "special_requests": "Special Request",
   "a_captain_is_included_in_the_price": "A captain is included in the price",
+  "search_by_client_name": "Search by Client Name",
 
   "hello": "Hello",
   "logout": "Logout",
@@ -193,6 +196,17 @@
   "login": "Login",
   "create_account": "Create Account",
   "dontHaveAccount": "Don't have an account?",
+
+  "change_profile_picture": "Change Profile Picture",
+  "change_email_address": "Change Email Address",
+  "change_password": "Change Password",
+
+  "options": "Options",
+  "accept_inquiry": "Accept Inquiry",
+  "cancel_inquiry": "Cancel Inquiry",
+  "end_of_service": "End of Service",
+
+
 
 
 

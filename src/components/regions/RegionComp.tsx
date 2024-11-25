@@ -17,7 +17,7 @@ interface RegionProps {
         arabic_name: string;
     };
 }
-
+// not used
 const RegionComp: React.FC<RegionProps> = ({ region }) => {
 
 

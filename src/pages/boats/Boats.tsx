@@ -1,46 +1,10 @@
-import { useState, useEffect } from "react";
-import CategoriesCont from "../../containers/boats/CategoriesCont";
 import BoatsCont from "../../containers/boats/BoatsCont";
-import axios from "axios";
-import LoadingLine from "../../components/ui/LoadingLine";
 import { useTranslation } from "react-i18next";
 
 
 const Boats = () => {
 
-  const [ctegoriesArray, setCategoriesArray] = useState([]);
-  // const ctegoriesArray = categories;
-  const [selectedType, setSelectedType] = useState();
-  const [loading, setLoading] = useState(true);
-  const url = import.meta.env.VITE_SERVER_URL_CATEGORY;
   const { t } = useTranslation();
-
-
-  useEffect(() => {
-    axios
-      .get(url + "/categories")
-      .then((response) => {
-        setCategoriesArray(response.data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.log(error);
-        setLoading(false);
-      });
-  }, []);
-
-
-
-
-
-
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <LoadingLine />
-      </div>
-    )
-  }
 
 
   return (
@@ -51,12 +15,7 @@ const Boats = () => {
       <p className="text-sm md:text-base text-gray-600 mb-8">
         {t("boats_management_description")}
       </p>
-      <CategoriesCont
-        shipsTypes={ctegoriesArray}
-        selectedType={selectedType}
-        setSelectedType={setSelectedType}
-      />
-      <BoatsCont selectedType={selectedType} />
+      <BoatsCont />
     </div>
   );
 }

@@ -2,6 +2,9 @@ import { useState } from "react"
 import { useTranslation } from "react-i18next"
 import LoadingButton from "../ui/LoadingButton"
 
+
+// not used
+
 const ForgetPassword = () => {
     const { t } = useTranslation()
     const [email, setEmail] = useState("")

@@ -46,16 +46,18 @@ const Login = () => {
         navigate("/");
       })
       .catch((err: any) => {
-        // console.log(err);
-        Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          text: t(err.response.data.message),
-          confirmButtonText: t("try_again"),
-          customClass: {
-            confirmButton: "custom-confirm-button",
-          },
-        });
+         if (err.message === "Network Error") {
+           Swal.fire({
+             icon: "error",
+             title: t("network_error"),
+             text: t("please_try_again"),
+             customClass: {
+               confirmButton: "custom-confirm-button",
+             },
+           }).then(() => {
+             window.location.reload();
+           });
+         }
         setLoading(false);
       });
 
@@ -137,7 +139,7 @@ const Login = () => {
             to="/forgot-password"
             className="text-xs text-main mt-10 font-medium underline"
           >
-            {t("forgotPassword")}
+            {t("forgot_password")}
           </Link>
           <button
             className="w-full h-10 bg-main text-white rounded-[5px] mt-3 hover:bg-mainHover"
@@ -150,14 +152,14 @@ const Login = () => {
 
         {/* redirect to create account */}
         <div className="text-xs mt-5 flex gap-1">
-          <p>{t("dontHaveAccount")}</p>
+          <p>{t("dontHaveAccount")}</p> 
           <Link to="/register" className="text-main font-medium underline">
             {t("create_account")}
           </Link>
         </div>
 
         {/* privacy */}
-        <div className="policy">
+        {/* <div className="policy">
           <p className="text-xs text-gray-400 mt-5">
             {t("by_continuing_you_agree_to_our")}{" "}
             <Link to="/terms" className="text-main underline">
@@ -168,7 +170,7 @@ const Login = () => {
               {t("privacy")}
             </Link>
           </p>
-        </div>
+        </div> */}
       </div>
     </div>
   );

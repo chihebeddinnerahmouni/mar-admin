@@ -7,6 +7,7 @@ import DropDownMenuModal from "../top bar/DropDownMenuModal";
 import SwitchLanguagePc from "../top bar/SwitchLanguagePc";
 import { useContext } from "react";
 import { AppContext } from "../../App";
+import { useTranslation } from "react-i18next";
 
 
 
@@ -14,8 +15,9 @@ const TopBar = () => {
 
   const [open, setOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { profilePicture } = useContext(AppContext);
+  const { profilePicture, name } = useContext(AppContext);
   const url = import.meta.env.VITE_SERVER_URL_USERS as string;
+  const { t } = useTranslation();
 
 
   return (
@@ -29,7 +31,7 @@ const TopBar = () => {
               <FiMenu className="lg:text-[28px]" />
             )}
           </button>
-          <p className="text-[18px] font-bold lg:text-[28px]">Hello, John 👋</p>
+          <p className="text-[18px] font-bold lg:text-[28px]">{t("hello")}, {name} 👋</p>
         </div>
 
         <div className="right flex items-center">

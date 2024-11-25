@@ -9,10 +9,10 @@ const Offer = ({ offer }: any) => {
   return (
     <div className="w-full p-3 bg-white mt-5 rounded-10 shadow-sm lg:p-6">
       {/* total */}
-      <div className="total flex w-full justify-between text-sm lg:text-[18px]">
+      <div className="total flex w-full justify-between text-lg lg:text-[24px]">
         <p className="font-semibold">{t("total")}</p>
         <p className="font-semibold">
-          {offer.total_cost} {t("rs")}
+          {offer.total_cost} {t("sar")}
         </p>
       </div>
 
@@ -26,7 +26,7 @@ const Offer = ({ offer }: any) => {
           </span>
         </Tooltip>
         <p className="font-medium">
-          {offer.base_cost} {t("rs")}
+          {offer.base_cost} {t("sar")}
         </p>
       </div>
 
@@ -38,7 +38,7 @@ const Offer = ({ offer }: any) => {
           </span>
         </Tooltip>
         <p className="font-medium">
-          {offer.payment_service_fee} {t("rs")}
+          {offer.payment_service_fee} {t("sar")}
         </p>
       </div>
 
@@ -48,7 +48,7 @@ const Offer = ({ offer }: any) => {
       <div className="total flex w-full justify-between text-sm lg:text-base">
         <p className="">{t("total")}</p>
         <p className="">
-          {offer.total_cost} {t("rs")}
+          {offer.total_cost} {t("sar")}
         </p>
       </div>
     </div>

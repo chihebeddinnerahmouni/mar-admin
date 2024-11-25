@@ -23,7 +23,7 @@ const Top: React.FC<TopProps> = ({ selected, setSelected, details }) => {
       <div className="right flex items-center gap-4">
         <button
           className="flex items-center gap-2 lg:hidden"
-          onClick={() => navigate("/bookings")}
+          onClick={() => navigate("/inquiries")}
         >
           {i18n.language === "ar" ? (
             <FaArrowRightLong
@@ -90,7 +90,7 @@ const Top: React.FC<TopProps> = ({ selected, setSelected, details }) => {
           onClick={() => setSelected("messages")}
         >
           <MdOutlineEmail className="text-[22px] lg:text-[25px]" />
-          <p className="text-[10px] lg:text-[12px]">{t("MESSAGES")}</p>
+          <p className="text-[10px] lg:text-[12px]">{t("messages")}</p>
         </button>
       </div>
     </div>

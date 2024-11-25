@@ -14,7 +14,7 @@ const Bookingdetails = ({ details }: any) => {
 
   return (
     <>
-      <div className="content w-full px-4 mt-[80px] md:w-[550px] lg:mt-[90px] xl:w-[650px] bg-creme pb-5 relative">
+      <div className="content w-full px-4 mt-[80px] bg-creme pb-5 relative md:w-[550px] lg:mt-[90px] xl:w-[650px]">
         <Offer offer={details[0].offer} />
         <BoatNameAndPic details={details[0]} />
         <Dates details={details[0]} />

@@ -131,11 +131,8 @@ const BookingItem = ({ item }: any) => {
   const navigate = useNavigate();
   const [depuis, setDepuis] = useState("");
   const url = import.meta.env.VITE_SERVER_URL_LISTING;
-//   const userId = Number(localStorage.getItem("userId"));
   const locale = i18n.language === "en" ? enUS : ar;
 
-  // console.log(item);
-  // console.log(userId);
 
   useEffect(() => {
     // to calculate the time difference
@@ -160,33 +157,34 @@ const BookingItem = ({ item }: any) => {
   }, []);
 
   const handleClick = () => {
-    navigate(`/bookings/${item.conversationId}`);
+    navigate(`/inquiries/${item.conversationId}`);
   };
 
   return (
     <div
-      className="w-full cursor-pointer rounded-[5px] overflow-hidden shadow-hardShadow hover:shadow-hoverShadow transition-all duration-100"
+      className="w-full cursor-pointer rounded-[5px] overflow-hidden shadow-hardShadow hover:shadow-hoverShadow transition-all duration-100 max-w-[400px] mx-auto"
       onClick={handleClick}
     >
       <img
         src={`${url}/${item.listingDetails.image}`}
-        // src={`/${item.listingDetails.image}`}
         className="w-full h-[180px] object-cover object-center"
         alt="boat"
       />
       {/* infos */}
       <div className="relative info flex flex-col py-2 px-2">
         <p className="text-sm font-semibold mx-auto text-writingMainDark">
-            {item.listingDetails.name}
+          {item.listingDetails.name}
         </p>
         <p className="inboxdate text-sm mt-5 text-writingMainDark">
           <span>
-            Client: {item.clientDetails.name} {item.clientDetails.surname}
+            {t("client")}: {item.clientDetails.name}{" "}
+            {item.clientDetails.surname}
           </span>
         </p>
         <div className="guestsState flex w-full justify-between mt-1">
           <p className="text-sm text-writingMainDark">
-            {t("captain")}: {item.boatOwnerDetails.name} {item.boatOwnerDetails.surname}
+            {t("captain")}: {item.boatOwnerDetails.name}{" "}
+            {item.boatOwnerDetails.surname}
           </p>
           {item.status === "pending" && (
             <p className={`text-sm text-orange-400`}>{t("pending")}</p>
@@ -215,7 +213,6 @@ const BookingItem = ({ item }: any) => {
           </p>
           <p className="text-sm text-writingGrey">{depuis}</p>
         </div>
-       
       </div>
     </div>
   );

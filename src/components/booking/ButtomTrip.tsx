@@ -9,8 +9,6 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import { MdOutlineStopCircle } from "react-icons/md";
-import { FaRegStar } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
 
 
 
@@ -47,10 +45,8 @@ export default ButtomTrip;
 const Options = ({ setSelected, details }: any) => {
 
   const { i18n, t } = useTranslation();
-  const isBoatOwner = localStorage.getItem("isBoatOwner") === "true";
   const url = import.meta.env.VITE_SERVER_URL_LISTING;
   const { inboxId } = useParams();
-  const navigate = useNavigate();
 
 
   // console.log(details);

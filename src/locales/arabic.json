@@ -127,6 +127,20 @@
   "answer_in_english": "الإجابة باللغة الإنجليزية",
   "answer_in_arabic": "الإجابة باللغة العربية",
 
+  "submissions_management": "إدارة التقديمات",
+  "submissions_management_description": "استكشاف وإدارة تقديمات المستخدمين مع رؤى مفصلة حول كل تقديم.",
+  "buis_type": "نوع العمل",
+  "boat_type": "نوع القارب",
+  "city": "المدينة",
+  "im_individual": "فرد",
+  "charter_borker": "وسيط تأجير",
+  "Company": "شركة",
+  "charter_rental_company": "شركة تأجير",
+  "accept_submission": "قبول التقديم",  
+ "accept": "قبول",
+  "refuse": "رفض",
+  "reason_for_refusing": "سبب الرفض",
+  "refuse_submission": "رفض التقديم",
 
 
   "a": "أ"

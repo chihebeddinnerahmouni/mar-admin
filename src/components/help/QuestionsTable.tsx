@@ -115,7 +115,7 @@ const TableOfQuestions = ({
                 className="hover:bg-gray-100 cursor-pointer"
                 onClick={() => handleRowClick(question.id)}
               >
-                <td className="border px-4 py-2 truncate max-w-xs">
+                <td className="px-4 py-2 truncate max-w-xs">
                   {question.question}
                 </td>
                 <td className="px-4 mt-2.5 flex space-x-2 justify-center">

@@ -1,13 +1,10 @@
 import React, { useState } from "react";
 import ReactModal from "react-modal";
-import {
-  TextField,
-  Button,
-  Box,
-  Typography,
-
-} from "@mui/material";
+import { TextField, Button, Box, Typography } from "@mui/material";
 import axios from "axios";
+import { useTranslation } from "react-i18next";
+import Swal from "sweetalert2";
+import LoadingButton from "../ui/LoadingButton";
 
 interface AddQstProps {
   setClose: (isOpen: boolean) => void;
@@ -17,32 +14,41 @@ ReactModal.setAppElement("#root");
 
 // const categoriesArray = ["All", "About", "Features", "Listings", "Regions", "Users"];
 
-const AddQuestionCat: React.FC<AddQstProps> = ({
-  setClose,
-}) => {
-    const [arName, setArName] = useState("");
-    const [enName, setEnName] = useState("");
+const AddQuestionCat: React.FC<AddQstProps> = ({ setClose }) => {
+  const [arName, setArName] = useState("");
+  const [enName, setEnName] = useState("");
+  const { t } = useTranslation();
   const mainColor = "#FF385C";
   const url = import.meta.env.VITE_SERVER_URL_HELP;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
+    if (!arName || !enName) return alert (t("please_fill_all_fields"));
     axios
-      .post(
-        `${url}/categories`,
-        {
-          name: enName,
-    arabic_name: arName,      
-}
-        
-      )
-      .then((response) => {
-        console.log(response);
+      .post(`${url}/categories`, {
+        name: enName,
+        arabic_name: arName,
+      })
+      .then(() => {
+        Swal.fire({
+          icon: "success",
+          title: t("greate"),
+        });
         window.location.reload();
       })
-      .catch((error) => {
-        console.log(error);
+      .catch((err) => {
+        if (err.message === "Network Error") {
+          Swal.fire({
+            icon: "error",
+            title: t("network_error"),
+            text: t("please_try_again"),
+            customClass: {
+              confirmButton: "custom-confirm-button",
+            },
+          }).then(() => {
+            window.location.reload();
+          });
+        }
       });
     setClose(false);
   };
@@ -59,12 +65,12 @@ const AddQuestionCat: React.FC<AddQstProps> = ({
       }
     >
       <Typography variant="h4" component="h2" gutterBottom>
-        Add Question Category
+        {t("add_category")}
       </Typography>
       <form onSubmit={handleSubmit}>
         <div className="mb-4 flex flex-col gap-2">
           <TextField
-            label="Category Name (Arabic)"
+            label={t("arabic_name")}
             variant="outlined"
             fullWidth
             value={arName}
@@ -90,7 +96,7 @@ const AddQuestionCat: React.FC<AddQstProps> = ({
             onChange={(e) => setArName(e.target.value)}
           />
           <TextField
-            label="Category Name (english)"
+            label={t("english_name")}
             variant="outlined"
             fullWidth
             value={enName}
@@ -115,8 +121,8 @@ const AddQuestionCat: React.FC<AddQstProps> = ({
             }}
             onChange={(e) => setEnName(e.target.value)}
           />
-              </div>
-              
+        </div>
+
         <Box display="flex" justifyContent="flex-end" gap={2}>
           <Button
             variant="outlined"
@@ -127,20 +133,19 @@ const AddQuestionCat: React.FC<AddQstProps> = ({
               borderColor: "#FF385C",
             }}
           >
-            Cancel
+            {t("cancel")}
           </Button>
           <Button
             variant="contained"
             sx={{ color: "white", backgroundColor: mainColor }}
             type="submit"
           >
-            Add
+            {t("save")}
           </Button>
         </Box>
       </form>
     </ReactModal>
   );
 };
-
 
 export default AddQuestionCat;

@@ -45,7 +45,7 @@ const headCells: readonly HeadCell[] = [
     disablePadding: false,
     label: "buis_type",
   },
-  { id: "boatType", numeric: false, disablePadding: false, label: "Boat type" },
+  { id: "boatType", numeric: false, disablePadding: false, label: "boat_type" },
   { id: "city", numeric: false, disablePadding: false, label: "city" },
 ];
 
@@ -58,6 +58,8 @@ function EnhancedTableHead(props: EnhancedTableProps) {
   const {
   } = props;
 
+  const { t } = useTranslation();
+
   return (
     <TableHead>
       <TableRow>
@@ -69,7 +71,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
             sx={{ fontWeight: "bold" }}
             className="text-nowrap"
           >
-            {headCell.label}
+            {t(headCell.label)}
           </TableCell>
         ))}
       </TableRow>
@@ -84,7 +86,7 @@ export default function EnhancedTable({rows}: any) {
 
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
   const [deleteModalUserId, setDeleteModalUserId] = React.useState<
     number | null
         >(0);
@@ -136,10 +138,9 @@ export default function EnhancedTable({rows}: any) {
                       align="center"
                       padding="normal"
                     >
-                      {user.business_type}
+                      {t(user.business_type)}
                     </TableCell>
                     <TableCell align="center" className="text-nowrap">
-                      {/* {user.boat_type} */}
                       {i18n.language === "en" ? user.boat_type.name : user.boat_type}
                     </TableCell>
                     <TableCell className="text-nowrap" align="center">

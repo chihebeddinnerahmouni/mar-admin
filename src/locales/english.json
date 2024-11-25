@@ -130,6 +130,21 @@
   "answer_in_english": "Answer in english",
   "answer_in_arabic": "Answer in arabic",
 
+  "submissions_management": "Submissions Management",
+  "submissions_management_description": "Explore and manage Users Submissions with detailed insights into each Submission.",
+ "buis_type": "Business Type",
+ "boat_type": "Boat Type",
+ "city": "City",
+ "im_individual": "Individual",
+ "charter_borker": "Charter Broker",
+ "Company": "Company",
+ "charter_rental_company": "Charter Rental Company",
+ "accept_submission": "Accept Submission",  
+ "accept": "Accept",
+ "refuse": "Refuse",
+ "reason_for_refusing": "Reason for Refusing",
+ "refuse_submission": "Refuse Submission",
+
 
 
 

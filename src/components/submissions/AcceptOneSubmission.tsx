@@ -4,6 +4,8 @@ import CheckIcon from "@mui/icons-material/Check";
 import { useState } from "react";
 import axios from "axios";
 import LoadingButton from "../ui/LoadingButton";
+import Swal from "sweetalert2";
+import { useTranslation } from "react-i18next";
 
 
 
@@ -21,7 +23,7 @@ const AcceptOneSubmission: React.FC<DeleteModalProps> = ({
 
   const [loading, setLoading] = useState(false);
   const url = import.meta.env.VITE_SERVER_URL_LISTING;
-  console.log(user.id);
+  const { t } = useTranslation();
 
   const submit = () => { 
     setLoading(true);
@@ -34,15 +36,28 @@ const AcceptOneSubmission: React.FC<DeleteModalProps> = ({
             Authorization: `Bearer ${localStorage.getItem("jwt")}`,
           },
         })
-      .then((res) => {
-        console.log(res.data);
+      .then(() => {
+        Swal.fire({
+          icon: "success",
+          title: t("greate"),
+          showConfirmButton: false,
+        });
         setLoading(false);
-        setClose(0);
         window.location.reload();
       })
       .catch((err) => {
-        console.log(err);
-        setLoading(false);
+        if (err.message === "Network Error") {
+          Swal.fire({
+            icon: "error",
+            title: t("network_error"),
+            text: t("please_try_again"),
+            customClass: {
+              confirmButton: "custom-confirm-button",
+            },
+          }).then(() => {
+            window.location.reload();
+          });
+        }
       });
   }
 
@@ -51,17 +66,17 @@ const AcceptOneSubmission: React.FC<DeleteModalProps> = ({
     <ReactModal
       isOpen={true}
       onRequestClose={() => setClose(0)}
-      className={" bg-white rounded-lg p-4 shadow-hardShadow lg:p-6"}
+      className={" bg-white rounded-lg p-4 shadow-hardShadow w-full max-w-[400px] lg:p-6"}
       overlayClassName={
-        "fixed bg-black bg-opacity-10 backdrop-blur-[7px] inset-0 flex items-center justify-center mt-[60px] lg:mt-[80px]"
+        "fixed bg-black bg-opacity-10 backdrop-blur-[7px] inset-0 flex items-center justify-center p-4  mt-[60px] lg:mt-[80px]"
       }
     >
       <h1 className="text-2xl font-bold text-center mb-5 lg:text-3xl">
-        Accept Submission
+        {t("accept_submission")}
       </h1>
       <p className="text-gray-500 text-center lg:text-lg">
-        Do you want to <strong className="text-green-400">accept</strong> this
-        submission?
+        {t("are_you_sure_you_want_to")}{" "}
+        <strong className="text-green-400">{t("accept")}</strong> ?
       </p>
 
       <div className="buttons flex w-full mt-4 gap-2">
@@ -72,7 +87,7 @@ const AcceptOneSubmission: React.FC<DeleteModalProps> = ({
             setClose(0);
           }}
         >
-          Cancel
+          {t("cancel")}
         </button>
         <button
           className="w-full bg-green-500 text-white px-4 py-2 rounded-lg flex items-center justify-center gap-1"
@@ -82,7 +97,7 @@ const AcceptOneSubmission: React.FC<DeleteModalProps> = ({
             <LoadingButton />
           ) : (
             <>
-              <span>Accept</span>
+                <span>{t("accept")}</span>
               <CheckIcon />
             </>
           )}

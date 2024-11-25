@@ -2,6 +2,8 @@ import SubmissionsTable from "../components/submissions/SubmissionsTable";
 import LoadingLine from "../components/ui/LoadingLine";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import Swal from "sweetalert2";
 
 
 const Submissions = () => {
@@ -9,6 +11,7 @@ const Submissions = () => {
   const [submittions, setSubmittions] = useState<any[]>([]);  
   const [loading, setLoading] = useState(true);
   const url = import.meta.env.VITE_SERVER_URL_LISTING;
+  const { t } = useTranslation();
 
 
 
@@ -20,12 +23,22 @@ const Submissions = () => {
         },
       })
       .then((response) => {
-        console.log(response.data);
         setSubmittions(response.data);
         setLoading(false);
       })
-      .catch((error) => {
-        console.log(error);
+      .catch((err) => {
+        if (err.message === "Network Error") {
+          Swal.fire({
+            icon: "error",
+            title: t("network_error"),
+            text: t("please_try_again"),
+            customClass: {
+              confirmButton: "custom-confirm-button",
+            },
+          }).then(() => {
+            window.location.reload();
+          });
+        }
         setLoading(false);
       });
   }, []);
@@ -42,13 +55,11 @@ const Submissions = () => {
   return (
     <div className="p-4 md:p-8 lg:max-w-[1000px] mx-auto px-4 md:px-[40px] lg:px-[100px]">
       <h1 className="text-3xl md:text-4xl font-extrabold mb-4 text">
-        Submittions Management
+        {t("submissions_management")}
       </h1>
       <p className="text-sm md:text-base text-gray-600 mb-8">
-        Explore and manage Users Submissions with detailed insights into each
-        Submission.
+        {t("submissions_management_description")} 
       </p>
-
       <SubmissionsTable rows={submittions} />
     </div>
   );

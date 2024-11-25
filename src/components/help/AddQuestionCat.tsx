@@ -17,13 +17,16 @@ ReactModal.setAppElement("#root");
 const AddQuestionCat: React.FC<AddQstProps> = ({ setClose }) => {
   const [arName, setArName] = useState("");
   const [enName, setEnName] = useState("");
+  const [loading, setLoading] = useState(false);
   const { t } = useTranslation();
   const mainColor = "#FF385C";
   const url = import.meta.env.VITE_SERVER_URL_HELP;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!arName || !enName) return alert (t("please_fill_all_fields"));
+    if (!arName || !enName) return alert(t("please_fill_all_fields"));
+    
+    setLoading(true);
     axios
       .post(`${url}/categories`, {
         name: enName,
@@ -37,6 +40,7 @@ const AddQuestionCat: React.FC<AddQstProps> = ({ setClose }) => {
         window.location.reload();
       })
       .catch((err) => {
+        setLoading(false);
         if (err.message === "Network Error") {
           Swal.fire({
             icon: "error",
@@ -140,7 +144,7 @@ const AddQuestionCat: React.FC<AddQstProps> = ({ setClose }) => {
             sx={{ color: "white", backgroundColor: mainColor }}
             type="submit"
           >
-            {t("save")}
+            {loading ? <LoadingButton /> : t("save")}
           </Button>
         </Box>
       </form>

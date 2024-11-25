@@ -29,7 +29,6 @@ interface Data {
     
 }
 
-type Order = "asc" | "desc";
 
 interface HeadCell {
   disablePadding: boolean;

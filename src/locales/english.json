@@ -145,6 +145,15 @@
  "reason_for_refusing": "Reason for Refusing",
  "refuse_submission": "Refuse Submission",
 
+ "Documents_management": "Documents Management",
+  "Documents_management_description": "Explore and manage Users Documents with detailed insights into each Document.",
+  "documents_for": "Documents for",
+  "this_is_what": "This is what",
+  "uploaded_as_documents_you_view_the_documents_below": "Uploaded as documents you view the documents below.",
+  "view": "View",
+  "document": "Document",
+  "pdf_documents": "PDF Documents",
+
 
 
 

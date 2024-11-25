@@ -11,6 +11,8 @@ ReactModal.setAppElement("#root");
 const DeleteSelected: React.FC<DeleteModalProps> = ({ setClose, selected }) => {
   // console.log(selected);
 
+  // not used
+
   return (
     <ReactModal
       isOpen={true}

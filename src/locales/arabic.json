@@ -142,6 +142,15 @@
   "reason_for_refusing": "سبب الرفض",
   "refuse_submission": "رفض التقديم",
 
+   "Documents_management": "إدارة المستندات",
+  "Documents_management_description": "استكشاف وإدارة مستندات المستخدمين مع رؤى مفصلة حول كل مستند.",
+  "documents_for": "مستندات لـ",
+  "this_is_what": "هذا ما",
+  "uploaded_as_documents_you_view_the_documents_below": "تم تحميله كمستندات يمكنك عرض المستندات أدناه.",
+  "view": "عرض",
+  "document": "المستند",
+  "pdf_documents": "مستندات PDF",
+
 
   "a": "أ"
 }

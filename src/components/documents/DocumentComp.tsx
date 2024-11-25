@@ -6,6 +6,7 @@ import {
   CardActions,
 } from "@mui/material";
 import { FaDownload } from "react-icons/fa6";
+import { useTranslation } from "react-i18next";
 
 const DocumentComp = ({ document }: any) => {
 
@@ -13,6 +14,7 @@ const DocumentComp = ({ document }: any) => {
   // console.log(document);
   const mainColor = "#FF385C";
   const url = import.meta.env.VITE_SERVER_URL_LISTING;
+  const { t } = useTranslation();
 
   if (!document || !document.document_path) {
     return <div>Document path is not available</div>;
@@ -27,10 +29,10 @@ const DocumentComp = ({ document }: any) => {
           {document.document_type}
         </Typography>
         {isPdf ? (
-          <p className="mt-1">PDF Document</p>
+          <p className="mt-1">{t("pdf_documents")}</p>
         ) : (
           <Typography variant="body2" color="textSecondary">
-            Image
+            {t("image")}
           </Typography>
         )}
       </CardContent>
@@ -41,7 +43,7 @@ const DocumentComp = ({ document }: any) => {
           target="_blank"
           sx={{ color: mainColor }}
         >
-          View {isPdf ? "Document" : "Image"}
+          {t("view")} {isPdf ? t("document") : t("image")}
         </Button>
         <Button
           size="small"

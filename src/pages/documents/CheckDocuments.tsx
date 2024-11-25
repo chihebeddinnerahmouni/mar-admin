@@ -29,8 +29,8 @@ const CheckDocuments = () => {
       }
     })
       .then((res) => {
+        // console.log(res.data);
       setDocs(res.data);
-      // console.log(res.data);
       setLoading(false);
       })
       .catch((err) => {
@@ -48,7 +48,7 @@ const CheckDocuments = () => {
            });
         }
         if (err.response.data.message === "No documents found for this user")
-          Swal.fire({
+          return Swal.fire({
             title: "No documents found",
             text: "This user has not uploaded any documents yet",
             customClass: {
@@ -78,11 +78,8 @@ const CheckDocuments = () => {
         // console.log(res.data);
         Swal.fire({
           icon: "success",
-          title: "Accepted",
-          text: "The documents have been accepted",
-          customClass: {
-            confirmButton: "custom-confirm-button",
-          },
+          title: t("greate"),
+          showConfirmButton: false,
         })
         setButtonLoading(false);
       })
@@ -117,11 +114,10 @@ const CheckDocuments = () => {
   return (
     <div className="p-4 md:p-8 lg:max-w-[1000px] mx-auto px-4 md:px-[40px]">
       <h1 className="text-3xl md:text-4xl font-extrabold mb-4 text">
-        Documents for {docs.name}
+        {t("documents_for")} {docs.name}
       </h1>
       <p className="text-sm md:text-base text-gray-600 mb-8">
-        This is what Chiheb uploaded as documents, you can view the documents
-        below.
+        {t("this_is_what")} {t("uploaded_as_documents_you_view_the_documents_below")}
       </p>
 
       <div className="buttons bg-creme h-[60px] flex justify-end items-center gap-4 mb-8 sticky top-[60px] lg:top-[80px] z-10">
@@ -129,10 +125,10 @@ const CheckDocuments = () => {
           className="bg-green-500 text-white w-[80px] h-10 rounded hover:bg-green-600"
           onClick={accept}
         >
-          {buttonLoading ? <LoadingButton /> : "Accept"}
+          {buttonLoading ? <LoadingButton /> : t("accept")}
         </button>
         <button className="bg-main text-white w-[80px] h-10 rounded hover:bg-mainHover">
-          Refuse
+          {t("refuse")}
         </button>
       </div>
 

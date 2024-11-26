@@ -25,7 +25,6 @@ interface Data {
   name: string;
   phone: string;
     email: string;
-    documents: number
     
 }
 
@@ -47,7 +46,6 @@ const headCells: readonly HeadCell[] = [
   { id: "name", numeric: false, disablePadding: false, label: "name" },
   { id: "phone", numeric: false, disablePadding: false, label: "phone" },
   { id: "email", numeric: false, disablePadding: false, label: "email" },
-  { id: "documents", numeric: false, disablePadding: false, label: "documents" },
 ];
 
 
@@ -129,6 +127,7 @@ export default function EnhancedTable({ rows }: any) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [searchQuery, setSearchQuery] = React.useState("");
+  const url = import.meta.env.VITE_SERVER_URL_USERS;
 
   const filteredRows = rows.filter((row: any) =>
     row.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -186,9 +185,9 @@ export default function EnhancedTable({ rows }: any) {
                       sx={{ display: "flex", justifyContent: "center" }}
                     >
                       <img
-                        src={user.image}
+                        src={url + "/" + user.profilePicture}
                         alt={`${user.name}'s profile`}
-                        className="w-[40px] h-[40px] rounded-full"
+                        className="w-[40px] h-[40px] rounded-full object-cover object-center"
                       />
                     </TableCell>
                     <TableCell
@@ -196,14 +195,14 @@ export default function EnhancedTable({ rows }: any) {
                       align="center"
                       padding="normal"
                     >
-                      {user.name}
+                      {user.name + " " + user.surname}
                     </TableCell>
                     <TableCell
                       align="center"
                       padding="normal"
                       className="text-nowrap"
                     >
-                      {user.phone}
+                      {user.phoneNumber}
                     </TableCell>
                     <TableCell
                       align="center"
@@ -212,13 +211,13 @@ export default function EnhancedTable({ rows }: any) {
                     >
                       {user.email}
                     </TableCell>
-                    <TableCell
+                    {/* <TableCell
                       padding="normal"
                       className="text-nowrap"
                       align="center"
                     >
                       {user.documents.length}
-                    </TableCell>
+                    </TableCell> */}
                     <TableCell align="right">
                       <Box
                         sx={{

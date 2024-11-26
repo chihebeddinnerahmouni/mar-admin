@@ -35,7 +35,7 @@ const CheckListing = () => {
    axios
      .get(`${url}/api/listing/listings/${listingId}`)
      .then((res) => {
-       console.log(res.data);
+      //  console.log(res.data);
        if (res.data.validated === true) {
         return  Swal.fire("error", "listing_already_accepted", "error").then(() => {
             navigate("/listings");
@@ -45,7 +45,7 @@ const CheckListing = () => {
        setLoading(false);
      })
      .catch((err) => {
-       console.log(err);
+      //  console.log(err);
        if (err.status === 404) {
          Swal.fire("error", "theres_no_boat_match_this_id", "error").then(
            () => {
@@ -94,6 +94,7 @@ const CheckListing = () => {
         })
       })
       .catch((err) => {
+        console.log(err);
         if (err.message === "Network Error") {
           Swal.fire({
             icon: "error",

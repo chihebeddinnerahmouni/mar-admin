@@ -21,6 +21,7 @@ const ShipDetails = ({ ship }: any) => {
 
   // Delete, Block and Update functions
   const handleDelete = (e: React.MouseEvent) => {
+    // console.log(ship.id);
     e.stopPropagation();
     Swal.fire({
       title: t("are_you_sure"),
@@ -36,17 +37,21 @@ const ShipDetails = ({ ship }: any) => {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .delete(`${url}/api/listing/listings/${ship.id}`, {
+          .delete(`${url}api/listing/listings/${ship.id}`, {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("jwt")}`,
             },
           })
           .then(() => {
+            Swal.fire({
+              title: t("greate"),
+              showConfirmButton: false,
+            });
             window.location.reload();
           })
           .catch((err) => {
             if (err.message === "Network Error") {
-              Swal.fire({
+              return Swal.fire({
                 icon: "error",
                 title: t("network_error"),
                 text: t("please_try_again"),
@@ -57,7 +62,14 @@ const ShipDetails = ({ ship }: any) => {
                 window.location.reload();
               });
             }
-            Swal.fire("Error!", err.response.data.message, "error");
+            Swal.fire({
+              icon: "error",
+              title: t("error"),
+              text: err.response.data.message,
+              customClass: {
+                confirmButton: "custom-confirm-button",
+              },
+            });
           });
       }
     });

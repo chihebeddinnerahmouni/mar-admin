@@ -18,17 +18,19 @@ const MakeListings = () => {
 
   useEffect(() => {
     axios
-      .get(url + "/api/listinglistings/unvalidated", {
+      .get(url + "/api/listing/listings/unvalidated/get", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("jwt")}`,
         },
       })
       .then((res) => {
-        setRequests(res.data);
+        // console.log(res.data);
+        setRequests(res.data.listings);
         console.log(res.data);
         setLoading(false);
       })
       .catch((err) => {
+        // console.log(err.response.data);
         if (err.message === "Network Error") {
           Swal.fire({
             icon: "error",

@@ -12,7 +12,9 @@ import DeleteModal from "./DeleteUserModal";
 import AddUserModal from "./AddUserModal";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import BlockIcon from "@mui/icons-material/Block";
-import EditIcon from "@mui/icons-material/Edit";import {
+import EditIcon from "@mui/icons-material/Edit";
+import PaidIcon from "@mui/icons-material/Paid";
+import {
   TablePagination,
   Box,
   Paper,
@@ -312,6 +314,14 @@ export default function EnhancedTable({ users }: any) {
                           alignItems: "center",
                         }}
                       >
+                        <IconButton
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            window.open(`/users/transactions/${user.id}`, "_blank");
+                          }}
+                        >
+                          <PaidIcon className="text-yellow-400 hover:text-yellow-500" />
+                        </IconButton>
                         <IconButton
                           onClick={(event) => {
                             event.stopPropagation();

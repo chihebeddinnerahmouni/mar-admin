@@ -3,7 +3,7 @@ import "./index.css";
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import MainPage from "./pages/MainPage.tsx";
-import Users from "./pages/Users.tsx";
+import Users from "./pages/users/Users.tsx";
 import Regions from "./pages/Regions.tsx";
 import english from "./locales/english.json";
 import arabic from "./locales/arabic.json";
@@ -25,7 +25,8 @@ import ForgetPassword from "./components/auth/ForgetPassword.tsx";
 import CheckListing from "./pages/make listing/CheckListing.tsx";
 import Bookings from "./pages/Bookings.tsx";
 import NoPage from "./pages/NoPage.tsx";
-import AccountUser from "./pages/AccountUser.tsx";
+import AccountUser from "./pages/users/AccountUser.tsx";
+import TransactionsUser from "./pages/users/TransactionsUser.tsx";
 
 
 
@@ -37,6 +38,8 @@ const router = createBrowserRouter([
       { path: "/", element: <MainPage /> },
       { path: "/categories", element: <Categories /> },
       { path: "/users", element: <Users /> },
+      { path: "/users/user/:userId", element: <AccountUser /> },
+      { path: "/users/transactions/:userId", element: <TransactionsUser /> },
       { path: "/features", element: <Features /> },
       { path: "/boats", element: <Boats /> },
       { path: "/boats/update-boat/:boatId", element: <UpdateBoat /> },
@@ -52,7 +55,6 @@ const router = createBrowserRouter([
       { path: "listings/check-details/:listingId", element: <CheckListing /> },
       { path: "inquiries", element: <Bookings /> },
       { path: "inquiries/:bookingId", element: <Bookings /> },
-      { path: "/users/user/:userId", element: <AccountUser /> },
     ],
   },
   {

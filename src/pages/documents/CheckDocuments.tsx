@@ -3,7 +3,7 @@ import LoadingLine from "../../components/ui/LoadingLine";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import LoadingButton from "../../components/ui/LoadingButton";
+// import LoadingButton from "../../components/ui/LoadingButton";
 import Swal from "sweetalert2";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
@@ -15,7 +15,7 @@ const CheckDocuments = () => {
 
   const [docs, setDocs] = useState<any>({});
   const [loading, setLoading] = useState(true);
-  const [buttonLoading, setButtonLoading] = useState(false);
+  // const [buttonLoading, setButtonLoading] = useState(false);
   const url = import.meta.env.VITE_SERVER_URL_LISTING;
   const { userId } = useParams<{ userId: string }>();
   const { t } = useTranslation();
@@ -61,43 +61,44 @@ const CheckDocuments = () => {
   }, []);
 
 
-  const accept = () => { 
-    if (buttonLoading) return;
-    setButtonLoading(true);
-    axios
-      .put(
-        `${url}/api/submit/user-submissions/${userId}/accept/document`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-          },
-        }
-      )
-      .then(() => {
-        // console.log(res.data);
-        Swal.fire({
-          icon: "success",
-          title: t("greate"),
-          showConfirmButton: false,
-        })
-        setButtonLoading(false);
-      })
-      .catch((err) => {
-        if (err.message === "Network Error") {
-          Swal.fire({
-            icon: "error",
-            title: t("network_error"),
-            text: t("please_try_again"),
-            customClass: {
-              confirmButton: "custom-confirm-button",
-            },
-          }).then(() => {
-            window.location.reload();
-          });
-        }
-      });
-  }
+  // const accept = () => { 
+  //   if (buttonLoading) return;
+  //   setButtonLoading(true);
+  //   axios
+  //     .put(
+  //       `${url}/api/submit/user-submissions/${userId}/accept/document`,
+  //       {},
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+  //         },
+  //       }
+  //     )
+  //     .then(() => {
+  //       // console.log(res.data);
+  //       Swal.fire({
+  //         icon: "success",
+  //         title: t("greate"),
+  //         showConfirmButton: false,
+  //       })
+  //       setButtonLoading(false);
+  //     })
+  //     .catch((err) => {
+  //       // console.log(err);
+  //       if (err.message === "Network Error") {
+  //         Swal.fire({
+  //           icon: "error",
+  //           title: t("network_error"),
+  //           text: t("please_try_again"),
+  //           customClass: {
+  //             confirmButton: "custom-confirm-button",
+  //           },
+  //         }).then(() => {
+  //           window.location.reload();
+  //         });
+  //       }
+  //     });
+  // }
 
 
 
@@ -120,7 +121,7 @@ const CheckDocuments = () => {
         {t("this_is_what")} {t("uploaded_as_documents_you_view_the_documents_below")}
       </p>
 
-      <div className="buttons bg-creme h-[60px] flex justify-end items-center gap-4 mb-8 sticky top-[60px] lg:top-[80px] z-10">
+      {/* <div className="buttons bg-creme h-[60px] flex justify-end items-center gap-4 mb-8 sticky top-[60px] lg:top-[80px] z-10">
         <button
           className="bg-green-500 text-white w-[80px] h-10 rounded hover:bg-green-600"
           onClick={accept}
@@ -130,7 +131,7 @@ const CheckDocuments = () => {
         <button className="bg-main text-white w-[80px] h-10 rounded hover:bg-mainHover">
           {t("refuse")}
         </button>
-      </div>
+      </div> */}
 
       <div className="docs flex flex-col gap-5 pb-20">
         {docs.map((document: any, index: number) => (

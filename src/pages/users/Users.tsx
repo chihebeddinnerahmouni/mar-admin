@@ -1,12 +1,13 @@
-import TableUsers from '../components/users/TableUsers';
-import UserStat from '../components/users/UsersStat';
+import TableUsers from '../../components/users/TableUsers';
+import UserStat from '../../components/users/UsersStat';
 import { FaUsers } from "react-icons/fa";
 import { GiCaptainHatProfile } from "react-icons/gi";
 import { FaUser } from "react-icons/fa";
 import axios from "axios";
 import { useState, useEffect } from 'react';
-import LoadingLine from '../components/ui/LoadingLine';
+import LoadingLine from '../../components/ui/LoadingLine';
 import { useTranslation } from 'react-i18next';
+import Swal from 'sweetalert2'; 
 
 
 
@@ -21,11 +22,28 @@ const Users = () => {
 
   useEffect(() => {
     axios.get(url + "/admin/user/users?block=false&suspend=false")
+    // axios
+    //   .get(url + "/admin/user/users?block=false&suspend=true")
       .then((res) => {
-      // console.log(res.data);
+        // console.log(res.data);
         setLoading(false);
         setUsers(res.data);
-    });
+      })
+      .catch((err) => {
+        // setLoading(false);
+        if (err.message === "Network Error") {
+          Swal.fire({
+            icon: "error",
+            title: t("network_error"),
+            text: t("please_try_again"),
+            customClass: {
+              confirmButton: "custom-confirm-button",
+            },
+          }).then(() => {
+            window.location.reload();
+          });
+        }
+      });
   }, []);
   
 

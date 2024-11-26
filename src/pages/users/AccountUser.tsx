@@ -1,16 +1,16 @@
-import ProfilePic from "../components/user account/ProfilePic";
-import Names from "../components/user account/Names";
-import Email from "../components/user account/Email";
-import Password from "../components/user account/Password";
-import Phone from "../components/user account/Phone";
+import ProfilePic from "../../components/user account/ProfilePic";
+import Names from "../../components/user account/Names";
+import Email from "../../components/user account/Email";
+import Password from "../../components/user account/Password";
+import Phone from "../../components/user account/Phone";
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import LoadingLine from "../components/ui/LoadingLine";
+import LoadingLine from "../../components/ui/LoadingLine";
 import Swal from "sweetalert2";
 // import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
-import LoadingButton from "../components/ui/LoadingButton";
+import LoadingButton from "../../components/ui/LoadingButton";
 
 const AccountUser = () => {
   const { t } = useTranslation();
@@ -72,7 +72,7 @@ const AccountUser = () => {
 
     axios
       .put(
-        `${url}/api/user/profile`,
+        `${url}/admin/user/profile/${userId}`,
         {
           name: firstName,
           surname: lastName,
@@ -94,6 +94,7 @@ const AccountUser = () => {
           showConfirmButton: false,
           timer: 3000,
         });
+        window.location.reload();
       })
       .catch((err) => {
         if (err.message === "Network Error") {
@@ -121,7 +122,7 @@ const AccountUser = () => {
   return (
     <div className="w-full px-4 flex justify-center">
       <div className="content w-full mt-[40px] flex flex-col gap-4 pb-10 md:gap-6 md:w-[450px] lg:w-[550px] lg:mt-[170px]">
-        <ProfilePic profilePic={profilePic} setProfilePic={setProfilePic} />
+        <ProfilePic profilePic={profilePic} />
         <Names
           firstName={firstName}
           lastName={lastName}

@@ -206,6 +206,17 @@
   "cancel_inquiry": "Cancel Inquiry",
   "end_of_service": "End of Service",
 
+  "transactions": "Transactions",
+  "amount": "Amount",
+"released_balance": "Released Balance",
+"unreleased_balance": "Unreleased Balance",
+"transaction_type": "Transaction Type",
+"payment": "Payment",
+"payout": "Payout",
+"no_transactions_yet": "No transactions yet",
+"no_transactions": "No Transactions",
+
+
 
 
 

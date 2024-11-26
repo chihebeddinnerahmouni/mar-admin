@@ -202,5 +202,22 @@
   "cancel_inquiry": "إلغاء الاستفسار",
   "end_of_service": "نهاية الخدمة",
 
+  "transactions": "المعاملات",
+  "amount": "المبلغ",
+  "released_balance": "الرصيد المفرج عنه",
+  "unreleased_balance": "الرصيد غير المفرج عنه",
+  "transaction_type": "نوع المعاملة",
+ "payment": "دفع",
+"payout": "استلام",
+"no_transactions_yet": "لا توجد معاملات بعد",
+"no_transactions": "لا توجد معاملات",
+
+
+
+
+
+
+
+
   "a": "أ"
 }

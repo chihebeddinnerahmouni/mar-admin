@@ -22,28 +22,42 @@ const DeleteModal: React.FC<DeleteModalProps> = ({ setClose, user }) => {
   const [loading, setLoading] = React.useState(false);
   const { t } = useTranslation();
 
+  // console.log(user);
+
   const block = async (e: any) => {
     e.stopPropagation();
     setLoading(true);
-    axios.delete(url + "/" + "/admin/user/users?block=true&suspend=false")
-    .then((res) => {
-      console.log(res.data);
-      // setClose(0);
-    })
-    .catch((err) => {
-    if (err.message === "Network Error") {
-      Swal.fire({
-        icon: "error",
-        title: t("network_error"),
-        text: t("please_try_again"),
-        customClass: {
-          confirmButton: "custom-confirm-button",
-        },
-      }).then(() => {
+    // axios.delete(url  + "/admin/user/users?block=true&suspend=false")
+    axios
+      .post(url + `/admin/user/block/${user.id}`, {
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("jwt"),
+        }
+      })
+      .then(() => {
+        Swal.fire({
+          icon: "success",
+          title: t("greate"),
+          showConfirmButton: false,
+        });
         window.location.reload();
+      })
+      .catch((err) => {
+        console.log(err);
+        setLoading(false);
+        if (err.message === "Network Error") {
+          Swal.fire({
+            icon: "error",
+            title: t("network_error"),
+            text: t("please_try_again"),
+            customClass: {
+              confirmButton: "custom-confirm-button",
+            },
+          }).then(() => {
+            window.location.reload();
+          });
+        }
       });
-    }
-    })
 
    }
 
@@ -81,6 +95,7 @@ const DeleteModal: React.FC<DeleteModalProps> = ({ setClose, user }) => {
           <button
             className="w-full bg-red-500 text-white px-4 py-2 rounded-lg"
             onClick={block}
+            disabled={loading}
           >
            {loading ? <LoadingButton /> : t("block")}
           </button>

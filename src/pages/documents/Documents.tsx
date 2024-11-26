@@ -16,21 +16,24 @@ const Documents = () => {
 
   useEffect(() => { 
     axios
-      //       {{ListingService}}/api/submit/user-submissions?status=pending
-      // params status = {Pending, Accepted, refused}
-      .get(`${url}/api/submit/users/pending-documents`,
-        {
+      // .get(`${url}/api/submit/users/pending-documents`,
+      .get(`${url}/api/submit/submissions-with-pending-documents`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("jwt")}`,
         },
       })
       .then((response) => {
-        // console.log(response.data);
-        setRequests(response.data.users);
+        console.log(response.data.data[0]);
+        setRequests(response.data.data);
         setLoading(false);
       })
       .catch((err) => {
-        if (err.message === "Network Error") {
+        if (
+          err.response.data.message === "No users with pending documents found"
+        ) {
+          setLoading(false);
+          setRequests([]);
+        } else if (err.message === "Network Error") {
           Swal.fire({
             icon: "error",
             title: t("network_error"),
@@ -69,90 +72,3 @@ const Documents = () => {
 
 export default Documents
 
-
-// const requests = [
-//   {
-//     id: 1,
-//     name: "kiheb rahmouni",
-//     image: "https://",
-//     email: "chihebrahmouni30@gmail.com",
-//     phone: "0773781669",
-//     documents: [
-//       {
-//         title: "lience",
-//         document: "https://",
-//       },
-//       {
-//         title: "carte grise",
-//         document: "https://",
-//       },
-//       {
-//         title: "carte w say",
-//         document: "https://",
-//       },
-//     ],
-//   },
-//   {
-//     id: 2,
-//     name: "chiheb rahmouni",
-//     image: "https://",
-//     email: "chihebrahmouni30@gmail.com",
-//     phone: "0773781669",
-//     documents: [
-//       {
-//         title: "lience",
-//         document: "https://",
-//       },
-//       {
-//         title: "carte grise",
-//         document: "https://",
-//       },
-//       {
-//         title: "carte w say",
-//         document: "https://",
-//       },
-//     ],
-//   },
-//   {
-//     id: 3,
-//     name: "chiheb rahmouni",
-//     image: "https://",
-//     email: "chihebrahmouni30@gmail.com",
-//     phone: "0773781669",
-//     documents: [
-//       {
-//         title: "lience",
-//         document: "https://",
-//       },
-//       {
-//         title: "carte grise",
-//         document: "https://",
-//       },
-//       {
-//         title: "carte w say",
-//         document: "https://",
-//       },
-//     ],
-//   },
-//   {
-//     id: 4,
-//     name: "chiheb rahmouni",
-//     image: "https://",
-//     email: "chihebrahmouni30@gmail.com",
-//     phone: "0773781669",
-//     documents: [
-//       {
-//         title: "lience",
-//         document: "https://",
-//       },
-//       {
-//         title: "carte grise",
-//         document: "https://",
-//       },
-//       {
-//         title: "carte w say",
-//         document: "https://",
-//       },
-//     ],
-//   },
-// ];

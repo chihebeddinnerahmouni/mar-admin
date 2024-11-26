@@ -94,9 +94,64 @@ const BoatsCont = () => {
       </div>
     );
 
+  
+  const search_by_boat_name = () => {
+    console.log("boat");
+    if (boatSearch === "") return 
+    setLoading(true);
+    // /api/listing/listings/search?boatName=Ocean&ownerName=sssss&page=2&limit=5
+    axios.get(`${url}/api/listing/listings?boatName=${boatSearch}`)
+      .then((response) => {
+      console.log(response.data);
+      setShipsArray(response.data.listings);
+      setTotalPages(response.data.pagination.totalPages);
+      setLoading(false);
+    })
+      .catch((error) => {
+      console.log(error);
+      setLoading(false);
+      if (error.message === "Error") {
+        Swal.fire({
+          icon: "error",
+          title: t("network_error"),
+          text: t("please_try_again"),
+          customClass: {
+            confirmButton: "custom-confirm-button",
+          },
+        }).then(() => {
+          window.location.reload();
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: t("please_try_again"),
+          customClass: {
+            confirmButton: "custom-confirm-button",
+          },
+        });
+      }
+    });
+  }
+
+
+  const search_by_owner_name = () => {
+// console.log("owner");
+  }
+  
+  
+  
+  
   return (
     <>
-      <SearchBarsCont boatSearch={boatSearch} ownerSearch={ownerSearch} setBoatSearch={setBoatSearch} setOwnerSearch={setOwnerSearch} />
+      <SearchBarsCont
+        boatSearch={boatSearch}
+        ownerSearch={ownerSearch}
+        setBoatSearch={setBoatSearch}
+        setOwnerSearch={setOwnerSearch}
+        search_by_owner_name={search_by_owner_name}
+        search_by_boat_name={search_by_boat_name}
+      />
       <div className="w-full mt-[65px] flex justify-center items-center">
         <div className="w-full grid grid-cols-1 justify-items-center gap-y-16 md:grid-cols-2 md:gap-x-4 lg:grid-cols-3 xl:grid-cols-4 lg:gap-y-16 lg:gap-x-4 2xl:grid-cols-4">
           {shipsArray.map((ship: any, index: number) => (

@@ -33,8 +33,10 @@ const DocumentComp = ({ document }: any) => {
    setButtonLoading(true);
    axios
      .put(
-       `${url}/api/submit/user-submissions/${document.id}/accept/document`,
-       {},
+       `${url}/api/submit/documents/${document.id}/status`,
+       {
+         status: "approved",
+       },
        {
          headers: {
            Authorization: `Bearer ${localStorage.getItem("jwt")}`,
@@ -42,7 +44,7 @@ const DocumentComp = ({ document }: any) => {
        }
      )
      .then(() => {
-      //  console.log(res.data);
+       //  console.log(res.data);
        Swal.fire({
          icon: "success",
          title: t("greate"),
@@ -51,7 +53,50 @@ const DocumentComp = ({ document }: any) => {
        setButtonLoading(false);
      })
      .catch((err) => {
-      //  console.log(err);
+       //  console.log(err);
+       if (err.message === "Network Error") {
+         Swal.fire({
+           icon: "error",
+           title: t("network_error"),
+           text: t("please_try_again"),
+           customClass: {
+             confirmButton: "custom-confirm-button",
+           },
+         }).then(() => {
+           window.location.reload();
+         });
+       }
+     });
+  };
+  
+
+
+ const refuse = () => {
+   if (buttonLoading) return;
+   setButtonLoading(true);
+   axios
+     .put(
+       `${url}/api/submit/documents/${document.id}/status`,
+       {
+         status: "refused",
+       },
+       {
+         headers: {
+           Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+         },
+       }
+     )
+     .then(() => {
+       //  console.log(res.data);
+       Swal.fire({
+         icon: "success",
+         title: t("greate"),
+         showConfirmButton: false,
+       });
+       setButtonLoading(false);
+     })
+     .catch((err) => {
+       //  console.log(err);
        if (err.message === "Network Error") {
          Swal.fire({
            icon: "error",
@@ -79,7 +124,9 @@ const DocumentComp = ({ document }: any) => {
           {/* {buttonLoading ? <LoadingButton /> : t("accept")} */}
           {buttonLoading ? <LoadingButton /> : document.status === "approved" ? <CheckIcon /> : t("accept")}
         </button>
-        <button className="bg-main text-white w-[80px] h-10 rounded hover:bg-mainHover">
+        <button className="bg-main text-white w-[80px] h-10 rounded hover:bg-mainHover"
+        onClick={refuse}
+        >
           {t("refuse")}
         </button>
       </div>

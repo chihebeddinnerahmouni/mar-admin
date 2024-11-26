@@ -24,8 +24,10 @@ interface Data {
   profilePic: string;
   name: string;
   phone: string;
-    email: string;
-    
+  email: string;
+  business_type: string;
+  boat_type: string;
+  city: string;
 }
 
 
@@ -46,6 +48,19 @@ const headCells: readonly HeadCell[] = [
   { id: "name", numeric: false, disablePadding: false, label: "name" },
   { id: "phone", numeric: false, disablePadding: false, label: "phone" },
   { id: "email", numeric: false, disablePadding: false, label: "email" },
+  {
+    id: "business_type",
+    numeric: false,
+    disablePadding: false,
+    label: "business_type",
+  },
+  {
+    id: "boat_type",
+    numeric: false,
+    disablePadding: false,
+    label: "boat_type",
+  },
+  { id: "city", numeric: false, disablePadding: false, label: "city" },
 ];
 
 
@@ -128,9 +143,12 @@ export default function EnhancedTable({ rows }: any) {
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [searchQuery, setSearchQuery] = React.useState("");
   const url = import.meta.env.VITE_SERVER_URL_USERS;
+  const { i18n, t } = useTranslation();
+
+
 
   const filteredRows = rows.filter((row: any) =>
-    row.name.toLowerCase().includes(searchQuery.toLowerCase())
+    row.user.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
 
@@ -164,7 +182,7 @@ export default function EnhancedTable({ rows }: any) {
                     hover
                     role="checkbox"
                     tabIndex={-1}
-                    key={user.id}
+                    key={index}
                     sx={{
                       cursor: "pointer",
                       bgcolor: "inherit",
@@ -185,7 +203,7 @@ export default function EnhancedTable({ rows }: any) {
                       sx={{ display: "flex", justifyContent: "center" }}
                     >
                       <img
-                        src={url + "/" + user.profilePicture}
+                        src={url + "/" + user.user.profilePicture}
                         alt={`${user.name}'s profile`}
                         className="w-[40px] h-[40px] rounded-full object-cover object-center"
                       />
@@ -195,29 +213,40 @@ export default function EnhancedTable({ rows }: any) {
                       align="center"
                       padding="normal"
                     >
-                      {user.name + " " + user.surname}
+                      {user.user.name + " " + user.user.surname}
                     </TableCell>
                     <TableCell
                       align="center"
                       padding="normal"
                       className="text-nowrap"
                     >
-                      {user.phoneNumber}
+                      {user.user.phoneNumber}
                     </TableCell>
                     <TableCell
                       align="center"
                       padding="normal"
                       className="text-nowrap"
                     >
-                      {user.email}
+                      {user.user.email}
                     </TableCell>
-                    {/* <TableCell
-                      padding="normal"
+                    <TableCell
                       className="text-nowrap"
                       align="center"
+                      padding="normal"
                     >
-                      {user.documents.length}
-                    </TableCell> */}
+                      {t(user.submission.business_type)}
+                    </TableCell>
+                    <TableCell align="center" className="text-nowrap">
+                      {i18n.language === "en"
+                        ? user.submission.boat_type.name
+                        : user.submission.boat_type}
+                    </TableCell>
+                    <TableCell className="text-nowrap" align="center">
+                      {/* {user.city} */}
+                      {i18n.language === "en"
+                        ? user.submission.city.name
+                        : user.submission.city.arabic_name}
+                    </TableCell>
                     <TableCell align="right">
                       <Box
                         sx={{
@@ -230,7 +259,7 @@ export default function EnhancedTable({ rows }: any) {
                           onClick={(event) => {
                             event.stopPropagation();
                             window.open(
-                              `documents/check-document/${user.id}`,
+                              `documents/check-document/${user.submission.id}`,
                               "_blank"
                             );
                           }}

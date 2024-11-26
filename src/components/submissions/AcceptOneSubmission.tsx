@@ -25,17 +25,20 @@ const AcceptOneSubmission: React.FC<DeleteModalProps> = ({
   const url = import.meta.env.VITE_SERVER_URL_LISTING;
   const { t } = useTranslation();
 
+
+  
   const submit = () => { 
     setLoading(true);
     axios
       .put(
-        `${url}/api/submit/user-submissions/${user.id}/accept`,
+        `${url}/api/submit/user-submissions/${user.id}/accept/document`,
         {},
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("jwt")}`,
           },
-        })
+        }
+      )
       .then(() => {
         Swal.fire({
           icon: "success",
@@ -46,6 +49,7 @@ const AcceptOneSubmission: React.FC<DeleteModalProps> = ({
         window.location.reload();
       })
       .catch((err) => {
+        // console.log(err);
         if (err.message === "Network Error") {
           Swal.fire({
             icon: "error",

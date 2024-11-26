@@ -211,6 +211,14 @@
 "payout": "استلام",
 "no_transactions_yet": "لا توجد معاملات بعد",
 "no_transactions": "لا توجد معاملات",
+"business_type": "نوع العمل",
+
+"update_released_balance": "تحديث الرصيد المفرج عنه",
+"update_unreleased_balance": "تحديث الرصيد غير المفرج عنه",
+"update_balance": "تحديث الرصيد",
+"balance": "الرصيد",
+"release_date": "تاريخ الإصدار",
+
 
 
 

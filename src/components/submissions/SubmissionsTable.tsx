@@ -40,6 +40,24 @@ interface HeadCell {
 
 const headCells: readonly HeadCell[] = [
   {
+    id: "profilePic",
+    numeric: false,
+    disablePadding: true,
+    label: "profile_picture",
+  },
+  {
+    id: "phone",
+    numeric: false,
+    disablePadding: true,
+    label: "phone",
+  },
+  {
+    id: "email",
+    numeric: false,
+    disablePadding: true,
+    label: "email",
+  },
+  {
     id: "buis_type",
     numeric: false,
     disablePadding: false,
@@ -92,7 +110,9 @@ export default function EnhancedTable({rows}: any) {
         >(0);
     const [acceptModalUserId, setAcceptModalUserId] = React.useState<
         number | null
-        >(0);
+    >(0);
+    const url = import.meta.env.VITE_SERVER_URL_USERS;
+
     
 
   const handleChangePage = (_event: unknown, newPage: number) => {
@@ -106,7 +126,6 @@ export default function EnhancedTable({rows}: any) {
     setPage(0);
     };
     
-
   return (
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
@@ -117,75 +136,109 @@ export default function EnhancedTable({rows}: any) {
             <TableBody>
               {rows.map((user: any) => {
            return (
-                  <TableRow
-                    hover
-                    role="checkbox"
-                    tabIndex={-1}
-                    key={user.id}
-                    sx={{
-                      cursor: "pointer",
-                      bgcolor: "inherit",
-                      "&.Mui-selected": {
-                        bgcolor: "rgba(255, 0, 0, 0.1) !important",
-                      },
-                      "&.Mui-selected:hover": {
-                        bgcolor: "rgba(139, 0, 0, 0.1) !important",
-                      },
-                    }}
-                  >
-                    <TableCell
-                      className="text-nowrap"
-                      align="center"
-                      padding="normal"
-                    >
-                      {t(user.business_type)}
-                    </TableCell>
-                    <TableCell align="center" className="text-nowrap">
-                      {i18n.language === "en" ? user.boat_type.name : user.boat_type}
-                    </TableCell>
-                    <TableCell className="text-nowrap" align="center">
-                      {user.city}
-                    </TableCell>
-                    <TableCell align="right">
-                      <Box
-                        sx={{
-                          display: "flex",
-                          justifyContent: "flex-end",
-                          alignItems: "center",
-                        }}
-                      >
-                        <IconButton
-                          onClick={(event) => {
-                            event.stopPropagation();
-                            setAcceptModalUserId(user.id);
-                          }}
-                        >
-                          <CheckIcon className="text-green-500 hover:text-green-700" />
-                        </IconButton>
-                        <IconButton
-                          onClick={(event) => {
-                            event.stopPropagation();
-                            setDeleteModalUserId(user.id);
-                          }}
-                        >
-                          <DeleteIcon className="text-main hover:text-mainHover" />
-                        </IconButton>
-                      </Box>
-                    </TableCell>
-                    {deleteModalUserId === user.id && (
-                      <DeleteOneSubmittion
-                        setClose={() => setDeleteModalUserId(null)}
-                        user={user}
-                      />
-                    )}
-                    {acceptModalUserId === user.id && (
-                      <AcceptOneSubmission
-                        setClose={() => setAcceptModalUserId(null)}
-                        user={user}
-                      />
-                    )}
-                  </TableRow>
-                );
+             <TableRow
+               hover
+               role="checkbox"
+               tabIndex={-1}
+               key={user.id}
+               sx={{
+                 cursor: "pointer",
+                 bgcolor: "inherit",
+                 "&.Mui-selected": {
+                   bgcolor: "rgba(255, 0, 0, 0.1) !important",
+                 },
+                 "&.Mui-selected:hover": {
+                   bgcolor: "rgba(139, 0, 0, 0.1) !important",
+                 },
+               }}
+             >
+               <TableCell
+                 component="th"
+                 //  id={labelId}
+                 scope="row"
+                 padding="normal"
+                 align="center"
+               >
+                 <img
+                   src={
+                     user.user.profilePicture
+                       ? url + "/" + user.user.profilePicture
+                       : "/anonyme.jpg"
+                   }
+                   alt={`${user.name}'s profile`}
+                   className="w-[40px] h-[40px] rounded-full object-cover object-center mx-auto"
+                 />
+               </TableCell>
+               <TableCell
+                 className="text-nowrap"
+                 align="center"
+                 padding="normal"
+               >
+                 {t(user.user.phoneNumber)}
+               </TableCell>
+               <TableCell
+                 className="text-nowrap"
+                 align="center"
+                 padding="normal"
+               >
+                 {t(user.user.email)}
+               </TableCell>
+               <TableCell
+                 className="text-nowrap"
+                 align="center"
+                 padding="normal"
+               >
+                 {t(user.business_type)}
+               </TableCell>
+               <TableCell align="center" className="text-nowrap">
+                 {i18n.language === "en" ? user.boat_type.name : user.boat_type}
+               </TableCell>
+               <TableCell className="text-nowrap" align="center">
+                 {/* {user.city} */}
+                 {i18n.language === "en"
+                   ? user.city.name
+                   : user.city.arabic_name}
+               </TableCell>
+               <TableCell align="right">
+                 <Box
+                   sx={{
+                     display: "flex",
+                     justifyContent: "flex-end",
+                     alignItems: "center",
+                   }}
+                 >
+                   <IconButton
+                     onClick={(event) => {
+                       event.stopPropagation();
+                       setAcceptModalUserId(user.id);
+                     }}
+                   >
+                     <CheckIcon className="text-green-500 hover:text-green-700" />
+                   </IconButton>
+                   <IconButton
+                     onClick={(event) => {
+                       event.stopPropagation();
+                       setDeleteModalUserId(user.id);
+                     }}
+                   >
+                     <DeleteIcon className="text-main hover:text-mainHover" />
+                   </IconButton>
+                 </Box>
+               </TableCell>
+               {deleteModalUserId === user.id && (
+                 <DeleteOneSubmittion
+                   setClose={() => setDeleteModalUserId(null)}
+                   user={user}
+                 />
+               )}
+               {acceptModalUserId === user.id && (
+                 <AcceptOneSubmission
+                   setClose={() => setAcceptModalUserId(null)}
+                   user={user}
+                 />
+               )}
+             </TableRow>
+           );
               })}
             </TableBody>
           </Table>

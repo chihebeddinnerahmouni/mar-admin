@@ -17,16 +17,18 @@ const Submissions = () => {
 
   useEffect(() => {
     axios
-      .get(`${url}/api/submit/user-submissions`, {
+      .get(`${url}/api/submit/user-submissions?status=Pending`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("jwt")}`,
         },
       })
       .then((response) => {
-        setSubmittions(response.data);
+        console.log(response.data.submissions[0]);
+        setSubmittions(response.data.submissions);
         setLoading(false);
       })
       .catch((err) => {
+        // console.log(err);
         if (err.message === "Network Error") {
           Swal.fire({
             icon: "error",

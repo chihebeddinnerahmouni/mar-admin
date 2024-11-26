@@ -216,6 +216,15 @@
 "no_transactions_yet": "No transactions yet",
 "no_transactions": "No Transactions",
 
+"business_type": "Business Type",
+
+"update_released_balance": "Update Released Balance",
+"update_unreleased_balance": "Update Unreleased Balance",
+"update_balance": "Update Balance",
+"balance": "Balance",
+"release_date": "Release Date",
+
+
 
 
 

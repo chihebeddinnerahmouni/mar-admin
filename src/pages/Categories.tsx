@@ -23,6 +23,8 @@ const Categories: React.FC = () => {
   const url = import.meta.env.VITE_SERVER_URL_CATEGORY;
   const { t } = useTranslation();
 
+  // console.log(url);
+
   useEffect(() => {
     axios.get(url + "/categories")
       .then((res) => {

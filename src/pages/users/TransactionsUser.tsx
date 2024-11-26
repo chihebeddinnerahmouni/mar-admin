@@ -6,6 +6,8 @@ import isLoggedIn from "../../lib/isLogedin";
 import { useNavigate } from "react-router-dom";
 import BalanceSection from "../../components/users/Balance";
 import TransactionsTable from "../../components/users/TransactionsTable";
+import { useParams } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const TransactionsUser = () => {
   const { t } = useTranslation();
@@ -15,11 +17,12 @@ const TransactionsUser = () => {
   const [unreleased, setUnreleased] = useState(0);
   const urlListing = import.meta.env.VITE_SERVER_URL_LISTING;
   const navigate = useNavigate();
+  const { userId } = useParams();
 
   useEffect(() => {
     const fetshdata = () => {
       axios
-        .get(`${urlListing}/api/transactions/my-transactions`, {
+        .get(`${urlListing}/api/transactions/user/${userId}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("jwt")}`,
           },
@@ -32,7 +35,18 @@ const TransactionsUser = () => {
           setLoading(false);
         })
         .catch((err) => {
-          console.log(err);
+          if (err.message === "Network Error") {
+            Swal.fire({
+              icon: "error",
+              title: t("network_error"),
+              text: t("please_try_again"),
+              customClass: {
+                confirmButton: "custom-confirm-button",
+              },
+            }).then(() => {
+              window.location.reload();
+            });
+          }
         });
     };
 
@@ -53,7 +67,6 @@ const TransactionsUser = () => {
       </div>
     );
   }
-
 
   return (
     <div

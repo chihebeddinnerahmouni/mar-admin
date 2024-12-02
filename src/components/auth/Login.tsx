@@ -58,6 +58,18 @@ const Login = () => {
              window.location.reload();
            });
          }
+         if (err.response.data.message === "Invalid email or password") {
+           Swal.fire({
+             icon: "error",
+             title: t("error"),
+             text: t("invalid_email_or_password"),
+             customClass: {
+               confirmButton: "custom-confirm-button",
+             },
+           }).then(() => {
+             window.location.reload();
+           });
+         }
         setLoading(false);
       });
 

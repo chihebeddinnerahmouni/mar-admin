@@ -62,7 +62,8 @@ const statsCont = () => {
 
   return (
     <div
-      className="stats flex gap-4 w-full overflow-auto max-w-[100vw] p-1 unselectableCss"
+      // className="stats bg-yellow-200 flex gap-4 w-full overflow-auto max-w-[100vw] p-1 unselectableCss"
+      className="stats flex max-w-[1100px] gap-4 w-full overflow-auto p-1 unselectableCss"
       ref={containerRef}
     >
       <Stats

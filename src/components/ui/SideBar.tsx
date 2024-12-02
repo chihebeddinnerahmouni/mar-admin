@@ -33,10 +33,9 @@ export default function TemporaryDrawer({ open, setOpen }: { open: boolean, setO
       className={"w-[200px] md:w-[200px]"}
       role="presentation"
       onClick={toggleDrawer(false)}
+      fontFamily={"Cairo, sans-serif"}
     >
-      <h1 className="text-center text-2xl font-bold mt-4">
-        {t("admin")}
-      </h1>
+      <h1 className="text-center text-2xl font-bold mt-4">{t("admin")}</h1>
       <List className="space-y-1">
         {classes_array.map((text, index) => (
           <ListItem

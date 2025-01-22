@@ -43,7 +43,7 @@ const DropDownMenuModal = ({ setClose }: any) => {
 
       <SwitchLangMobile />
 
-      <hr className="my-3" />
+      <hr className="my-3 lg:hidden" />
 
       <button
         onClick={() => {

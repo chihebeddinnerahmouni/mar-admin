@@ -117,23 +117,25 @@ const CheckDocuments = () => {
   return (
     <div className="p-4 md:p-8 lg:max-w-[1000px] mx-auto px-4 md:px-[40px]">
       <h1 className="text-3xl md:text-4xl font-extrabold mb-4 text">
-        {t("documents_for")} {docs.name}
+        {t("documents")}
       </h1>
       <p className="text-sm md:text-base text-gray-600 mb-8">
-        {t("this_is_what")} {t("uploaded_as_documents_you_view_the_documents_below")}
+        {t("this_is_what")}{" "}
+        {t("uploaded_as_documents_you_view_the_documents_below")}
       </p>
-
-      <div className="buttons bg-creme h-[60px] flex justify-end items-center gap-4 mb-8 sticky top-[60px] lg:top-[80px] z-10">
-        <button
-          className="bg-green-500 text-white w-[80px] h-10 rounded hover:bg-green-600"
-          onClick={accept}
-        >
-          {buttonLoading ? <LoadingButton /> : t("accept")}
-        </button>
-        <button className="bg-main text-white w-[80px] h-10 rounded hover:bg-mainHover">
-          {t("refuse")}
-        </button>
-      </div>
+      {docs[0].status === "pending" && (
+        <div className="buttons bg-creme h-[60px] flex justify-end items-center gap-4 mb-8 sticky top-[60px] lg:top-[80px] z-10">
+          <button
+            className="bg-green-500 text-white w-[80px] h-10 rounded hover:bg-green-600"
+            onClick={accept}
+          >
+            {buttonLoading ? <LoadingButton /> : t("accept")}
+          </button>
+          <button className="bg-main text-white w-[80px] h-10 rounded hover:bg-mainHover">
+            {t("refuse")}
+          </button>
+        </div>
+      )}
 
       <div className="docs flex flex-col gap-5 pb-20">
         {docs.map((document: any, index: number) => (

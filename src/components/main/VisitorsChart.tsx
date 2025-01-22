@@ -49,12 +49,13 @@ const { i18n, t } = useTranslation();
           },
         ]}
         height={isXl ? 400 : 300}
+        // loading={true}
         sx={{
           [`& .${axisClasses.directionY} .${axisClasses.label}`]: {
             transform: "translateX(-10px)",
           },
-          //   backgroundColor: "green",
         }}
+        
       />
     </div>
   );

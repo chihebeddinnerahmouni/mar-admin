@@ -4,11 +4,11 @@ import { Button, Box, Typography, TextField } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import LoadingButton from "../ui/LoadingButton";
 import axios from "axios";
-import Swal from "sweetalert2";
+// import Swal from "sweetalert2";
 import { InputAdornment, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import LoadingLine from "../ui/LoadingLine";
-import { useParams } from "react-router-dom";
+// import { useParams } from "react-router-dom";
 import {
   FormControl,
   FormControlLabel,
@@ -23,14 +23,17 @@ interface DeleteModalProps {
 ReactModal.setAppElement("#root");
 
 const UpdateReleasedModal: React.FC<DeleteModalProps> = ({ setClose }) => {
-  const { i18n, t } = useTranslation();
-  const [loading, setLoading] = useState(false);
+  const {
+    // i18n,
+    t } = useTranslation();
+  // const [loading, setLoading] = useState(false);
+  const loading = false;
   const [loadingData, setLoadingData] = useState(true);
   const [balance, setBalance] = useState(0);
   const [releaseDate, setReleaseDate] = useState("");
   const [releaseOption, setReleaseOption] = useState("release");
   const url = import.meta.env.VITE_SERVER_URL_LISTING;
-  const { userId } = useParams<{ userId: string }>();
+  // const { userId } = useParams<{ userId: string }>();
   const mainColor = "#FF385C";
 
   useEffect(() => {
@@ -40,7 +43,7 @@ const UpdateReleasedModal: React.FC<DeleteModalProps> = ({ setClose }) => {
           Authorization: `Bearer ${localStorage.getItem("jwt")}`,
         },
       })
-      .then((res) => {
+      .then(() => {
         // setBalance(res.data.balance);
         // setReleaseDate(res.data.releaseDate);
         // setLoadingData(false);
@@ -73,11 +76,11 @@ const UpdateReleasedModal: React.FC<DeleteModalProps> = ({ setClose }) => {
     //   console.log(releaseDate);
       //     console.log(releaseOption);
       
-      const data = {
-        balance: balance,
-        releaseDate: releaseDate,
-        releaseOption: releaseOption,
-      }
+      // const data = {
+      //   balance: balance,
+      //   releaseDate: releaseDate,
+      //   releaseOption: releaseOption,
+      // }
 
     // setLoading(true);
     // axios

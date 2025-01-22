@@ -22,7 +22,7 @@ const Images = ({ images }: any) => {
             key={index}
             src={`${url}/${image.url}`}
             alt={`Boat image ${index + 1}`}
-            className="w-full h-[70px] object-cover object-center rounded cursor-pointer md:h-[105px]"
+            className="w-full h-[100px] object-cover object-center rounded cursor-pointer md:h-[120px]"
           />
         ))}
       </div>

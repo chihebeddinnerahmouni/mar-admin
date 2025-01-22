@@ -23,7 +23,7 @@ interface Data {
   name: string;
   phone: string;
   email: string;
-  boatName: string;
+  ownerName: string;
 }
 
 type Order = "asc" | "desc";
@@ -40,16 +40,16 @@ const headCells: readonly HeadCell[] = [
     id: "profilePic",
     numeric: false,
     disablePadding: true,
-    label: "Profile Picture",
+    label: "Image",
   },
   { id: "name", numeric: false, disablePadding: false, label: "Name" },
   { id: "phone", numeric: false, disablePadding: false, label: "Phone" },
   { id: "email", numeric: false, disablePadding: false, label: "Email" },
   {
-    id: "boatName",
+    id: "ownerName",
     numeric: false,
     disablePadding: false,
-    label: "Boat name",
+    label: "Owner Name",
   },
 ];
 
@@ -114,7 +114,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
           id="tableTitle"
           component="div"
         >
-          Submitions
+          Listings
         </Typography>
       <div className="search relative">
         <input
@@ -144,6 +144,7 @@ export default function EnhancedTable({ rows }: any) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [searchQuery, setSearchQuery] = React.useState("");
+  const url = import.meta.env.VITE_SERVER_URL_LISTING;
 
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
@@ -184,6 +185,7 @@ export default function EnhancedTable({ rows }: any) {
     setPage(0);
   };
 
+
   return (
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
@@ -202,95 +204,24 @@ export default function EnhancedTable({ rows }: any) {
               onSelectAllClick={handleSelectAllClick}
               rowCount={rows.length}
             />
-            {/* <TableBody>
-              {rows.map((user: any, index: number) => {
-                const isItemSelected = selected.includes(user.id);
-                const labelId = `enhanced-table-checkbox-${index}`;
-
-                return (
-                  <TableRow
-                    hover
-                    onClick={(event) => handleClick(event, user.id)}
-                    role="checkbox"
-                    aria-checked={isItemSelected}
-                    tabIndex={-1}
-                    key={user.id}
-                    selected={isItemSelected}
-                    sx={{
-                      cursor: "pointer",
-                      bgcolor: isItemSelected
-                        ? "rgba(255, 0, 0, 0.1)"
-                        : "inherit",
-                      "&.Mui-selected": {
-                        bgcolor: "rgba(255, 0, 0, 0.1) !important",
-                      },
-                      "&.Mui-selected:hover": {
-                        bgcolor: "rgba(139, 0, 0, 0.1) !important",
-                      },
-                    }}
-                  >
-                    <TableCell
-                      component="th"
-                      id={labelId}
-                      scope="row"
-                      align="center"
-                      padding="normal"
-                    >
-                      <img
-                        src={user.image}
-                        alt={`${user.name}'s profile`}
-                        className="w-[40px] h-[40px] rounded-full"
-                      />
-                    </TableCell>
-                    <TableCell className="text-nowrap">{user.name}</TableCell>
-                    <TableCell className="text-nowrap">{user.phone}</TableCell>
-                    <TableCell className="text-nowrap">{user.email}</TableCell>
-                    <TableCell className="text-nowrap" align="center">
-                      {user.boatName}
-                    </TableCell>
-                    <TableCell align="right">
-                      <Box
-                        sx={{
-                          display: "flex",
-                          justifyContent: "flex-end",
-                          alignItems: "center",
-                        }}
-                      >
-                        <IconButton
-                          onClick={(event) => {
-                            event.stopPropagation();
-                            window.open(
-                              `listings/check-details/${user.id}`,
-                              "_blank"
-                            );
-                          }}
-                        >
-                          <RemoveRedEyeIcon className="text-green-500 hover:text-green-700" />
-                        </IconButton>
-                      </Box>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody> */}
             <TableBody>
               {rows
-                .filter((user: any) =>
-                  user.name.toLowerCase().includes(searchQuery.toLowerCase())
+                .filter((row: any) =>
+                  row.title.toLowerCase().includes(searchQuery.toLowerCase())
                 )
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage) // Pagination
-                .map((user: any, index: number) => {
-                  const isItemSelected = selected.includes(user.id);
+                .map((row: any, index: number) => {
+                  const isItemSelected = selected.includes(row.id);
                   const labelId = `enhanced-table-checkbox-${index}`;
 
                   return (
                     <TableRow
                       hover
-                      onClick={(event) => handleClick(event, user.id)}
+                      onClick={(event) => handleClick(event, row.id)}
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
-                      key={user.id}
+                      key={row.id}
                       selected={isItemSelected}
                       sx={{
                         cursor: "pointer",
@@ -313,20 +244,23 @@ export default function EnhancedTable({ rows }: any) {
                         padding="normal"
                       >
                         <img
-                          src={user.image}
-                          alt={`${user.name}'s profile`}
-                          className="w-[40px] h-[40px] rounded-full"
+                          // src={row.image}
+                          src={url + "/" + row.Images[0].url}
+                          alt={`${row.name}'s profile`}
+                          className="w-[40px] h-[40px] rounded-full object-cover"
                         />
                       </TableCell>
-                      <TableCell className="text-nowrap">{user.name}</TableCell>
                       <TableCell className="text-nowrap">
-                        {user.phone}
+                        {row.title.slice(0, 40) + "..."}
                       </TableCell>
                       <TableCell className="text-nowrap">
-                        {user.email}
+                        {row.user.phoneNumber}
+                      </TableCell>
+                      <TableCell className="text-nowrap">
+                        {row.user.email}
                       </TableCell>
                       <TableCell className="text-nowrap" align="center">
-                        {user.boatName}
+                        {row.user.name + " " + row.user.surname}
                       </TableCell>
                       <TableCell align="right">
                         <Box
@@ -340,7 +274,7 @@ export default function EnhancedTable({ rows }: any) {
                             onClick={(event) => {
                               event.stopPropagation();
                               window.open(
-                                `listings/check-details/${user.id}`,
+                                `listings/check-details/${row.id}`,
                                 "_blank"
                               );
                             }}

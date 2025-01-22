@@ -43,6 +43,8 @@ function App() {
         setLoading(false);
       })
       .catch((err) => {
+        // console.log(err);
+        if (err.status === 401) {navigate("/login");}
         if (err.message === "Network Error") {
           Swal.fire({
             icon: "error",

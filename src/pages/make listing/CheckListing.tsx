@@ -25,17 +25,17 @@ const CheckListing = () => {
   const [listing, setListing] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [loadingButton, setLoadingButton] = useState(false);
+  const [loadingRefuse, setLoadingRefuse] = useState(false);
   const { listingId } = useParams<{ listingId: string }>();
   const navigate = useNavigate();
   const { t } = useTranslation();
   const url = import.meta.env.VITE_SERVER_URL_LISTING as string;
 
-
+  
   useEffect(() => {
    axios
      .get(`${url}/api/listing/listings/${listingId}`)
      .then((res) => {
-      //  console.log(res.data);
        if (res.data.validated === true) {
         return  Swal.fire("error", "listing_already_accepted", "error").then(() => {
             navigate("/listings");
@@ -70,7 +70,7 @@ const CheckListing = () => {
 
 
   const accept = () => {
-
+    if (loadingRefuse) return;
     setLoadingButton(true);
     axios
       .put(
@@ -88,13 +88,10 @@ const CheckListing = () => {
       )
       .then((res) => {
         console.log(res.data);
-        Swal.fire("success", "listing_accepted", "success")
-        .then(() => {
-          navigate("/listings");
-        })
+        Swal.fire("success", t("great"))
+        navigate("/listings");
       })
       .catch((err) => {
-        console.log(err);
         if (err.message === "Network Error") {
           Swal.fire({
             icon: "error",
@@ -114,6 +111,46 @@ const CheckListing = () => {
       });
    }
 
+  const refuse = () => {
+    if (loadingButton) return;
+    setLoadingRefuse(true);
+    axios
+      .put(
+        `${url}/api/listing/listings/${listingId}/status`,
+        {
+          validated: false,
+          blocked: true,
+          block_reason: "This is a test reason",
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+          },
+        }
+      )
+      .then(() => {
+        Swal.fire("success", t("great"));
+        navigate("/listings");
+      })
+      .catch((err) => {
+        if (err.message === "Network Error") {
+          Swal.fire({
+            icon: "error",
+            title: t("network_error"),
+            text: t("please_try_again"),
+            customClass: {
+              confirmButton: "custom-confirm-button",
+            },
+          }).then(() => {
+            window.location.reload();
+          });
+        }
+        // Swal.fire("error", "error_occured", "error");
+      })
+      .finally(() => {
+        setLoadingButton(false);
+      });
+  }
 
 
   if (loading) return (
@@ -140,10 +177,13 @@ const CheckListing = () => {
           className="bg-green-500 text-white w-[90px] h-10 rounded hover:bg-green-600"
           onClick={accept}
         >
-          {loadingButton ? <LoadingButton /> : "Accept"}
+          {loadingButton ? <LoadingButton /> : t("accept")}
         </button>
-        <button className="bg-main text-white w-[90px] h-10 rounded hover:bg-mainHover">
-          Refuse
+        <button
+          className="bg-main text-white w-[90px] h-10 rounded hover:bg-mainHover"
+          onClick={refuse}
+        >
+          {loadingRefuse ? <LoadingButton /> : t("refuse")}
         </button>
       </div>
 
@@ -155,7 +195,7 @@ const CheckListing = () => {
       <Prices prices={listing.Prices} />
       <SpeceficDates prices={listing.Prices} />
       <Region region={listing.region} />
-      <Guests guests={listing.guests} />
+      <Guests guests={listing.guest} />
       <Availability availabilities={listing.Availabilities} />
       <Location latitude={listing.latitude} longitude={listing.longitude} />
     </div>

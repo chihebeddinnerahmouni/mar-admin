@@ -35,9 +35,9 @@ const BoatsCont = () => {
         setShipsArray(response.data.listings);
         setTotalPages(response.data.pagination.totalPages);
         setLoading(false);
-        // console.log("ani hna");
       })
       .catch((error) => {
+        console.log(error);
         setLoading(false);
         if (error.message === "Error") {
           Swal.fire({
@@ -96,7 +96,7 @@ const BoatsCont = () => {
 
   
   const search_by_boat_name = () => {
-    console.log("boat");
+    // console.log("boat");
     if (boatSearch === "") return 
     setLoading(true);
     // /api/listing/listings/search?boatName=Ocean&ownerName=sssss&page=2&limit=5

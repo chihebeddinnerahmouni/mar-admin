@@ -16,14 +16,14 @@ const Documents = () => {
 
   useEffect(() => { 
     axios
-      // .get(`${url}/api/submit/users/pending-documents`,
+      // .get(`${url}/api/submit/users/pending-documents`,{
       .get(`${url}/api/submit/submissions-with-pending-documents`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("jwt")}`,
         },
       })
       .then((response) => {
-        console.log(response.data.data[0]);
+        console.log(response.data.data);
         setRequests(response.data.data);
         setLoading(false);
       })

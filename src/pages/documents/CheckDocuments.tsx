@@ -23,40 +23,41 @@ const CheckDocuments = () => {
 
 
   useEffect(() => {
-    axios.get(`${url}/api/submit/documents/user/${userId}`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-      }
-    })
+    axios
+      .get(`${url}/api/submit/documents/submission/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+        },
+      })
       .then((res) => {
-        // console.log(res.data);
-      setDocs(res.data);
-      setLoading(false);
+        // console.log(res.data.documents);
+        setDocs(res.data.documents);
+        setLoading(false);
       })
       .catch((err) => {
-        console.log(err);
-         if (err.message === "Network Error") {
-           Swal.fire({
-             icon: "error",
-             title: t("network_error"),
-             text: t("please_try_again"),
-             customClass: {
-               confirmButton: "custom-confirm-button",
-             },
-           }).then(() => {
-             window.location.reload();
-           });
+        // console.log(err);
+        if (err.message === "Network Error") {
+          Swal.fire({
+            icon: "error",
+            title: t("network_error"),
+            text: t("please_try_again"),
+            customClass: {
+              confirmButton: "custom-confirm-button",
+            },
+          }).then(() => {
+            window.location.reload();
+          });
         }
         if (err.response.data.message === "No documents found for this user")
           return Swal.fire({
             title: "No documents found",
             text: "This user has not uploaded any documents yet",
             customClass: {
-            confirmButton: "custom-confirm-button",
+              confirmButton: "custom-confirm-button",
             },
           }).then(() => {
             navigate("/documents");
-          })
+          });
       });
   }, []);
 
@@ -66,7 +67,7 @@ const CheckDocuments = () => {
     setButtonLoading(true);
     axios
       .put(
-        `${url}/api/submit/user-submissions/:2/accept`,
+        `${url}/api/submit/user-submissions/${userId}/accept`,
         {},
         {
           headers: {
@@ -82,6 +83,7 @@ const CheckDocuments = () => {
           showConfirmButton: false,
         });
         setButtonLoading(false);
+        navigate("/documents");
       })
       .catch((err) => {
         // console.log(err);

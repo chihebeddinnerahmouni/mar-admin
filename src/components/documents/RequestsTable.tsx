@@ -174,7 +174,7 @@ export default function EnhancedTable({ rows }: any) {
           <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
             <EnhancedTableHead/>
             <TableBody>
-              {filteredRows.map((user: any, index: number) => {
+              {filteredRows.map((row: any, index: number) => {
                 const labelId = `enhanced-table-checkbox-${index}`;
 
                 return (
@@ -203,8 +203,8 @@ export default function EnhancedTable({ rows }: any) {
                       sx={{ display: "flex", justifyContent: "center" }}
                     >
                       <img
-                        src={url + "/" + user.user.profilePicture}
-                        alt={`${user.name}'s profile`}
+                        src={url + "/" + row.user.profilePicture}
+                        alt={`${row.name}'s profile`}
                         className="w-[40px] h-[40px] rounded-full object-cover object-center"
                       />
                     </TableCell>
@@ -213,39 +213,53 @@ export default function EnhancedTable({ rows }: any) {
                       align="center"
                       padding="normal"
                     >
-                      {user.user.name + " " + user.user.surname}
+                      {row.user.name + " " + row.user.surname}
                     </TableCell>
                     <TableCell
                       align="center"
                       padding="normal"
                       className="text-nowrap"
                     >
-                      {user.user.phoneNumber}
+                      {row.user.phoneNumber}
                     </TableCell>
                     <TableCell
                       align="center"
                       padding="normal"
                       className="text-nowrap"
                     >
-                      {user.user.email}
+                      {row.user.email}
                     </TableCell>
                     <TableCell
                       className="text-nowrap"
                       align="center"
                       padding="normal"
                     >
-                      {t(user.submission.business_type)}
+                      {t(row.submission.business_type)}
                     </TableCell>
                     <TableCell align="center" className="text-nowrap">
-                      {i18n.language === "en"
-                        ? user.submission.boat_type.name
-                        : user.submission.boat_type}
+                      {
+                        i18n.language === "en"
+                        ? row.submission.boat_type
+                        : row.submission.boat_type
+                      }
+                      {/* {
+                        i18n.language === "en"
+                        ? row.submission.boat_type.name
+                        : row.submission.boat_type
+                      } */}
                     </TableCell>
                     <TableCell className="text-nowrap" align="center">
                       {/* {user.city} */}
-                      {i18n.language === "en"
-                        ? user.submission.city.name
-                        : user.submission.city.arabic_name}
+                      {/* {
+                        i18n.language === "en"
+                        ? row.submission.city.name
+                        : row.submission.city.arabic_name
+                      } */}
+                      {
+                        i18n.language === "en"
+                        ? row.submission.city
+                        : row.submission.city
+                      }
                     </TableCell>
                     <TableCell align="right">
                       <Box
@@ -259,7 +273,7 @@ export default function EnhancedTable({ rows }: any) {
                           onClick={(event) => {
                             event.stopPropagation();
                             window.open(
-                              `documents/check-document/${user.submission.id}`,
+                              `documents/check-document/${row.submission.id}`,
                               "_blank"
                             );
                           }}

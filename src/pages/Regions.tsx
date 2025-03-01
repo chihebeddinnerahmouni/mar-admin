@@ -1,59 +1,37 @@
-import {
-  useState,
-  useEffect
-} from "react";
+import { useCallback } from "react";
 import axios from "axios";
 import LoadingLine from "../components/ui/LoadingLine";
 import { useTranslation } from "react-i18next";
-import Swal from "sweetalert2";
 import RegionsTable from "../components/regions/RegionsTable";
-
-
-
-
-
-
+import { useQuery } from "@tanstack/react-query";
+import { axios_error_handler } from "../functions/axios_error_handler";
 
 const Regions = () => {
-
-  // const [isAddRegionOpen, setIsAddRegionOpen] = useState(false);
-  const [regionsArray, setRegionsArray] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const url = import.meta.env.VITE_SERVER_URL_LISTING;
   const { t } = useTranslation();
 
-  useEffect(() => {
-     axios
-       .get(`${url}/api/region/regions`)
-       .then((response) => {
-         setRegionsArray(response.data);
-         setLoading(false);
-       })
-       .catch((err) => {
-         if (err.message === "Network Error") {
-           Swal.fire({
-             icon: "error",
-             title: t("network_error"),
-             text: t("please_try_again"),
-             customClass: {
-               confirmButton: "custom-confirm-button",
-             },
-           }).then(() => {
-             window.location.reload();
-           });
-         }
-       });
+  const fetchData = useCallback(async () => {
+    const url = import.meta.env.VITE_SERVER_URL_LISTING;
+    const response = await axios.get(`${url}/api/region/regions`);
+    return response.data;
   }, []);
 
-  if (loading) {
+  const { data, error, isLoading } = useQuery({
+    queryKey: ["getRegions"],
+    queryFn: fetchData,
+  });
+
+  if (isLoading) {
     return (
       <div className="w-full h-screen">
         <LoadingLine />
       </div>
-    )
+    );
   }
 
-
+  if (error) {
+    axios_error_handler(error, t);
+    return null;
+  }
 
   return (
     <div className="p-4 md:p-8 lg:max-w-[1100px] px-4 md:px-[40px] lg:px-[100px] mx-auto">
@@ -63,7 +41,7 @@ const Regions = () => {
       <p className="text-sm md:text-base text-gray-600 mb-6">
         {t("regions_management_description")}
       </p>
-      <RegionsTable regions={regionsArray} />
+      <RegionsTable regions={data} />
     </div>
   );
 };

@@ -9,9 +9,7 @@ import {
   IconButton,
 } from "@mui/material";
 import { IoTrashSharp, IoAddCircleOutline } from "react-icons/io5";
-// import DeleteCategoryModal from "./DeleteCategoryModal";
 import { useState } from "react";
-// import AddCategoryModal from "./AddCategoryModal";
 import { useTranslation } from "react-i18next";
 import AddRegionModal from "./AddRegionModal";
 import DeleteRegionModal from "./DeleteRegionModal";

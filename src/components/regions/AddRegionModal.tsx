@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import ReactModal from "react-modal";
-import { TextField, Button, Box, Typography } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import LoadingButton from "../ui/LoadingButton";
 import axios from "axios";
 import { useTranslation } from "react-i18next";
 import Swal from "sweetalert2";
+import InputText from "../ui/inputs/InputText";
+import { axios_error_handler } from "../../functions/axios_error_handler";
 
 interface UpdateModalProps {
   setClose: (isOpen: boolean) => void;
@@ -17,17 +19,11 @@ const AddRegionModal: React.FC<UpdateModalProps> = ({ setClose }) => {
   const [enName, setEnName] = useState("");
   // const [description, setDescription] = useState("");
   const [arName, setArName] = useState("");
-  const url = import.meta.env.VITE_SERVER_URL_LISTING;
   const { t } = useTranslation();
   const mainColor = "#FF385C";
 
-  const handleSubmit = (e: React.FormEvent) => {
-    const check = enName && arName;
-    if (!check) return alert(t("please_fill_all_the_fields"));
-
-    e.preventDefault();
-    setLoading(true);
-
+  const sendData = useCallback(async () => {
+    const url = import.meta.env.VITE_SERVER_URL_LISTING;
     axios
       .post(
         `${url}/api/region/regions`,
@@ -50,147 +46,69 @@ const AddRegionModal: React.FC<UpdateModalProps> = ({ setClose }) => {
         window.location.reload();
       })
       .catch((err) => {
-        console.log(err);
-     if (err.message === "Network Error") {
-       Swal.fire({
-         icon: "error",
-         title: t("network_error"),
-         text: t("please_try_again"),
-         customClass: {
-           confirmButton: "custom-confirm-button",
-         },
-       }).then(() => {
-         window.location.reload();
-       });
-     }
+        axios_error_handler(err, t);
         setLoading(false);
       });
-  };
+  }, [enName, arName]);
+
+  const handleSubmit = useCallback((e: React.FormEvent) => {
+    const check = enName && arName;
+    if (!check) return alert(t("please_fill_all_the_fields"));
+    e.preventDefault();
+    setLoading(true);
+    sendData();
+  }, [enName, arName, sendData, t]);
 
   return (
-     <ReactModal
-            isOpen={true}
-            onRequestClose={() => setClose(false)}
-            className={"bg-white rounded-lg p-4 shadow-hardShadow my-10 lg:p-6"}
-            overlayClassName={
-                "fixed bg-black bg-opacity-10 backdrop-blur-[7px] inset-0 flex items-center justify-center px-4 py-20 mt-[60px]"
-            }
-        >
+    <ReactModal
+      isOpen={true}
+      onRequestClose={() => setClose(false)}
+      className={"bg-white rounded-lg p-4 shadow-hardShadow my-10 lg:p-6"}
+      overlayClassName={
+        "fixed bg-black bg-opacity-10 backdrop-blur-[7px] inset-0 flex items-center justify-center px-4 py-20 mt-[60px]"
+      }
+    >
       <Typography variant="h4" component="h2" gutterBottom>
         {t("add_region")}
       </Typography>
       <form onSubmit={handleSubmit}>
-        <Box display="flex" flexDirection="column" gap={2}>
-          <Box display="flex" flexDirection="row" gap={2}>
-            <TextField
-              label={t("english_name")}
-              value={enName}
-              onChange={(e) => setEnName(e.target.value)}
-              variant="outlined"
-              fullWidth
-              required
-              sx={{
-                "& .MuiOutlinedInput-root": {
-                  "& fieldset": {
-                    borderColor: "grey",
-                  },
-                  "&:hover fieldset": {
-                    borderColor: "grey",
-                  },
-                  "&.Mui-focused fieldset": {
-                    borderColor: mainColor,
-                  },
-                },
-                "& .MuiInputLabel-root": {
-                  color: "gray",
-                },
-                "& .MuiInputLabel-root.Mui-focused": {
-                  color: mainColor,
-                },
-              }}
-            />
-            <TextField
-              label={t("arabic_name")}
-              value={arName}
-              onChange={(e) => setArName(e.target.value)}
-              variant="outlined"
-              fullWidth
-              required
-              sx={{
-                "& .MuiOutlinedInput-root": {
-                  "& fieldset": {
-                    borderColor: "grey",
-                  },
-                  "&:hover fieldset": {
-                    borderColor: "grey",
-                  },
-                  "&.Mui-focused fieldset": {
-                    borderColor: mainColor,
-                  },
-                },
-                "& .MuiInputLabel-root": {
-                  color: "gray",
-                },
-                "& .MuiInputLabel-root.Mui-focused": {
-                  color: mainColor,
-                },
-              }}
-            />
-          </Box>
+        <div className="flex gap-2">
+          <InputText
+            label={t("english_name")}
+            value={enName}
+            setValue={(e: any) => setEnName(e.target.value)}
+          />
+          <InputText
+            label={t("arabic_name")}
+            value={arName}
+            setValue={(e: any) => setArName(e.target.value)}
+          />
+        </div>
 
-          {/* <TextField
-            label={t("description")}
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
+        <div className="button mt-5 w-full flex justify-end gap-2">
+          <Button
             variant="outlined"
-            fullWidth
-            required
+            onClick={() => setClose(false)}
             sx={{
-              "& .MuiOutlinedInput-root": {
-                "& fieldset": {
-                  borderColor: "grey",
-                },
-                "&:hover fieldset": {
-                  borderColor: "grey",
-                },
-                "&.Mui-focused fieldset": {
-                  borderColor: mainColor,
-                },
-              },
-              "& .MuiInputLabel-root": {
-                color: "gray",
-              },
-              "& .MuiInputLabel-root.Mui-focused": {
-                color: mainColor,
-              },
+              color: mainColor,
+              backgroundColor: "white",
+              borderColor: mainColor,
             }}
-          /> */}
-
-          <Box display="flex" justifyContent="flex-end" gap={2}>
-            <Button
-              variant="outlined"
-              onClick={() => setClose(false)}
-              sx={{
-                color: mainColor,
-                backgroundColor: "white",
-                borderColor: mainColor,
-              }}
-            >
-              {t("cancel")}
-            </Button>
-            <Button
-              disabled={loading}
-              variant="contained"
-              sx={{ color: "white", backgroundColor: mainColor }}
-              type="submit"
-            >
-              {loading ? <LoadingButton /> : t("save")}
-            </Button>
-          </Box>
-        </Box>
-        </form>
+          >
+            {t("cancel")}
+          </Button>
+          <Button
+            disabled={loading}
+            variant="contained"
+            sx={{ color: "white", backgroundColor: mainColor }}
+            type="submit"
+          >
+            {loading ? <LoadingButton /> : t("save")}
+          </Button>
+        </div>
+        {/* </Box> */}
+      </form>
     </ReactModal>
-     
   );
 };
 export default AddRegionModal;

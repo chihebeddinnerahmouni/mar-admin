@@ -4,10 +4,11 @@ import { FaUsers } from "react-icons/fa";
 import { GiCaptainHatProfile } from "react-icons/gi";
 import { FaUser } from "react-icons/fa";
 import axios from "axios";
-import { useState, useEffect } from 'react';
+import { useCallback } from 'react';
 import LoadingLine from '../../components/ui/LoadingLine';
 import { useTranslation } from 'react-i18next';
-import Swal from 'sweetalert2'; 
+import { useQuery } from '@tanstack/react-query';
+import { axios_error_handler } from '../../functions/axios_error_handler';
 
 
 
@@ -15,46 +16,31 @@ import Swal from 'sweetalert2';
 
 const Users = () => {
 
-  const [loading, setLoading] = useState(true);
-  const [users, setUsers] = useState([]);
-  const url = import.meta.env.VITE_SERVER_URL_USERS;
   const { t } = useTranslation();
-
-  useEffect(() => {
-    axios.get(url + "/admin/user/users?block=false&suspend=false")
-    // axios
-    //   .get(url + "/admin/user/users?block=false&suspend=true")
-      .then((res) => {
-        // console.log(res.data);
-        setLoading(false);
-        setUsers(res.data);
-      })
-      .catch((err) => {
-        // setLoading(false);
-        if (err.message === "Network Error") {
-          Swal.fire({
-            icon: "error",
-            title: t("network_error"),
-            text: t("please_try_again"),
-            customClass: {
-              confirmButton: "custom-confirm-button",
-            },
-          }).then(() => {
-            window.location.reload();
-          });
-        }
-      });
-  }, []);
   
+  const fetchData = useCallback(async () => { 
+    const url = import.meta.env.VITE_SERVER_URL_USERS;
+    const res = await axios.get(url + "/admin/user/users?block=false&suspend=false");
+    return res.data;
+  }, []);
+
+  const { data, error, isLoading } = useQuery({
+    queryKey: ['getUsers'],
+    queryFn: fetchData
+  });
 
 
-
-  if (loading) { 
+  if (isLoading) {
     return (
       <div className="w-full h-screen">
         <LoadingLine />
       </div>
-    )
+    );
+  }
+
+  if (error) {
+    axios_error_handler(error, t);
+    return null;
   }
 
 
@@ -76,7 +62,7 @@ const Users = () => {
             <UserStat key={user.id} Item={user} />
           ))}
         </div>
-        <TableUsers users={users} />
+        <TableUsers users={data} />
       </div>
     );
 }

@@ -6,22 +6,24 @@ import {
   FaTrash,
 } from "react-icons/fa";
 import axios from "axios";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
+import { axios_error_handler } from "../../functions/axios_error_handler";
+
+
 
 const ShipDetails = ({ ship }: any) => {
   const { t } = useTranslation();
   const url = import.meta.env.VITE_SERVER_URL_LISTING;
   const urlUser = import.meta.env.VITE_SERVER_URL_USERS;
 
-// console.log(ship);
 
   const navigateTo = () => {
     window.open(`/boats/update-boat/${ship.id}`, "_blank");
   };
 
 
-  // Delete, Block and Update functions
   const handleDelete = (e: React.MouseEvent) => {
-    // console.log(ship.id);
     e.stopPropagation();
     Swal.fire({
       title: t("are_you_sure"),
@@ -50,26 +52,7 @@ const ShipDetails = ({ ship }: any) => {
             window.location.reload();
           })
           .catch((err) => {
-            if (err.message === "Network Error") {
-              return Swal.fire({
-                icon: "error",
-                title: t("network_error"),
-                text: t("please_try_again"),
-                customClass: {
-                  confirmButton: "custom-confirm-button",
-                },
-              }).then(() => {
-                window.location.reload();
-              });
-            }
-            Swal.fire({
-              icon: "error",
-              title: t("error"),
-              text: err.response.data.message,
-              customClass: {
-                confirmButton: "custom-confirm-button",
-              },
-            });
+            axios_error_handler(err, t);
           });
       }
     });
@@ -83,12 +66,19 @@ const ShipDetails = ({ ship }: any) => {
       onClick={navigateTo}
     >
       <div className="relative">
-        <img
+        {/* <img
           src={`${url}/${ship.Images[0].url}`}
           className="w-full h-[200px] object-cover object-center rounded-[12px] lg:h-[190px] 2xl:h-[250px] transition-opacity duration-300 hover:opacity-100"
           alt="boat"
+        /> */}
+        <LazyLoadImage
+          src={`${url}/${ship.Images[0].url}`}
+          effect="blur"
+          width={"100%"}
+          className="h-[200px] object-cover object-center rounded-[12px] lg:h-[190px] 2xl:h-[250px] transition-opacity duration-300 hover:opacity-100 "
+          alt="boat"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-75 rounded-[12px] transition-opacity duration-300 hover:opacity-0"></div>
+        
         <div className="absolute top-2 right-2 flex gap-2 opacity-100 group-hover:opacity-100 transition duration-300 lg:opacity-0">
           <button
             className="text-white bg-main p-2 rounded-full hover:bg-mainHover"

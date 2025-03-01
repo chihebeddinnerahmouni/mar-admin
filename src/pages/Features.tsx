@@ -1,46 +1,37 @@
 import FeaturesTable from '../components/features/FeaturesTable'
-import { useState, useEffect } from 'react';
+import { useCallback } from 'react';
 import LoadingLine from '../components/ui/LoadingLine';
 import axios from 'axios';
-import Swal from 'sweetalert2';
 import { useTranslation } from 'react-i18next';
+import { useQuery } from '@tanstack/react-query';
+import { axios_error_handler } from '../functions/axios_error_handler';
 
 
 const Features = () => {
-  const [rows, setRows] = useState<any>([])
-  const [loading, setLoading] = useState(true)
-  const url = import.meta.env.VITE_SERVER_URL_LISTING; 
   const { t } = useTranslation();
-
   
-
-  useEffect(() => {
-    axios
-      .get(`${url}/admin/listing/features`)
-      .then((response) => {
-        // console.log(response.data);
-        setRows(response.data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.log(error);
-        Swal.fire({
-          icon: 'error',
-          title: 'Oops...',
-          text: 'Something went wrong!',
-        }).then(() => { 
-          window.location.reload();
-        });
-        setLoading(false);
-      });
+  const fetshData = useCallback(async () => {
+    const url = import.meta.env.VITE_SERVER_URL_LISTING;
+    const response = await axios.get(`${url}/admin/listing/features`)
+    return response.data
   }, [])
 
-  if (loading) {
+  const { data, isLoading, error } = useQuery({
+    queryKey: ['getFeatures'],
+    queryFn: fetshData,
+  })
+
+  if (isLoading) {
     return (
       <div className="w-full h-screen">
         <LoadingLine />
       </div>
     )
+  }
+
+  if (error) {
+    axios_error_handler(error, t);
+    return null
   }
   
 
@@ -54,7 +45,7 @@ const Features = () => {
         {t("features_management_description")}
       </p>
 
-      <FeaturesTable rows={rows} />
+      <FeaturesTable rows={data} />
     </div>
   );
 }

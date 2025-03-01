@@ -11,6 +11,8 @@ import { IoTrashSharp } from "react-icons/io5";
 import DeleteFeatureModal from "./DeleteFeatureModal";
 import AddFeature from "./AddFeature";
 import { useTranslation } from "react-i18next";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
 
 export default function BasicTable({ rows }: any) {
   const [selectedRowId, setSelectedRowId] = useState<any>(null);
@@ -58,7 +60,13 @@ export default function BasicTable({ rows }: any) {
                   align="center"
                   sx={{ display: "flex", justifyContent: "center" }}
                 >
-                  <img
+                  {/* <img
+                    src={url + "/" + row.image}
+                    alt={`${row.image}'s profile`}
+                    className="w-[40px] h-[40px] rounded-full object-cover object-center"
+                  /> */}
+                  <LazyLoadImage
+                    effect="blur"
                     src={url + "/" + row.image}
                     alt={`${row.image}'s profile`}
                     className="w-[40px] h-[40px] rounded-full object-cover object-center"

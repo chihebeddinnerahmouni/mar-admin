@@ -5,10 +5,9 @@ import IconButton from "@mui/material/IconButton";
 import Avatar from "@mui/material/Avatar";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import CloseIcon from "@mui/icons-material/Close";
-import LoadingButton from "../ui/LoadingButton";
 import InputText from "../ui/inputs/InputText";
 import { axios_error_handler } from "../../functions/axios_error_handler";
-
+import ButtonFunc from "../ui/buttons/Button";
 
 
 
@@ -106,15 +105,11 @@ const AddCategoryModal: React.FC<UpdatePricesProps> = ({
           setValue={(e: any) => setArName(e.target.value)}
         />
       </div>
-
-      <button
-        onClick={handleContinue}
-        disabled={loading}
-        className="w-full h-10 bg-main text-white rounded-lg shadow-md hover:bg-mainHover transition duration-200 ease-in-out mt-5"
-      >
-        {/* {t("save")} */}
-        {loading ? <LoadingButton /> : t("save")}
-      </button>
+      <div className="mt-5 w-full">
+        <ButtonFunc text={t("save")} onClick={handleContinue}
+        loading={loading}
+        />
+      </div>
     </div>
   );
 };

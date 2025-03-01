@@ -10,58 +10,29 @@ import Availability from "../../components/update boat/Availability";
 import SpeceficDates from "../../components/update boat/SpeceficDates";
 import axios from "axios";
 import LoadingLine from "../../components/ui/LoadingLine";
-import { useState, useEffect } from "react";
+import { useCallback } from "react";
 import { useParams } from "react-router-dom";
-import Swal from "sweetalert2";
-import { useNavigate } from "react-router-dom";
 import Images from "../../components/update boat/Images";
 import Reviews from "../../components/update boat/Reviews";
+import { useQuery } from "@tanstack/react-query";
+import { axios_error_handler } from "../../functions/axios_error_handler";
 
 const UpdateBoat = () => {
   const { t } = useTranslation();
-  const [details, setDetails] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
   const { boatId } = useParams<{ boatId: string }>();
   const url = import.meta.env.VITE_SERVER_URL_LISTING;
-  const navigate = useNavigate();
 
-  useEffect(() => {
-    // setLoading(true);
+  const fetchBoat = useCallback(async () => {
+    const res = await axios.get(`${url}/api/listing/listings/${boatId}`);
+    return res.data;
+  }, [boatId]);
 
-    // setDetails(one);
-    // setLoading(false);
+  const { data: details, error, isLoading } = useQuery({
+    queryKey: ["boat", boatId],
+    queryFn: fetchBoat,
+  });
 
-    axios
-      .get(`${url}/api/listing/listings/${boatId}`)
-      .then((res) => {
-        // console.log(res.data);
-        setDetails(res.data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        if (err.status === 404) {
-          Swal.fire("error", "theres_no_boat_match_this_id", "error")
-            .then(
-            () => {
-              navigate("/boats");
-            }
-          );
-        } else if (err.message === "Network Error") {
-          Swal.fire({
-            icon: "error",
-            title: t("network_error"),
-            text: t("please_try_again"),
-            customClass: {
-              confirmButton: "custom-confirm-button",
-            },
-          }).then(() => {
-            window.location.reload();
-          });
-        }
-      });
-  }, []);
-
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="w-full h-screen">
         <LoadingLine />
@@ -69,7 +40,11 @@ const UpdateBoat = () => {
     );
   }
 
-  // console.log(details);
+  if (error) {
+    axios_error_handler(error, t);
+    return null
+  }
+
 
   return (
     <>

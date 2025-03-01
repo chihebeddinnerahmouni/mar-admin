@@ -1,4 +1,7 @@
 import { useTranslation } from "react-i18next";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
+
 
 
 
@@ -9,10 +12,11 @@ const Owner = ({ details }: any) => {
 
   return (
     <div className="w-full p-3 bg-white mt-5 rounded-10 shadow-sm flex items-center gap-4">
-      <img
+      <LazyLoadImage
         src={url + "/" + details.owner.image}
-        className="w-[60px] h-[60px] object-cover object-center rounded-50"
         alt="profile"
+        className="w-[60px] h-[60px] object-cover object-center rounded-50"
+        effect="blur"
       />
 
       <p className="lg:text-[18px]">

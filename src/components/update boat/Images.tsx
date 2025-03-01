@@ -5,6 +5,8 @@ import UpdateImages from "./UpdateImages";
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
 import { Thumbnails, Fullscreen } from "yet-another-react-lightbox/plugins";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
 
 
 const Images = ({ images }: any) => {
@@ -21,13 +23,23 @@ const Images = ({ images }: any) => {
       <p className="font-bold">{t("images")}</p>
       <div className="grid grid-cols-3 gap-4 mt-3">
         {images.map((image: any, index: number) => (
-          <img
-            onClick={() => setPhotoIndex(index + 1)}
+          // <img
+          //   onClick={() => setPhotoIndex(index + 1)}
+          //   key={index}
+          //   // src={image.url}
+          //   src={url + '/' + image.url}
+          //   alt={`Boat image ${index + 1}`}
+          //   className="w-full h-[70px] object-cover object-center rounded cursor-pointer md:h-[105px]"
+          // />
+          <LazyLoadImage
+            onClick={() => setPhotoIndex(index)}
             key={index}
-            // src={image.url}
-            src={url + '/' + image.url}
+            src={`${url}/${image.url}`}
             alt={`Boat image ${index + 1}`}
-            className="w-full h-[70px] object-cover object-center rounded cursor-pointer md:h-[105px]"
+            width={"100%"}
+            // height={70}
+            className="h[70px] object-cover object-center rounded cursor-pointer md:h-[105px]"
+            effect="blur"
           />
         ))}
       </div>

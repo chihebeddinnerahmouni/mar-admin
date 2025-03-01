@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import axios from 'axios'
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { axios_error_handler } from '../../functions/axios_error_handler'
 import InputSearch from '../../components/ui/inputs/InputSearch'
 
@@ -26,7 +26,7 @@ const SearchBarsCont = ({
     const [ownerSearch, setOwnerSearch] = useState("");
 
 
-  const search_by_boat_name = () => {
+  const search_by_boat_name = useCallback(() => {
     // console.log("boat");
     if (boatSearch === "") return;
     setLoading(true);
@@ -42,11 +42,11 @@ const SearchBarsCont = ({
         setLoading(false);
         axios_error_handler(error, t);
       });
-  };
+  }, [boatSearch]);
 
-  const search_by_owner_name = () => {
-    // console.log("owner");
-  };
+  const search_by_owner_name = useCallback(() => {
+    console.log(ownerSearch);
+  }, [ownerSearch]);
 
   return (
     <div className="w-full flex flex-col md:flex-row gap-4 max-w-[1000px] mx-auto">

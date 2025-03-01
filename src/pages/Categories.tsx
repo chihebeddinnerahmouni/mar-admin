@@ -45,7 +45,6 @@ const Categories: React.FC = () => {
     return null;
   }
 
-
   return (
     <div className={`md:p-8 mx-auto p-4 md:px-[40px] lg:max-w-[700px]`}>
       <div className="">

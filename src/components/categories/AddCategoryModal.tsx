@@ -1,13 +1,14 @@
 import { useTranslation } from "react-i18next";
-import React, { useState } from "react";
-import TextField from "@mui/material/TextField";
+import React, { useState, useCallback } from "react";
 import axios from "axios";
-import Swal from "sweetalert2";
 import IconButton from "@mui/material/IconButton";
 import Avatar from "@mui/material/Avatar";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import CloseIcon from "@mui/icons-material/Close";
 import LoadingButton from "../ui/LoadingButton";
+import InputText from "../ui/inputs/InputText";
+import { axios_error_handler } from "../../functions/axios_error_handler";
+
 
 
 
@@ -24,8 +25,6 @@ const AddCategoryModal: React.FC<UpdatePricesProps> = ({
   const [arName, setArName] = useState("");
   const [image, setImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const mainColor = "#FF385C";
-  const url = import.meta.env.VITE_SERVER_URL_CATEGORY as string;
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -34,29 +33,14 @@ const AddCategoryModal: React.FC<UpdatePricesProps> = ({
     }
   };
 
-  const handleContinue = () => {
-
-    // console.log(engName, arName, image);
-
-    const check = !engName || !image || !arName
-    if (check) return alert(t("please_fill_all_fields"));
-
-    setLoading(true); 
-
-    const formData = new FormData();
-    formData.append("name", engName);
-    formData.append("arabic_name", arName);
-    formData.append("image", image);
+  const request = useCallback(async (formData: any) => { 
+    const url = import.meta.env.VITE_SERVER_URL_CATEGORY as string;
     axios
-      .post(
-        `${url}/admin/categories`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-          },
-        }
-      )
+      .post(`${url}/admin/categories`, formData, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+        },
+      })
       .then(() => {
         // console.log(res);
         setLoading(false);
@@ -64,21 +48,21 @@ const AddCategoryModal: React.FC<UpdatePricesProps> = ({
         window.location.reload();
       })
       .catch((err) => {
-        // console.log(err);
+        axios_error_handler(err, t);
         setLoading(false);
-         if (err.message === "Network Error") {
-           Swal.fire({
-             title: t("network_error"),
-             text: t("please_try_again"),
-             customClass: {
-               confirmButton: "custom-confirm-button",
-             },
-           }).then(() => {
-             window.location.reload();
-           });
-         }
       });
-  };
+  }, []);
+
+  const handleContinue = useCallback(() => {
+    const check = !engName || !image || !arName
+    if (check) return alert(t("please_fill_all_fields"));
+    setLoading(true); 
+    const formData = new FormData();
+    formData.append("name", engName);
+    formData.append("arabic_name", arName);
+    formData.append("image", image);
+    request(formData);
+  }, [engName, arName, image, request]);
 
   return (
     <div className="mb-5 bg-white rounded-[5px] shadow-sm p-4 flex flex-col items-center relative">
@@ -111,59 +95,15 @@ const AddCategoryModal: React.FC<UpdatePricesProps> = ({
         </IconButton>
       </label>
       <div className="inputs flex gap-4 w-full">
-        <TextField
+        <InputText
           label={t("category_name_in_english")}
           value={engName}
-          onChange={(e) => setEngName(e.target.value)}
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          sx={{
-            "& .MuiOutlinedInput-root": {
-              "& fieldset": {
-                borderColor: "grey",
-              },
-              "&:hover fieldset": {
-                borderColor: "grey",
-              },
-              "&.Mui-focused fieldset": {
-                borderColor: mainColor,
-              },
-            },
-            "& .MuiInputLabel-root": {
-              color: "gray",
-            },
-            "& .MuiInputLabel-root.Mui-focused": {
-              color: mainColor,
-            },
-          }}
+          setValue={(e:any) => setEngName(e.target.value)}
         />
-        <TextField
+        <InputText
           label={t("category_name_in_arabic")}
           value={arName}
-          onChange={(e) => setArName(e.target.value)}
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          sx={{
-            "& .MuiOutlinedInput-root": {
-              "& fieldset": {
-                borderColor: "grey",
-              },
-              "&:hover fieldset": {
-                borderColor: "grey",
-              },
-              "&.Mui-focused fieldset": {
-                borderColor: mainColor,
-              },
-            },
-            "& .MuiInputLabel-root": {
-              color: "gray",
-            },
-            "& .MuiInputLabel-root.Mui-focused": {
-              color: mainColor,
-            },
-          }}
+          setValue={(e: any) => setArName(e.target.value)}
         />
       </div>
 

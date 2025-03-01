@@ -2,12 +2,12 @@ import ShipDetails from "../../components/boats/ShipDetailsComp";
 import { useEffect, useState } from "react";
 import LoadingLine from "../../components/ui/LoadingLine";
 import axios from "axios";
-import Pagination from "../../components/ui/Pagination";
+// import Pagination from "../../components/ui/Pagination";
 import { useNavigate, useLocation } from "react-router-dom";
 import Swal from "sweetalert2";
 import { useTranslation } from "react-i18next";
-// import boats_array from "../../assets/files/boats_array";
 import SearchBarsCont from "./SearchBarsCont";
+import { Pagination } from "@mui/material";
 
 
 const BoatsCont = () => {
@@ -21,11 +21,6 @@ const BoatsCont = () => {
   const location = useLocation();
   const { t } = useTranslation();
 
-  // useEffect(() => {
-  //     setShipsArray(boats_array.listings);
-  //   setLoading(false);
-  //   setTotalPages(boats_array.pagination.totalPages);
-  // }, []);
 
   const url = import.meta.env.VITE_SERVER_URL_LISTING;
   const fetchData = (currentPage: number) => {
@@ -159,11 +154,18 @@ const BoatsCont = () => {
           ))}
         </div>
       </div>
-      <div className="pagination w-full mt-10">
+      {/* <div className="pagination w-full mt-10">
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
           setCurrentPage={setCurrentPage}
+        />
+      </div> */}
+      <div className="pagination w-full mt-10 flex justify-center">
+        <Pagination
+          count={totalPages}
+          page={currentPage}
+          onChange={(_event, value) => setCurrentPage(value)}
         />
       </div>
     </>

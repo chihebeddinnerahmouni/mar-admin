@@ -21,7 +21,7 @@ const ButtonFunc = ({ text, loading = false, type = "button", color = mainColor,
       variant="outlined"
       fullWidth
       disabled={loading}
-      loading={loading}
+      // loading={loading}
       type={type}
       onClick={onClick ? onClick : () => {}}
       sx={{

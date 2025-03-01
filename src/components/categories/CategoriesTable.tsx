@@ -15,6 +15,8 @@ import DeleteCategoryModal from "./DeleteCategoryModal";
 import { useState } from "react";
 import AddCategoryModal from "./AddCategoryModal";
 import { useTranslation } from "react-i18next";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
 
 
 const CategoriesTable = ({
@@ -85,10 +87,10 @@ const CategoriesTable = ({
                   align="center"
                   sx={{ display: "flex", justifyContent: "center" }}
                 >
-                  <img
-                    // src={category.image}
+                  <LazyLoadImage
                     src={url + "/" + category.image}
                     alt={`${category.image}'s profile`}
+                    effect="blur"
                     className="w-[40px] h-[40px] rounded-full object-cover object-center"
                   />
                 </TableCell>

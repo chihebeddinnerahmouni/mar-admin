@@ -1,8 +1,10 @@
-import React, {useEffect, useState} from "react";
+import React, {useCallback} from "react";
 import CategoriesTable from "../components/categories/CategoriesTable";
 import LoadingLine from "../components/ui/LoadingLine";
 import axios from "axios";
 import { useTranslation } from "react-i18next";
+import { useQuery } from "@tanstack/react-query";
+import {axios_error_handler} from "../functions/axios_error_handler";
 
 
 
@@ -16,37 +18,31 @@ interface Category {
 
 const Categories: React.FC = () => {
 
-
-  // const categories = initialCategories
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [loading, setLoading] = useState(true);
-  const url = import.meta.env.VITE_SERVER_URL_CATEGORY;
   const { t } = useTranslation();
-
-  // console.log(url);
-
-  useEffect(() => {
-    axios.get(url + "/categories")
-      .then((res) => {
-        // console.log(res.data);
-        setCategories(res.data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.log(err);
-        setLoading(false);
-      });
+  
+  const fetshData = useCallback(async () => {
+    const url = import.meta.env.VITE_SERVER_URL_CATEGORY as string;
+    const res = await axios.get(url + "/categories");
+    return res.data;
   }, []);
+  
+  const { data, isLoading, error } = useQuery<Category[]>({
+    queryKey: ["getCategories"],
+    queryFn: fetshData,
+  });
 
 
-
-
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="w-full h-screen">
         <LoadingLine />
       </div>
     )
+  }
+
+  if (error) {
+    axios_error_handler(error, t);
+    return null;
   }
 
 
@@ -59,7 +55,7 @@ const Categories: React.FC = () => {
         <p className="text-sm md:text-base text-gray-600 mb-8">
           {t("categories_management_description")}
         </p>
-        <CategoriesTable categories={categories} />
+        <CategoriesTable categories={data} />
       </div>
     </div>
   );

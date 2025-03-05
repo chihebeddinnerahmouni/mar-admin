@@ -1,60 +1,41 @@
 import ListingTable from "../../components/listings/listingTable";
 import LoadingLine from "../../components/ui/LoadingLine";
 import axios from "axios";
-import { useEffect, useState } from "react";
-import Swal from "sweetalert2";
 import { useTranslation } from "react-i18next";
+import { useQuery } from "@tanstack/react-query";
+import { axios_error_handler } from "../../functions/axios_error_handler";
 
+const fetschData = async () => {
+  const url = import.meta.env.VITE_SERVER_URL_LISTING;
+  const { data } = await axios.get(`${url}/api/listing/listings/unvalidated/get`, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+    },
+  });
+  return data;
+}
 
 const MakeListings = () => {
-
-  const [requests, setRequests] = useState([]);
-  const [loading, setLoading] = useState(true);
   const { t } = useTranslation();
-  const url = import.meta.env.VITE_SERVER_URL_LISTING;
 
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["getInvListings"],
+    queryFn: () => fetschData(),
+  });
 
-
-
-  useEffect(() => {
-    axios
-      .get(url + "/api/listing/listings/unvalidated/get", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-        },
-      })
-      .then((res) => {
-        // console.log(res.data.listings);
-        setRequests(res.data.listings);
-        setLoading(false);
-      })
-      .catch((err) => {
-        // console.log(err.response.data);
-        if (err.message === "Network Error") {
-          Swal.fire({
-            icon: "error",
-            title: t("network_error"),
-            text: t("please_try_again"),
-            customClass: {
-              confirmButton: "custom-confirm-button",
-            },
-          }).then(() => {
-            window.location.reload();
-          });
-        }
-        // setLoading(false);
-      });
-  }, []);
-
-
-
-  if (loading) {
-    return (
-      <div className="w-full h-screen">
-        <LoadingLine />
-      </div>
-    );
+  if (isLoading) {
+    return <div className="w-full h-screen">
+      <LoadingLine />
+    </div>
   }
+
+  if (error) {
+    console.log(error);
+    axios_error_handler(error, t);
+    return null;
+  }
+
+
 
   return (
     <div className="p-4 md:p-8 lg:max-w-[1000px] mx-auto px-4 md:px-[40px]">
@@ -65,45 +46,10 @@ const MakeListings = () => {
         Explore and manage Listings with detailed insights into each type of
         boat available for rental.
       </p>
-      <ListingTable rows={requests} />
+      <ListingTable rows={data} />
     </div>
   );
 }
 
 export default MakeListings
 
-
-// const requests = [
-//   {
-//     id: 1,
-//     name: "chiheb rahmouni",
-//     image: "https://",
-//     email: "chihebrahmouni30@gmail.com",
-//     phone: "0773781669",
-//     boatName: "boat amazing world trips",
-//   },
-//   {
-//     id: 2,
-//     name: "dounia saidi",
-//     image: "https://",
-//     email: "chihebrahmouni30@gmail.com",
-//     phone: "0773781669",
-//     boatName: "boat amazing world trips",
-//   },
-//   {
-//     id: 3,
-//     name: "filali raouf",
-//     image: "https://",
-//     email: "chihebrahmouni30@gmail.com",
-//     phone: "0773781669",
-//     boatName: "boat amazing world trips",
-//   },
-//   {
-//     id: 4,
-//     name: "islem fortas",
-//     image: "https://",
-//     email: "chihebrahmouni30@gmail.com",
-//     phone: "0773781669",
-//     boatName: "boat amazing world trips",
-//   },
-// ];

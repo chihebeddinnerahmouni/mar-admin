@@ -15,8 +15,6 @@ import CheckDocuments from "../pages/documents/CheckDocuments.tsx";
 import MakeListings from "../pages/make listing/MakeListings.tsx";
 import AuthLayout from "../layout/authLayout.tsx";
 import Login from "../components/auth/Login.tsx";
-import Signup from "../components/auth/Signup.tsx";
-import ForgetPassword from "../components/auth/ForgetPassword.tsx";
 import CheckListing from "../pages/make listing/CheckListing.tsx";
 import Bookings from "../pages/Bookings.tsx";
 import NoPage from "../pages/NoPage.tsx";
@@ -53,8 +51,6 @@ export const router = createBrowserRouter([
     element: <AuthLayout />,
     children: [
       { path: "/login", element: <Login /> },
-      { path: "/register", element: <Signup /> },
-      { path: "/forgot-password", element: <ForgetPassword /> },
     ],
   },
   {

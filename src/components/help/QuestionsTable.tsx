@@ -1,9 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { FaTrash } from "react-icons/fa";
 import AddQst from "./AddQst";
 import { useTranslation } from "react-i18next";
+import { useQuery } from "@tanstack/react-query";
+import { axios_error_handler } from "../../functions/axios_error_handler";
+import {IQuestion} from "../../types/help/question";
+
+const getQuestionsByCategory = async (categoryId: number) => {
+  const url = import.meta.env.VITE_SERVER_URL_HELP;
+  if (categoryId !== 0) {
+    const response = await axios.get(url + `/categories/${categoryId}/questions`);
+    return response.data;
+  }
+}
 
 
 const TableOfQuestions = ({
@@ -17,34 +28,21 @@ const TableOfQuestions = ({
   const [selectedQuestionId, setSelectedQuestionId] = useState<number | null>(
     null
   );
-  const [questions, setQuestions] = useState<any[]>([]);
+  // const [questions, setQuestions] = useState<any[]>([]);
   const [isAddQstOpen, setIsAddQstOpen] = useState(false);
   const url = import.meta.env.VITE_SERVER_URL_HELP;
   const { t } = useTranslation();
 
-  useEffect(() => {
-    setQuestions([]);
-    axios
-      .get(url + `/categories/${categoryId}/questions`)
-      .then((res) => {
-        setQuestions(res.data);
-      })
-      .catch((err) => {
-         if (err.message === "Network Error") {
-           Swal.fire({
-             icon: "error",
-             title: t("network_error"),
-             text: t("please_try_again"),
-             customClass: {
-               confirmButton: "custom-confirm-button",
-             },
-           }).then(() => {
-             window.location.reload();
-           });
-         };
-      });
-  }, [categoryId]);
+  const { data: questions, error: questionsError } = useQuery<IQuestion[]>({
+    queryKey: ["questions", categoryId],
+    queryFn: () => getQuestionsByCategory(categoryId),
+    enabled: categoryId !== 0,
+  });
 
+  if (questionsError) {
+    axios_error_handler(questionsError, t);
+  }
+  
   const handleRowClick = (id: number) => {
     setSelectedQuestionId(selectedQuestionId === id ? null : id);
   };
@@ -63,7 +61,6 @@ const TableOfQuestions = ({
         axios
           .delete(`${url}/questions/${id}`)
           .then(() => {
-            // console.log(res.data);
             Swal.fire({
               icon: "success",
               title: t("greate"),
@@ -71,18 +68,7 @@ const TableOfQuestions = ({
             window.location.reload();
           })
           .catch((err) => {
-             if (err.message === "Network Error") {
-               Swal.fire({
-                 icon: "error",
-                 title: t("network_error"),
-                 text: t("please_try_again"),
-                 customClass: {
-                   confirmButton: "custom-confirm-button",
-                 },
-               }).then(() => {
-                 window.location.reload();
-               });
-             }
+             axios_error_handler(err, t);
           });
       }
     });
@@ -93,7 +79,7 @@ const TableOfQuestions = ({
     <div className="overflow-x-auto">
       {isAddQstOpen && (
         <AddQst setClose={setIsAddQstOpen} categoriesArray={helpCat} />
-      )}
+        )}
       <table className="min-w-full bg-white">
         <thead>
           <tr>
@@ -109,7 +95,7 @@ const TableOfQuestions = ({
           </tr>
         </thead>
         <tbody>
-          {questions.map((question) => (
+          {questions?.map((question) => (
             <React.Fragment key={question.id}>
               <tr
                 className="hover:bg-gray-100 cursor-pointer"
@@ -135,7 +121,7 @@ const TableOfQuestions = ({
                   <td colSpan={2} className="border px-4 py-2 ">
                     <div
                       dangerouslySetInnerHTML={{ __html: question.answer }}
-                    />
+                      />
                   </td>
                 </tr>
               )}
@@ -148,3 +134,5 @@ const TableOfQuestions = ({
 };
 
 export default TableOfQuestions;
+
+  

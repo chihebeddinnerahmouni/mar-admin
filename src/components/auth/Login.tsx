@@ -101,8 +101,6 @@ const Login = () => {
             </div>
           </div>
         </form>
-        <SignupPart />
-        <PrivacyPart />
       </div>
     </div>
   );
@@ -142,35 +140,5 @@ const ForgotPassword = () => {
     >
       {t("forgotPassword")}
     </Link>
-  );
-};
-
-const SignupPart = () => {
-  const { t } = useTranslation();
-  return (
-    <div className="text-xs mt-5 flex gap-1">
-      <p>{t("dontHaveAccount")}</p>
-      <Link to="/register" className="text-main font-semibold underline">
-        {t("create_account")}
-      </Link>
-    </div>
-  );
-};
-
-const PrivacyPart = () => {
-  const { t } = useTranslation();
-  return (
-    <div className="policy">
-      <p className="text-xs text-gray-400 mt-5">
-        {t("by_continuing_you_agree_to_our")}{" "}
-        <Link to="/terms" className="text-main underline">
-          {t("terms")}
-        </Link>{" "}
-        {t("and")}{" "}
-        <Link to="/privacy" className="text-main underline">
-          {t("privacy")}
-        </Link>
-      </p>
-    </div>
   );
 };

@@ -5,6 +5,8 @@ import { useContext } from "react";
 import { AppContext } from "../../App";
 import { IoIosLogOut } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
+
 
 ReactModal.setAppElement("#root");
 
@@ -12,6 +14,7 @@ const DropDownMenuModal = ({ setClose }: any) => {
   const { i18n, t } = useTranslation();
   const url = import.meta.env.VITE_SERVER_URL_USERS as string;
   const { profilePicture, name, surname } = useContext(AppContext);
+  const queryClient = useQueryClient();
 
   const navigate = useNavigate();
 
@@ -49,7 +52,9 @@ const DropDownMenuModal = ({ setClose }: any) => {
         onClick={() => {
           localStorage.removeItem("jwt");
           setClose(false);
+          queryClient.clear();
           navigate("/login");
+
         }}
         className="w-full flex items-center gap-2 text-writingMainDark"
       >

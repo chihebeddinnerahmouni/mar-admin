@@ -76,15 +76,14 @@
 
 
 import { Editor } from "@tinymce/tinymce-react";
-import { useTranslation } from "react-i18next";
 
 interface Props {
-    value: string;
-    setValue: any;
+    value?: string;
+  setValue: any;
+  initielValue: string;
 }
 
-const HtmlEditor = ({setValue}: Props) => {
-    const { t } = useTranslation();
+const HtmlEditor = ({setValue, initielValue}: Props) => {
   return (
 <Editor
   apiKey="trrkyoh7hvt1k7rolyktoalj3j8u1234p1e3isyk9mdfuj4j"
@@ -134,7 +133,8 @@ const HtmlEditor = ({setValue}: Props) => {
       },
     },
   }}
-  initialValue={`${t("answer_in_english")}...`}
+      // initialValue={`${t("answer_in_english")}...`}
+      initialValue={initielValue}
   onEditorChange={setValue}
 />
   )

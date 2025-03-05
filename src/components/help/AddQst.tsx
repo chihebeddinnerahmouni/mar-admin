@@ -40,7 +40,6 @@ const AddQst: React.FC<AddQstProps> = ({ setClose, categoriesArray }) => {
       .catch((error) => {
         axios_error_handler(error, t);
       });
-    setClose(false);
   };
 
   return (
@@ -155,8 +154,8 @@ const Step2 = ({ question, setQuestion, answer, setAnswer, setStep }: {
         value={question}
         setValue={(e: any) => setQuestion(e.target.value)}
       />
-      <HtmlEditor value={answer} setValue={setAnswer} />
-        <ButtonFunc text="Next" onClick={nextFunc} />
+      <HtmlEditor setValue={setAnswer} initielValue={`${t("answer_in_english")}...`} />
+      <ButtonFunc text="Next" onClick={nextFunc} />
     </div>
   );
 };
@@ -196,7 +195,9 @@ const Step3 = ({
         value={arabic_question}
         setValue={(e: any) => setArabicQuestion(e.target.value)}
       />
-      <HtmlEditor value={arabic_answer} setValue={setArabicAnswer} />
+      <HtmlEditor setValue={setArabicAnswer}
+      initielValue={`${t("answer_in_arabic")}...`}
+      />
       <ButtonFunc text="Next" onClick={nextFunc} />
     </div>
   );

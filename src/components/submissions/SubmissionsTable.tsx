@@ -298,19 +298,53 @@ import {
 import AcceptOneSubmission from "./AcceptOneSubmission";
 import DeleteOneSubmittion from "./DeleteOneSubmittion";
 import { useTranslation } from "react-i18next";
+interface City {
+  en: string;
+  ar: string;
+}
+
+interface BoatType {
+  en: string;
+  ar: string;
+}
+
+interface User {
+  id: number;
+  name: string;
+  surname: string;
+  email: string;
+  password: string;
+  phoneNumber: string;
+  profilePicture: string | null;
+  dateOfBirth: string | null;
+  address: string | null;
+  isAuthorized: string;
+  role: string;
+  lastLogin: string | null;
+  isVerified: boolean;
+  preferences: string | null;
+  block: boolean;
+  suspend: boolean;
+  contact: boolean;
+  createdAt: string;
+  description: string | null;
+  languageSpoken: string | null;
+  updatedAt: string;
+}
 
 interface Data {
   id: number;
   user_id: number;
   admin_contacted: boolean;
-  boat_type: string;
+  boat_type: BoatType;
   business_management: string;
   business_type: string;
-  city: string;
+  city: City;
   status: string;
   created_at: string; // ISO date string (can be converted to Date if needed)
   updated_at: string; // ISO date string (can be converted to Date if needed)
   user_response: string | null;
+  user: User;
 }
 
 
@@ -321,68 +355,51 @@ interface HeadCell {
   numeric: boolean;
 }
 
-const headCells: readonly HeadCell[] = [
-  {
-    id: "boat_type",
-    numeric: false,
-    disablePadding: false,
-    label: "Boat Type",
-  },
-  {
-    id: "business_management",
-    numeric: false,
-    disablePadding: false,
-    label: "Business Management",
-  },
-  {
-    id: "business_type",
-    numeric: false,
-    disablePadding: false,
-    label: "Business Type",
-  },
-  {
-    id: "city",
-    numeric: false,
-    disablePadding: false,
-    label: "City",
-  },
-  {
-    id: "status",
-    numeric: false,
-    disablePadding: false,
-    label: "Status",
-  },
-  {
-    id: "admin_contacted",
-    numeric: false,
-    disablePadding: false,
-    label: "Admin Contacted",
-  },
-  {
-    id: "created_at",
-    numeric: false,
-    disablePadding: false,
-    label: "Created At",
-  },
-  {
-    id: "updated_at",
-    numeric: false,
-    disablePadding: false,
-    label: "Updated At",
-  },
-];
 
 
 interface EnhancedTableProps {
-
+  
 }
 
 function EnhancedTableHead(props: EnhancedTableProps) {
   const {
   } = props;
-
+  
   const { t } = useTranslation();
-
+  
+  const headCells: readonly HeadCell[] = [
+    {
+      id: "boat_type",
+      numeric: false,
+      disablePadding: false,
+      label: t("boat_type"),
+    },
+    {
+      id: "business_type",
+      numeric: false,
+      disablePadding: false,
+      label: t("business_type"),
+    },
+    {
+      id: "city",
+      numeric: false,
+      disablePadding: false,
+      label: t("city"),
+    },
+    {
+      id: "status",
+      numeric: false,
+      disablePadding: false,
+      label: t("status"),
+    },
+    {
+      id: "created_at",
+      numeric: false,
+      disablePadding: false,
+      label: t("created_at"),
+    },
+  ];
+  
   return (
     <TableHead>
       <TableRow>
@@ -429,7 +446,8 @@ export default function EnhancedTable({rows}: {rows: Data[]}) {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
     };
-    
+  
+  
   return (
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
@@ -457,28 +475,21 @@ export default function EnhancedTable({rows}: {rows: Data[]}) {
                }}
              >
                <TableCell align="center" className="text-nowrap">
-                 {t(submittion.boat_type)}
-               </TableCell>
-               <TableCell className="text-nowrap" align="center">
-                 {t(submittion.business_management)}
+                 {i18n.language === "en" ? submittion.boat_type.en : submittion.boat_type.ar}
                </TableCell>
                <TableCell className="text-nowrap" align="center">
                  {t(submittion.business_type)}
                </TableCell>
                <TableCell className="text-nowrap" align="center">
-                 {t(submittion.city)}
+                  {i18n.language === "en"
+                    ? submittion.city.en
+                   : submittion.city.ar}
                </TableCell>
                <TableCell className="text-nowrap" align="center">
-                 {t(submittion.status)}
-               </TableCell>
-               <TableCell className="text-nowrap" align="center">
-                 {submittion.admin_contacted ? t("Yes") : t("No")}
+                 {t(submittion.status.toLocaleLowerCase())}
                </TableCell>
                <TableCell className="text-nowrap" align="center">
                  {new Date(submittion.created_at).toLocaleString(i18n.language)}
-               </TableCell>
-               <TableCell className="text-nowrap" align="center">
-                 {new Date(submittion.updated_at).toLocaleString(i18n.language)}
                </TableCell>
 
                <TableCell align="right">

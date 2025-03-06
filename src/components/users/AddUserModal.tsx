@@ -1,13 +1,26 @@
 import React, { useState } from "react";
 import ReactModal from "react-modal";
-import { TextField, Button, Box, IconButton, Avatar } from "@mui/material";
-import { CameraAlt } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
+import InputText from "../ui/inputs/InputText";
+import InputEmail from "../ui/inputs/InputEmail";
+import InputPassword from "../ui/inputs/InputPassword";
+import InputTel from "../ui/inputs/InputTel";
+import ButtonFunc from "../ui/buttons/Button";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
+import { axios_error_handler } from "../../functions/axios_error_handler";
+
 
 interface DeleteModalProps {
     setClose: (isOpen: number) => void;
 }
 ReactModal.setAppElement("#root");
+
+const createUser = async (body: any) => {
+  const URL = import.meta.env.VITE_SERVER_URL_USERS as string;
+  const { data } = await axios.post(`${URL}/api/user/register`, body);
+  return data;
+};
 
 const AddUserModal: React.FC<DeleteModalProps> = ({ setClose }) => {
     const [firstName, setFirstName] = useState("");
@@ -16,24 +29,39 @@ const AddUserModal: React.FC<DeleteModalProps> = ({ setClose }) => {
     const [phone, setPhone] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
-  const [profilePic, setProfilePic] = useState<File | null>(null);
-  const mainColor = "#FF385C";
   const { t } = useTranslation();
 
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: createUser,
+    onSuccess: () => {
+      window.location.reload();
+    },
+    onError: (error) => {
+      axios_error_handler(error, t);
+    },
+  });
+
+
   const handleAddUser = () => {
-    const check = !firstName || !lastName || !email || !phone || !password || !confirmPassword;
-        if (check) {
-            alert("Please fill in all fields");
-        }
-  };
-  
-
-
-    const handleProfilePicChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        if (event.target.files && event.target.files[0]) {
-            setProfilePic(event.target.files[0]);
-        }
+    const array = [firstName, lastName, email, phone, password, confirmPassword];
+    const check = array.some((item) => item === "");
+    if (check) {
+      alert("Please fill in all fields");
+    }
+    if (password !== confirmPassword) {
+      alert("Passwords do not match");
+    }
+    const body = {
+      name: firstName,
+      surname: lastName,
+      email,
+      password,
+      phoneNumber: phone,
     };
+    mutate(body);
+  };
+
 
     return (
       <ReactModal
@@ -44,137 +72,53 @@ const AddUserModal: React.FC<DeleteModalProps> = ({ setClose }) => {
           "fixed bg-black bg-opacity-10 backdrop-blur-[7px] inset-0 flex items-center justify-center p-4"
         }
       >
-        <Box display="flex" flexDirection="column" alignItems="center">
-          <IconButton component="label">
-            <input
-              type="file"
-              accept="image/*"
-              hidden
-              onChange={handleProfilePicChange}
-            />
-            <Avatar
-              src={profilePic ? URL.createObjectURL(profilePic) : undefined}
-              sx={{
-                width: 80,
-                height: 80,
-                backgroundColor: profilePic ? "transparent" : "#ECECEE",
-              }}
-            >
-              {!profilePic && (
-                <CameraAlt fontSize="medium" className="text-main" />
-              )}
-            </Avatar>
-          </IconButton>
-
-          <Box display="flex" gap={2} mt={2}>
-            <TextField
-              sx={{
-                "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                  {
-                    borderColor: mainColor,
-                  },
-                "& .MuiInputLabel-root.Mui-focused": {
-                  color: mainColor,
-                },
-              }}
+        <div className="space-y-4">
+          <div className="flex gap-4 items-center w-full">
+            <InputText
               label={t("first_name")}
               value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
+              setValue={(e: any) => setFirstName(e.target.value)}
             />
-            <TextField
-              sx={{
-                "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                  {
-                    borderColor: mainColor,
-                  },
-                "& .MuiInputLabel-root.Mui-focused": {
-                  color: mainColor,
-                },
-              }}
+            <InputText
               label={t("last_name")}
               value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
+              setValue={(e: any) => setLastName(e.target.value)}
             />
-          </Box>
+          </div>
 
-          <Box display="flex" gap={2} mt={2}>
-            <TextField
-              sx={{
-                "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                  {
-                    borderColor: mainColor,
-                  },
-                "& .MuiInputLabel-root.Mui-focused": {
-                  color: mainColor,
-                },
-              }}
+          <div className="flex gap-4 items-center w-full">
+            <InputEmail
               label={t("email")}
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              setValue={(e: any) => setEmail(e.target.value)}
             />
-            <TextField
-              sx={{
-                "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                  {
-                    borderColor: mainColor,
-                  },
-                "& .MuiInputLabel-root.Mui-focused": {
-                  color: mainColor,
-                },
-              }}
+            <InputTel
               label={t("phone")}
               value={phone}
-              onChange={(e) => setPhone(e.target.value)}
+              setValue={(e: any) => setPhone(e)}
             />
-          </Box>
+          </div>
 
-          <Box display="flex" gap={2} mt={2}>
-            <TextField
-              sx={{
-                "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                  {
-                    borderColor: mainColor,
-                  },
-                "& .MuiInputLabel-root.Mui-focused": {
-                  color: mainColor,
-                },
-              }}
+          <div className="flex gap-4 items-center w-full">
+            <InputPassword
               label={t("password")}
-              type="password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              setValue={(e: any) => setPassword(e.target.value)}
             />
-            <TextField
-              sx={{
-                "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                  {
-                    borderColor: mainColor,
-                  },
-                "& .MuiInputLabel-root.Mui-focused": {
-                  color: mainColor,
-                },
-              }}
+            <InputPassword
               label={t("confirm_password")}
-              type="password"
               value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
+              setValue={(e: any) => setConfirmPassword(e.target.value)}
             />
-          </Box>
-
-          <Button
-            variant="contained"
-            onClick={handleAddUser}
-            sx={{
-              mt: 3,
-              backgroundColor: mainColor,
-              color: "white",
-              width: "100%",
-              height: 40,
-            }}
-          >
-            {t("save")}
-          </Button>
-        </Box>
+          </div>
+          <div className="mt-5 w-full">
+            <ButtonFunc
+              text={t("save")}
+              onClick={handleAddUser}
+              loading={isPending}
+            />
+          </div>
+        </div>
       </ReactModal>
     );
 };

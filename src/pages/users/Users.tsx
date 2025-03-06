@@ -25,7 +25,7 @@ const Users = () => {
     return res.data;
   }, []);
 
-  const { data, error, isLoading } = useQuery({
+  const { data, error, isLoading, refetch } = useQuery({
     queryKey: ['getUsers'],
     queryFn: fetchData
   });
@@ -63,7 +63,10 @@ const Users = () => {
             <UserStat key={user.id} Item={user} />
           ))}
         </div>
-        <TableUsers users={data} />
+        <TableUsers
+          users={data}
+          refetch={refetch}
+        />
       </div>
     );
 }

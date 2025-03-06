@@ -1,19 +1,23 @@
 import ReactModal from "react-modal";
 import { useTranslation } from "react-i18next";
 import SwitchLangMobile from "./SwitchLangMobile";
-import { useContext } from "react";
-import { AppContext } from "../../App";
+// import { useContext } from "react";
+// import { AppContext } from "../../App";
 import { IoIosLogOut } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 
 
 ReactModal.setAppElement("#root");
+interface Props {
+  setClose: React.Dispatch<React.SetStateAction<boolean>>;
+  data: any;
+}
 
-const DropDownMenuModal = ({ setClose }: any) => {
+const DropDownMenuModal = ({ setClose, data }: Props) => {
   const { i18n, t } = useTranslation();
   const url = import.meta.env.VITE_SERVER_URL_USERS as string;
-  const { profilePicture, name, surname } = useContext(AppContext);
+  // const { profilePicture, name, surname } = useContext(AppContext);
   const queryClient = useQueryClient();
 
   const navigate = useNavigate();
@@ -33,12 +37,16 @@ const DropDownMenuModal = ({ setClose }: any) => {
     >
       <div className="user flex items-center gap-2">
         <img
-          src={profilePicture ? url + "/" + profilePicture : "/anonyme.jpg"}
+          src={
+            data.profilePicture
+              ? url + "/" + data?.profilePicture
+              : "/anonyme.jpg"
+          }
           alt="profile, picture"
           className="w-[35px] h-[35px] object-cover object-center rounded-50"
         />
         <p className="text-sm text-writingMainDark font-medium">
-          {name} {surname}
+          {data?.name} {data?.surname}
         </p>
       </div>
 
@@ -54,7 +62,6 @@ const DropDownMenuModal = ({ setClose }: any) => {
           setClose(false);
           queryClient.clear();
           navigate("/login");
-
         }}
         className="w-full flex items-center gap-2 text-writingMainDark"
       >

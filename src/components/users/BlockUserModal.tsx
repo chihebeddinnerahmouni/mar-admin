@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next';
 import { axios_error_handler } from '../../functions/axios_error_handler';
 
 
-
 interface DeleteModalProps {
   setClose: (isOpen: number) => void;
   user: any;
@@ -22,12 +21,11 @@ const BlockModal: React.FC<DeleteModalProps> = ({
   // refetch,
   // onClose,
 }) => {
-  // console.log(user);
   const url = import.meta.env.VITE_SERVER_URL_USERS;
   const [loading, setLoading] = React.useState(false);
   const { t } = useTranslation();
 
-  // console.log(user);
+  console.log(user);
 
   const block = async (e: any) => {
     e.stopPropagation();
@@ -41,8 +39,6 @@ const BlockModal: React.FC<DeleteModalProps> = ({
       })
       .then(() => {
         window.location.reload();
-        // onClose();
-        // refetch();
       })
       .catch((err) => {
         setLoading(false);
@@ -68,11 +64,11 @@ const BlockModal: React.FC<DeleteModalProps> = ({
       />
 
       <h1 className="text-2xl font-bold text-center mt-4 lg:text-3xl">
-        {user.name}
+        {user.name} {user.surname}
       </h1>
       <p className="text-gray-500 text-center mt-1 lg:text-lg">
         {t("are_you_sure_you_want_to")}{" "}
-        <span className="text-red-500 font-semibold">{t("block")}</span>{" "}
+        <span className={`font-semibold ${user.block ? "text-green-500" : "text-red-500"}`}>{user.block ? t("unblock") : t("block")}</span>{" "}
         <span className="font-semibold">{user.name + " " + user.surname}</span>
       </p>
 
@@ -87,11 +83,14 @@ const BlockModal: React.FC<DeleteModalProps> = ({
           {t("cancel")}
         </button>
         <button
-          className="w-full bg-red-500 text-white px-4 py-2 rounded-lg"
+          className={`w-full text-white px-4 py-2 rounded-lg
+          ${user.block ? "bg-green-500" : "bg-red-500"}
+          `}
           onClick={block}
           disabled={loading}
         >
-          {loading ? <LoadingButton /> : t("block")}
+          {/* {loading ? <LoadingButton /> : t("block")} */}
+          {loading ? <LoadingButton /> : user.block ? t("unblock") : t("block")}
         </button>
       </div>
     </ReactModal>

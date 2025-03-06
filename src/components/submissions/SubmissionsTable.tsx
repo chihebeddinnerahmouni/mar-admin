@@ -67,17 +67,9 @@ interface Data {
 }
 
 
-interface HeadCell {
-  disablePadding: boolean;
-  id: keyof Data;
-  label: string;
-  numeric: boolean;
-}
 
 
-
-interface EnhancedTableProps {
-  
+interface EnhancedTableProps { 
 }
 
 function EnhancedTableHead(props: EnhancedTableProps) {
@@ -86,7 +78,25 @@ function EnhancedTableHead(props: EnhancedTableProps) {
   
   const { t } = useTranslation();
   
-  const headCells: readonly HeadCell[] = [
+  const headCells = [
+    {
+      id: "name",
+      numeric: false,
+      disablePadding: false,
+      label: t("name"),
+    },
+    {
+      id: "phone",
+      numeric: false,
+      disablePadding: false,
+      label: t("phone"),
+    },
+    {
+      id: "email",
+      numeric: false,
+      disablePadding: false,
+      label: t("email"),
+    },
     {
       id: "boat_type",
       numeric: false,
@@ -142,7 +152,6 @@ function EnhancedTableHead(props: EnhancedTableProps) {
 // Main Table component
 export default function EnhancedTable({rows}: {rows: Data[]}) {
 
-
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const { i18n, t } = useTranslation();
@@ -193,6 +202,15 @@ export default function EnhancedTable({rows}: {rows: Data[]}) {
                  },
                }}
              >
+               <TableCell align="center" className="text-nowrap">
+                 {submittion.user.name} {submittion.user.surname}
+               </TableCell>
+               <TableCell align="center" className="text-nowrap">
+                 {submittion.user.phoneNumber}
+               </TableCell>
+               <TableCell align="center" className="text-nowrap">
+                 {submittion.user.email}
+               </TableCell>
                <TableCell align="center" className="text-nowrap">
                  {i18n.language === "en" ? submittion.boat_type.en : submittion.boat_type.ar}
                </TableCell>

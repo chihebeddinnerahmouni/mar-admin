@@ -45,7 +45,6 @@ const Users = () => {
   }
 
 
-  console.log(data[3]);
 
 
     return (

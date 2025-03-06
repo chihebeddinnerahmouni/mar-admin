@@ -14,7 +14,7 @@ interface DeleteModalProps {
 ReactModal.setAppElement("#root"); 
     
 
-const DeleteModal: React.FC<DeleteModalProps> = ({ setClose, user }) => {
+const BlockModal: React.FC<DeleteModalProps> = ({ setClose, user }) => {
     
 
     // console.log(user);
@@ -104,4 +104,4 @@ const DeleteModal: React.FC<DeleteModalProps> = ({ setClose, user }) => {
     );
 };
 
-export default DeleteModal
+export default BlockModal;

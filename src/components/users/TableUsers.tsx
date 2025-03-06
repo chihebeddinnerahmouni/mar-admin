@@ -8,7 +8,7 @@ import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import { visuallyHidden } from "@mui/utils";
 import { IoSearchSharp } from "react-icons/io5";
-import DeleteModal from "./DeleteUserModal";
+import BlockUserModal from "./BlockUserModal";
 import AddUserModal from "./AddUserModal";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import BlockIcon from "@mui/icons-material/Block";
@@ -23,6 +23,8 @@ import {
   TableBody,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
 
 
 interface Data {
@@ -186,9 +188,7 @@ export default function EnhancedTable({ users }: any) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [searchQuery, setSearchQuery] = React.useState("");
-  const [deleteModalUserId, setDeleteModalUserId] = React.useState<
-    number | null
-    >(0);
+  const [blockedUserId, setBlockedUserId] = React.useState<number | null>(0);
   const url = import.meta.env.VITE_SERVER_URL_USERS;
 
   const handleRequestSort = (
@@ -268,13 +268,14 @@ export default function EnhancedTable({ users }: any) {
                       padding="normal"
                       align="center"
                     >
-                      <img
+                      <LazyLoadImage
                         src={
                           user.profilePicture
                             ? url + "/" + user.profilePicture
                             : "/anonyme.jpg"
                         }
                         alt={`${user.name}'s profile`}
+                        effect="blur"
                         className="w-[40px] h-[40px] rounded-full object-cover object-center mx-auto"
                       />
                     </TableCell>
@@ -317,7 +318,10 @@ export default function EnhancedTable({ users }: any) {
                         <IconButton
                           onClick={(event) => {
                             event.stopPropagation();
-                            window.open(`/users/transactions/${user.id}`, "_blank");
+                            window.open(
+                              `/users/transactions/${user.id}`,
+                              "_blank"
+                            );
                           }}
                         >
                           <PaidIcon className="text-yellow-400 hover:text-yellow-500" />
@@ -333,16 +337,22 @@ export default function EnhancedTable({ users }: any) {
                         <IconButton
                           onClick={(event) => {
                             event.stopPropagation();
-                            setDeleteModalUserId(user.id);
+                            setBlockedUserId(user.id);
                           }}
                         >
-                          <BlockIcon className="text-main hover:text-mainHover" />
+                          <BlockIcon
+                            className={`${
+                              user.block
+                                ? "text-green-500 hover:text-green-700"
+                                : "text-red-500 hover:text-red-700"
+                            }`}
+                          />
                         </IconButton>
                       </Box>
                     </TableCell>
-                    {deleteModalUserId === user.id && (
-                      <DeleteModal
-                        setClose={() => setDeleteModalUserId(null)}
+                    {blockedUserId === user.id && (
+                      <BlockUserModal
+                        setClose={() => setBlockedUserId(null)}
                         user={user}
                       />
                     )}

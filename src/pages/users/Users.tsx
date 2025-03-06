@@ -20,7 +20,8 @@ const Users = () => {
   
   const fetchData = useCallback(async () => { 
     const url = import.meta.env.VITE_SERVER_URL_USERS;
-    const res = await axios.get(url + "/admin/user/users?block=false&suspend=false");
+    // const res = await axios.get(url + "/admin/user/users?block=false&suspend=false");
+    const res = await axios.get(url + "/admin/user/users");
     return res.data;
   }, []);
 
@@ -44,6 +45,7 @@ const Users = () => {
   }
 
 
+  console.log(data[3]);
 
 
     return (

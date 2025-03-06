@@ -38,7 +38,7 @@ export const router = createBrowserRouter([
       { path: "/submissions", element: <Submissions /> },
       { path: "/documents", element: <Documents /> },
       {
-        path: "/documents/check-document/:userId",
+        path: "/documents/check-document/:submittionId",
         element: <CheckDocuments />,
       },
       { path: "/listings", element: <MakeListings /> },

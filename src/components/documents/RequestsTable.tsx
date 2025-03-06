@@ -16,7 +16,8 @@ import {
   TableBody,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
-
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
 
 
 interface Data {
@@ -136,7 +137,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
 }
 
 // Main Table component
-export default function EnhancedTable({ rows }: any) {
+export default function EnhancedTable({ rows }: {rows: any[]}) {
 
   // const [selected, setSelected] = React.useState<readonly number[]>([]);
   const [page, setPage] = React.useState(0);
@@ -202,9 +203,10 @@ export default function EnhancedTable({ rows }: any) {
                       padding="normal"
                       sx={{ display: "flex", justifyContent: "center" }}
                     >
-                      <img
-                        src={url + "/" + row.user.profilePicture}
+                      <LazyLoadImage
                         alt={`${row.name}'s profile`}
+                        src={row.user.profilePicture ? url + "/" + row.user.profilePicture : "/anonyme.jpg"}
+                        effect="blur"
                         className="w-[40px] h-[40px] rounded-full object-cover object-center"
                       />
                     </TableCell>
@@ -239,26 +241,15 @@ export default function EnhancedTable({ rows }: any) {
                     <TableCell align="center" className="text-nowrap">
                       {
                         i18n.language === "en"
-                        ? row.submission.boat_type
-                        : row.submission.boat_type
+                        ? row.submission.boat_type.en
+                        : row.submission.boat_type.ar
                       }
-                      {/* {
-                        i18n.language === "en"
-                        ? row.submission.boat_type.name
-                        : row.submission.boat_type
-                      } */}
                     </TableCell>
                     <TableCell className="text-nowrap" align="center">
-                      {/* {user.city} */}
-                      {/* {
-                        i18n.language === "en"
-                        ? row.submission.city.name
-                        : row.submission.city.arabic_name
-                      } */}
                       {
                         i18n.language === "en"
-                        ? row.submission.city
-                        : row.submission.city
+                        ? row.submission.city.en
+                        : row.submission.city.ar
                       }
                     </TableCell>
                     <TableCell align="right">

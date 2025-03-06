@@ -10,154 +10,88 @@ import Features from "../../components/check listing/Features";
 import Category from "../../components/check listing/Category";
 import Location from "../../components/check listing/Location";
 import axios from "axios";
-import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import LoadingLine from "../../components/ui/LoadingLine";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import LoadingButton from "../../components/ui/LoadingButton";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { axios_error_handler } from "../../functions/axios_error_handler";
+import { useCallback } from "react";
 
 
+const url = import.meta.env.VITE_SERVER_URL_LISTING as string;
+const fetshListing = async ( listingId: string) => {
+  const {data} = await axios.get(`${url}/api/listing/listings/${listingId}`);
+  return data;
+}
+
+const responseFunc = async (
+  values: {
+    validated: boolean;
+    blocked: boolean;
+    block_reason: string;
+  },
+  listingId: string
+) => {
+  const { data } = await axios.put(
+    `${url}/api/listing/listings/${listingId}/status`,
+    values,
+    {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+      },
+    }
+  );
+  return data;
+};
 
 const CheckListing = () => {
-
-  const [listing, setListing] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-  const [loadingButton, setLoadingButton] = useState(false);
-  const [loadingRefuse, setLoadingRefuse] = useState(false);
   const { listingId } = useParams<{ listingId: string }>();
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const url = import.meta.env.VITE_SERVER_URL_LISTING as string;
+
+  const { data, error, isLoading } = useQuery({
+    queryKey: ["getListing", listingId],
+    queryFn: () => fetshListing(listingId!),
+  });
 
   
-  useEffect(() => {
-   axios
-     .get(`${url}/api/listing/listings/${listingId}`)
-     .then((res) => {
-       if (res.data.validated === true) {
-        return  Swal.fire("error", "listing_already_accepted", "error").then(() => {
-            navigate("/listings");
-          });
-       }
-       setListing(res.data);
-       setLoading(false);
-     })
-     .catch((err) => {
-      //  console.log(err);
-       if (err.status === 404) {
-         Swal.fire("error", "theres_no_boat_match_this_id", "error").then(
-           () => {
-             navigate("/listings");
-           }
-         );
-       } else if (err.message === "Network Error") {
-         Swal.fire({
-           icon: "error",
-           title: t("network_error"),
-           text: t("please_try_again"),
-           customClass: {
-             confirmButton: "custom-confirm-button",
-           },
-         }).then(() => {
-           window.location.reload();
-         });
-       }
-     });
-  }, [listingId]);
 
+  const { mutate, isPending } = useMutation({
+  mutationFn: ({ values, listingId }: { values: { validated: boolean; blocked: boolean; block_reason: string }; listingId: string }) =>
+    responseFunc(values, listingId),
+  onError: (error) => {
+    axios_error_handler(error, t);
+  },
+  onSuccess: () => {
+    Swal.fire("success", t("great"));
+    navigate("/listings");
+  },
+});
 
-
-  const accept = () => {
-    if (loadingRefuse) return;
-    setLoadingButton(true);
-    axios
-      .put(
-        `${url}/api/listing/listings/${listingId}/status`,
-        {
-          validated: true,
-          blocked: false,
-          block_reason: "This is a test reason",
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-          },
-        }
-      )
-      .then((res) => {
-        console.log(res.data);
-        Swal.fire("success", t("great"))
-        navigate("/listings");
-      })
-      .catch((err) => {
-        if (err.message === "Network Error") {
-          Swal.fire({
-            icon: "error",
-            title: t("network_error"),
-            text: t("please_try_again"),
-            customClass: {
-              confirmButton: "custom-confirm-button",
-            },
-          }).then(() => {
-            window.location.reload();
-          });
-        }
-        // Swal.fire("error", "error_occured", "error");
-      })
-      .finally(() => {
-        setLoadingButton(false);
-      });
-   }
-
-  const refuse = () => {
-    if (loadingButton) return;
-    setLoadingRefuse(true);
-    axios
-      .put(
-        `${url}/api/listing/listings/${listingId}/status`,
-        {
-          validated: false,
-          blocked: true,
-          block_reason: "This is a test reason",
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-          },
-        }
-      )
-      .then(() => {
-        Swal.fire("success", t("great"));
-        navigate("/listings");
-      })
-      .catch((err) => {
-        if (err.message === "Network Error") {
-          Swal.fire({
-            icon: "error",
-            title: t("network_error"),
-            text: t("please_try_again"),
-            customClass: {
-              confirmButton: "custom-confirm-button",
-            },
-          }).then(() => {
-            window.location.reload();
-          });
-        }
-        // Swal.fire("error", "error_occured", "error");
-      })
-      .finally(() => {
-        setLoadingButton(false);
-      });
-  }
-
-
-  if (loading) return (
+if (isLoading)
+  return (
     <div className="w-full h-screen">
       <LoadingLine />
     </div>
-  )
+  );
+if (error) {
+  axios_error_handler(error, t);
+  return null;
+  }
+  
+  const response = useCallback((resp: boolean) => { 
+    mutate({
+      values: {
+        validated: resp,
+        blocked: !resp,
+        block_reason: "This is a test reason",
+      },
+      listingId: listingId!,
+    });
+  }, [listingId, mutate]);
 
 
 
@@ -165,39 +99,39 @@ const CheckListing = () => {
   return (
     <div className="p-4 md:p-8 lg:max-w-[700px] mx-auto pb-10 px-4 md:px-[40px]">
       <h1 className="text-3xl md:text-4xl font-extrabold mb-4 text">
-        Details of {listing.owner.name} {listing.owner.surname}'s Listing
+        Details of {data.owner.name} {data.owner.surname}'s data
       </h1>
       <p className="text-sm md:text-base text-gray-600 mb-8">
-        This is what {listing.owner.name} uploaded as informations for his/her
+        This is what {data.owner.name} uploaded as informations for his/her
         listsing.
       </p>
 
       <div className="buttons bg-creme h-[60px] flex justify-end items-center gap-4 mb-8 sticky top-[60px] lg:top-[80px] z-10">
         <button
           className="bg-green-500 text-white w-[90px] h-10 rounded hover:bg-green-600"
-          onClick={accept}
+          onClick={() => response(true)}
         >
-          {loadingButton ? <LoadingButton /> : t("accept")}
+          {isPending ? <LoadingButton /> : t("accept")}
         </button>
         <button
           className="bg-main text-white w-[90px] h-10 rounded hover:bg-mainHover"
-          onClick={refuse}
+          onClick={() => response(false)}
         >
-          {loadingRefuse ? <LoadingButton /> : t("refuse")}
+          {isPending ? <LoadingButton /> : t("refuse")}
         </button>
       </div>
 
-      <Name title={listing.title} />
-      <Desc description={listing.description} />
-      <Images images={listing.Images} />
-      <Category category={listing.category} />
-      <Features features={listing.Features} />
-      <Prices prices={listing.Prices} />
-      <SpeceficDates prices={listing.Prices} />
-      <Region region={listing.region} />
-      <Guests guests={listing.guest} />
-      <Availability availabilities={listing.Availabilities} />
-      <Location latitude={listing.latitude} longitude={listing.longitude} />
+      <Name title={data.title} />
+      <Desc description={data.description} />
+      <Images images={data.Images} />
+      <Category category={data.category} />
+      <Features features={data.Features} />
+      <Prices prices={data.Prices} />
+      <SpeceficDates prices={data.Prices} />
+      <Region region={data.region} />
+      <Guests guests={data.guest} />
+      <Availability availabilities={data.Availabilities} />
+      <Location latitude={data.latitude} longitude={data.longitude} />
     </div>
   );
 }

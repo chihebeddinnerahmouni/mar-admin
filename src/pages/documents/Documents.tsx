@@ -49,7 +49,7 @@ const Documents = () => {
         {t("Documents_management_description")}
       </p>
       <StatusCont status={status} setStatus={setStatus} />
-      <RequestsTable rows={data} />
+      <RequestsTable rows={data.data} />
     </div>
   );
 }

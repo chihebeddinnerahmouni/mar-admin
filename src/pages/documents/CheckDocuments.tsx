@@ -1,117 +1,71 @@
 import DocumentComp from "../../components/documents/DocumentComp";
 import LoadingLine from "../../components/ui/LoadingLine";
 import axios from "axios";
-import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import LoadingButton from "../../components/ui/LoadingButton";
-import Swal from "sweetalert2";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { axios_error_handler } from "../../functions/axios_error_handler";
+
+const url = import.meta.env.VITE_SERVER_URL_LISTING;
 
 
+const fetschData = async (submittionId: string) => {
+  const { data } = await axios.get(`${url}/api/submit/documents/submission/${submittionId}`, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+    },
+  });
+  return data;
+}
+const sendData = async (submittionId: string) => {
+  const { data } = await axios.put(`${url}/api/submit/user-submissions/${submittionId}/accept`, {}, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+    },
+  });
+  return data;
+}
 
 const CheckDocuments = () => {
 
-
-  const [docs, setDocs] = useState<any>({});
-  const [loading, setLoading] = useState(true);
-  const [buttonLoading, setButtonLoading] = useState(false);
-  const url = import.meta.env.VITE_SERVER_URL_LISTING;
-  const { userId } = useParams<{ userId: string }>();
+  const { submittionId } = useParams<{ submittionId: string }>();
   const { t } = useTranslation();
   const navigate = useNavigate();
 
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["getRequestsDocument", submittionId],
+    queryFn: () => fetschData(submittionId!),
+    enabled: !!submittionId,
+  });
 
-  useEffect(() => {
-    axios
-      .get(`${url}/api/submit/documents/submission/${userId}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-        },
-      })
-      .then((res) => {
-        // console.log(res.data.documents);
-        setDocs(res.data.documents);
-        setLoading(false);
-      })
-      .catch((err) => {
-        // console.log(err);
-        if (err.message === "Network Error") {
-          Swal.fire({
-            icon: "error",
-            title: t("network_error"),
-            text: t("please_try_again"),
-            customClass: {
-              confirmButton: "custom-confirm-button",
-            },
-          }).then(() => {
-            window.location.reload();
-          });
-        }
-        if (err.response.data.message === "No documents found for this user")
-          return Swal.fire({
-            title: "No documents found",
-            text: "This user has not uploaded any documents yet",
-            customClass: {
-              confirmButton: "custom-confirm-button",
-            },
-          }).then(() => {
-            navigate("/documents");
-          });
-      });
-  }, []);
+  if (isLoading) {
+    return <div className="w-full h-screen">
+      <LoadingLine />
+    </div>
+  }
 
+  if (error) {
+    axios_error_handler(error, t);
+    return null;
+  }
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: () => sendData(submittionId!),
+    onSuccess: () => {
+      navigate("/documents");
+    },
+    onError: (err) => {
+      axios_error_handler(err, t);
+    },
+  })
 
   const accept = () => { 
-    if (buttonLoading) return;
-    setButtonLoading(true);
-    axios
-      .put(
-        `${url}/api/submit/user-submissions/${userId}/accept`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-          },
-        }
-      )
-      .then(() => {
-        // console.log(res.data);
-        Swal.fire({
-          icon: "success",
-          title: t("greate"),
-          showConfirmButton: false,
-        });
-        setButtonLoading(false);
-        navigate("/documents");
-      })
-      .catch((err) => {
-        // console.log(err);
-        if (err.message === "Network Error") {
-          Swal.fire({
-            icon: "error",
-            title: t("network_error"),
-            text: t("please_try_again"),
-            customClass: {
-              confirmButton: "custom-confirm-button",
-            },
-          }).then(() => {
-            window.location.reload();
-          });
-        }
-      });
+    if (isPending) return;
+    mutate();
   }
 
-
-
-
-  if (loading) {
-    return (
-      <div className="w-full h-screen">
-        <LoadingLine />
-      </div>
-    )
-  }
 
 
   return (
@@ -123,13 +77,13 @@ const CheckDocuments = () => {
         {t("this_is_what")}{" "}
         {t("uploaded_as_documents_you_view_the_documents_below")}
       </p>
-      {docs[0].status === "pending" && (
+      {data.documents[0].status === "pending" && (
         <div className="buttons bg-creme h-[60px] flex justify-end items-center gap-4 mb-8 sticky top-[60px] lg:top-[80px] z-10">
           <button
             className="bg-green-500 text-white w-[80px] h-10 rounded hover:bg-green-600"
             onClick={accept}
           >
-            {buttonLoading ? <LoadingButton /> : t("accept")}
+            {isPending ? <LoadingButton /> : t("accept")}
           </button>
           <button className="bg-main text-white w-[80px] h-10 rounded hover:bg-mainHover">
             {t("refuse")}
@@ -138,7 +92,7 @@ const CheckDocuments = () => {
       )}
 
       <div className="docs flex flex-col gap-5 pb-20">
-        {docs.map((document: any, index: number) => (
+        {data.documents.map((document: any, index: number) => (
           <DocumentComp key={index} document={document} />
         ))}
       </div>
@@ -147,25 +101,3 @@ const CheckDocuments = () => {
 };
 
 export default CheckDocuments;
-
-// const docs = {
-//   id: 1,
-//   name: "chiheb rahmouni",
-//   image: "hirbae.jpg",
-//   email: "chihebrahmouni30@gmail.com",
-//   phone: "0773781669",
-//   documents: [
-//     {
-//       title: "License",
-//       document: "https://www.example.com/license.pdf",
-//     },
-//     {
-//       title: "Carte Grise",
-//       document: "/hirbae.jpg",
-//     },
-//     {
-//       title: "Carte W Say",
-//       document: "/hirbae.jpg",
-//     },
-//   ],
-// };

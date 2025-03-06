@@ -136,7 +136,7 @@ if (error) {
   );
 }
 
-export default CheckListing
+export default CheckListing;
 
 
 

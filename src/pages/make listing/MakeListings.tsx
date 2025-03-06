@@ -30,11 +30,9 @@ const MakeListings = () => {
   }
 
   if (error) {
-    console.log(error);
     axios_error_handler(error, t);
     return null;
   }
-
 
 
   return (
@@ -46,7 +44,7 @@ const MakeListings = () => {
         Explore and manage Listings with detailed insights into each type of
         boat available for rental.
       </p>
-      <ListingTable rows={data} />
+      <ListingTable rows={data.listings} />
     </div>
   );
 }

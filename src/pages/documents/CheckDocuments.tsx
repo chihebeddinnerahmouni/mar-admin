@@ -40,6 +40,16 @@ const CheckDocuments = () => {
     enabled: !!submittionId,
   });
 
+  const { mutate, isPending } = useMutation({
+    mutationFn: () => sendData(submittionId!),
+    onSuccess: () => {
+      navigate("/documents");
+    },
+    onError: (err) => {
+      axios_error_handler(err, t);
+    },
+  });
+
   if (isLoading) {
     return <div className="w-full h-screen">
       <LoadingLine />
@@ -51,15 +61,7 @@ const CheckDocuments = () => {
     return null;
   }
 
-  const { mutate, isPending } = useMutation({
-    mutationFn: () => sendData(submittionId!),
-    onSuccess: () => {
-      navigate("/documents");
-    },
-    onError: (err) => {
-      axios_error_handler(err, t);
-    },
-  })
+  
 
   const accept = () => { 
     if (isPending) return;

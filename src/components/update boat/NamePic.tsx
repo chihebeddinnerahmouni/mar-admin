@@ -17,11 +17,6 @@ const NamePic: React.FC<NamePicProps> = ({ title, image }) => {
 
   return (
     <div className="relative w-full p-2 bg-white mt-5 rounded-10 shadow-sm flex items-start gap-4 cursor-pointer">
-      {/* <img
-        src={image}
-        className="w-[130px] h-[90px] object-cover object-center rounded-10"
-        alt="profile"
-      /> */}
       <LazyLoadImage
         src={image}
         alt="profile"
@@ -33,7 +28,6 @@ const NamePic: React.FC<NamePicProps> = ({ title, image }) => {
         <p className="text-[18px]">{title}</p>
       </div>
 
-      {/* Edit buttons */}
       <div
         className={`absolute top-1  flex gap-2 ${
           i18n.language === "ar" ? "left-2" : "right-2"

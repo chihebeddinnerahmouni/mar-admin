@@ -1,31 +1,36 @@
-import ReactModal from "react-modal";
+import { useTranslation } from "react-i18next";
 import React from "react";
-import Swal from "sweetalert2";
+// import Swal from "sweetalert2";
 import "react-datepicker/dist/react-datepicker.css";
 import { useState } from "react";
-import { useTranslation } from "react-i18next";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import NumbersHandlers from "../../components/ui/NumbersHandlers";
+import { axios_toast_error } from "../../functions/axios_toast_error";
+import ModalComp from "../ui/modals/ModalComp";
+import ButtonFunc from "../ui/buttons/Button";
+import Title from "../ui/modals/Title";
+import InputNumber from "../ui/inputs/InputNumber";
+import InputDate from "../ui/inputs/InputDate";
+import { toast } from "react-hot-toast";
 
 interface UpdatePricesProps {
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   prices: any;
 }
 
-const UpdateSpeceficDays: React.FC<UpdatePricesProps> = ({
+const UpdateSpecDates: React.FC<UpdatePricesProps> = ({
   setIsOpen,
   prices,
 }) => {
   const { t } = useTranslation();
-  // const [startDate, setStartDate] = useState<Date | null>(null);
-  // const [endDate, setEndDate] = useState<Date | null>(null);
   const url = import.meta.env.VITE_SERVER_URL_LISTING;
   const { myBoatId } = useParams<{ myBoatId: string }>();
   const [showForm, setShowForm] = useState(false);
-  const [date, setDate] = useState<Date | null>(null);
+  const [date, setDate] = useState<string>("");
   const [price, setPrice] = useState<any>("");
   const [minHours, setMinHours] = useState(0);
+  const [loading, setLoading] = useState(false);
   const [maxHours, setMaxHours] = useState(0);
   const [specificDates, setSpecificDates] = useState<any>(
     prices[0].date_specific_price
@@ -37,12 +42,18 @@ const UpdateSpeceficDays: React.FC<UpdatePricesProps> = ({
 
   const handleSaveDate = () => {
     const check = !date || price <= 0 || minHours <= 0 || maxHours <= 0;
-    if (check) return alert(t("please_fill_all_fields"));
-    if (minHours > maxHours)
-      return alert(t("min_hours_cannot_be_greater_than_max_hours"));
-
+    if (check) {
+      return toast.error(t("please_enter_valid_values_for_all_fields"), {
+        style: { border: "1px solid #FF385C", color: "#FF385C" },
+      });
+    }
+    if (minHours > maxHours) {
+      return toast.error(t("minimum_hours_should_be_less_than_maximum_hours"), {
+        style: { border: "1px solid #FF385C", color: "#FF385C" },
+      });
+    }
     const newDate: any = {
-      date: date.toISOString().split("T")[0],
+      date: date,
       price,
       min_hours: minHours,
       max_hours: maxHours,
@@ -50,7 +61,7 @@ const UpdateSpeceficDays: React.FC<UpdatePricesProps> = ({
 
     setSpecificDates([...specificDates, newDate]);
     setShowForm(false);
-    setDate(null);
+    setDate("");
     setPrice(0);
     setMinHours(0);
     setMaxHours(0);
@@ -60,9 +71,11 @@ const UpdateSpeceficDays: React.FC<UpdatePricesProps> = ({
 
   // send the data to the server
   const send = () => {
+    setLoading(true);
     prices[0].date_specific_price = specificDates;
     const formData = new FormData();
     formData.append("prices", JSON.stringify(prices));
+
     axios
       .put(`${url}/api/listing/listings/${myBoatId}`, formData, {
         headers: {
@@ -70,45 +83,17 @@ const UpdateSpeceficDays: React.FC<UpdatePricesProps> = ({
         },
       })
       .then(() => {
-        Swal.fire({
-          title: t("greate"),
-          icon: "success",
-        });
-        setIsOpen(false);
         window.location.reload();
       })
       .catch((err) => {
-        if (err.message === "Network Error") {
-          Swal.fire({
-            icon: "error",
-            title: t("network_error"),
-            text: t("please_try_again"),
-            customClass: {
-              confirmButton: "custom-confirm-button",
-            },
-          }).then(() => {
-            window.location.reload();
-          });
-        }
+        setLoading(false);
+        axios_toast_error(err, t);
       });
   };
 
   return (
-    <ReactModal
-      isOpen={true}
-      onRequestClose={() => setIsOpen(false)}
-      className="flex flex-col items-center justify-center w-full bg-white p-3 rounded-10 shadow-hardShadow max-w-[400px] md:w-[400px] max-h-screen md:p-5"
-      style={{
-        content: {
-          maxHeight: "calc(100vh - 100px)",
-          overflow: "auto",
-        },
-      }}
-      overlayClassName="fixed inset-0 backdrop-blur-[7px] bg-opacity-20 bg-black z-20 flex items-center justify-center p-4"
-    >
-      <p className="text-[25px] font-bold mb-5">
-        {t("do_u_have_specefic_dates")}
-      </p>
+    <ModalComp onClose={() => setIsOpen(false)}>
+      <Title title={t("do_u_have_specefic_dates")} />
 
       <button
         onClick={handleAddDate}
@@ -117,99 +102,135 @@ const UpdateSpeceficDays: React.FC<UpdatePricesProps> = ({
         {t("add_specific_date")}
       </button>
       {showForm && (
-        <div className="mb-5 p-4 rounded w-full">
-          <div className="mb-5">
-            <label
-              htmlFor="date"
-              className="block text-sm font-medium text-gray-700"
-            >
-              {t("select_date")}
-            </label>
-            <input
-              onChange={(e) => setDate(new Date(e.target.value))}
-              type="date"
-              id="date"
-              min={new Date().toISOString().split("T")[0]}
-              className="mt-1 w-full border border-gray-300 rounded-10 p-2 focus:bg-emptyInput outline-main "
-            />
-          </div>
-
-          <div className="">
-            <label
-              htmlFor="pricePerHour"
-              className="block mt-4 text-sm font-medium text-gray-700"
-            >
-              {t("price_per_hour")}
-            </label>
-            <input
-              type="number"
-              value={price}
-              id="pricePerHour"
-              placeholder={t("price_per_hour")}
-              className="mt-1 w-full border border-gray-300 rounded-10 p-2 focus:bg-emptyInput outline-main "
-              onChange={(e) =>
-                setPrice(
-                  Number(e.target.value) >= 0 ? Number(e.target.value) : 0
-                )
-              }
-            />
-          </div>
-
-          <div className="prices w-full flex justify-evenly my-10">
-            <div className="">
-              <p className="block mb-2">{t("min_hours")}</p>
-              <NumbersHandlers value={minHours} setValue={setMinHours} />
-            </div>
-            <div className="">
-              <p className="block mb-2">{t("max_hours")}</p>
-              <NumbersHandlers value={maxHours} setValue={setMaxHours} />
-            </div>
-          </div>
-
-          <div className="mt-6 flex justify-center gap-3">
-            <button
-              onClick={() => setShowForm(false)}
-              className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md mr-2 hover:bg-gray-400"
-            >
-              {t("cancel")}
-            </button>
-            <button
-              onClick={handleSaveDate}
-              className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
-            >
-              {t("save")}
-            </button>
-          </div>
-        </div>
+        <Form
+          date={date}
+          setDate={setDate}
+          price={price}
+          setPrice={setPrice}
+          minHours={minHours}
+          setMinHours={setMinHours}
+          maxHours={maxHours}
+          setMaxHours={setMaxHours}
+          setShowForm={setShowForm}
+          handleSaveDate={handleSaveDate}
+          t={t}
+        />
       )}
-
-      <div className="mb-5 w-full flex overflow-auto bg-red-200">
-        {specificDates.map((specificDate: any, index: any) => (
-          <div key={index} className="p-2 border rounded w-full bg-white">
-            <p>
-              {t("date")}: {specificDate.date}
-            </p>
-            <p>
-              {t("price")}: {specificDate.price}
-            </p>
-            <p>
-              {t("min_hours")}: {specificDate.min_hours}
-            </p>
-            <p>
-              {t("max_hours")}: {specificDate.max_hours}
-            </p>
-          </div>
-        ))}
+      <Result specificDates={specificDates} t={t} />
+      <div className="mt-5 w-full">
+        <ButtonFunc text={t("send")} onClick={send} loading={loading} />
       </div>
-
-      <button
-        onClick={send}
-        className="w-full py-2 bg-main text-white rounded-lg shadow-md hover:bg-mainHover transition duration-200 ease-in-out"
-      >
-        {t("send")}
-      </button>
-    </ReactModal>
+    </ModalComp>
   );
 };
 
-export default UpdateSpeceficDays;
+export default UpdateSpecDates;
+
+const Form = ({
+  date,
+  setDate,
+  price,
+  setPrice,
+  minHours,
+  setMinHours,
+  maxHours,
+  setMaxHours,
+  setShowForm,
+  handleSaveDate,
+  t,
+}: {
+  date: string;
+  setDate: (e: any) => void;
+  price: number;
+  setPrice: (e: any) => void;
+  minHours: number;
+  setMinHours: (e: any) => void;
+  maxHours: number;
+  setMaxHours: (e: any) => void;
+  setShowForm: (e: any) => void;
+  handleSaveDate: () => void;
+  t: any;
+}) => {
+  return (
+    <div className="mb-5 p-4 rounded w-full mx-auto shadow-hoverShadow">
+      <div className="mb-5">
+        <label
+          htmlFor="date"
+          className="block mb-1 text-sm font-medium text-gray-700"
+        >
+          {t("select_date")}
+        </label>
+        <InputDate
+          value={date}
+          setValue={(e: any) => setDate(e.target.value)}
+          minDate={new Date().toISOString().split("T")[0]}
+        />
+      </div>
+
+      <div className="">
+        <label
+          htmlFor="pricePerHour"
+          className="block mt-4 mb-1 text-sm font-medium text-gray-700"
+        >
+          {t("price_per_hour")}
+        </label>
+        <InputNumber
+          value={price.toString()}
+          setValue={(e: any) => setPrice(e.target.value)}
+          label="Enter price"
+        />
+      </div>
+
+      <div className="prices w-full flex justify-evenly my-10">
+        <div className="">
+          <p className="block mb-2">{t("min_hours")}</p>
+          <NumbersHandlers value={minHours} setValue={setMinHours} />
+        </div>
+        <div className="">
+          <p className="block mb-2">{t("max_hours")}</p>
+          <NumbersHandlers value={maxHours} setValue={setMaxHours} />
+        </div>
+      </div>
+
+      <div className="mt-6 flex gap-2 justify-end">
+        <div className="">
+          <ButtonFunc
+            text={t("cancel")}
+            onClick={() => setShowForm(false)}
+            color="gray"
+          />
+        </div>
+        <div className="">
+          <ButtonFunc
+            text={t("save")}
+            onClick={handleSaveDate}
+            color="green"
+          />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const Result = ({ specificDates, t }: { specificDates: any; t: any }) => {
+  return (
+    <div className="mb-5 grid grid-cols-1 gap-4 md:grid-cols-3 w-full">
+      {specificDates.map((specificDate: any, index: any) => (
+        <div key={index} className="p-2 border border-gray-300 rounded">
+          <p>
+            {t("date")}: {specificDate.date}
+          </p>
+          <p>
+            {t("price")}: {specificDate.price}
+          </p>
+          <p>
+            {t("min_hours")}: {specificDate.min_hours}
+          </p>
+          <p>
+            {t("max_hours")}: {specificDate.max_hours}
+          </p>
+        </div>
+      ))}
+    </div>
+  );
+};

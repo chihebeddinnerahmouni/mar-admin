@@ -1,35 +1,35 @@
-import ReactModal from "react-modal";
 import { useTranslation } from "react-i18next";
-import React, {useState} from "react";
-import Swal from "sweetalert2";
+import React, { useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import InputText from "../ui/inputs/InputText";
+import { axios_toast_error } from "../../functions/axios_toast_error";
+import ModalComp from "../ui/modals/ModalComp";
+import ButtonFunc from "../ui/buttons/Button";
+import Title from "../ui/modals/Title";
 
 interface UpdatePricesProps {
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-    title: string;
+  title: string;
 }
 
-const UpdateName: React.FC<UpdatePricesProps> = ({
-  setIsOpen,
-  title
-}) => {
-
-
+const UpdateName: React.FC<UpdatePricesProps> = ({ setIsOpen, title }) => {
   const { t } = useTranslation();
   const { myBoatId } = useParams<{ myBoatId: string }>();
-    const url = import.meta.env.VITE_SERVER_URL_LISTING;
-    const [newTitle, setTitle] = useState(title);
-    
-
-  // console.log(prices);
+  const url = import.meta.env.VITE_SERVER_URL_LISTING;
+  const [loading, setLoading] = useState(false);
+  const [newTitle, setTitle] = useState(title);
+  const [isTitleValid, setIsTitleValid] = useState(true);
+  const min = 12;
+  const max = 40;
 
   const handleContinue = () => {
+    if (newTitle.length < min || newTitle.length > max)
+      return setIsTitleValid(false);
 
-      const formData = new FormData();
-        formData.append("title", newTitle);
-
-
+    setLoading(true);
+    const formData = new FormData();
+    formData.append("title", newTitle);
     axios
       .put(`${url}/api/listing/listings/${myBoatId}`, formData, {
         headers: {
@@ -37,52 +37,37 @@ const UpdateName: React.FC<UpdatePricesProps> = ({
         },
       })
       .then(() => {
-        Swal.fire({
-          icon: "success",
-          title: t("greate"),
-        });
-        setIsOpen(false);
         window.location.reload();
       })
       .catch((err) => {
-       if (err.message === "Network Error") {
-         Swal.fire({
-           icon: "error",
-           title: t("network_error"),
-           text: t("please_try_again"),
-           customClass: {
-             confirmButton: "custom-confirm-button",
-           },
-         }).then(() => {
-           window.location.reload();
-         });
-       }
+        setLoading(false);
+        axios_toast_error(err, t);
       });
   };
 
   return (
-    <ReactModal
-      isOpen={true}
-      onRequestClose={() => setIsOpen(false)}
-      className="flex flex-col items-center justify-center w-full bg-white p-3 rounded-10 shadow-hardShadow md:w-[500px]"
-      overlayClassName="fixed inset-0 backdrop-blur-[7px] bg-opacity-20 bg-black z-20 flex items-center justify-center px-4"
-    >
-      <p className="mb-5 text-[25px] font-bold">{t("name_your_boat")}</p>
-
-      <input
-        type="text"
+    <ModalComp onClose={() => setIsOpen(false)}>
+      <Title title={t("name_your_boat")} />
+      <InputText
         value={newTitle}
-        onChange={(e) => setTitle(e.target.value)}
-        placeholder={t("boat_name")}
-        className="bg-emptyInput w-full h-10 px-3 rounded-[5px] border-1 border-gray-300 outline-main md:h-10 lg:h-12 lg:text-[18px]"
+        setValue={(e: any) => {
+          setIsTitleValid(true);
+          setTitle(e.target.value);
+        }}
+        label={t("boat_name")}
+        error={!isTitleValid}
+        helperText={
+          !isTitleValid && t("name_must_be_between_12_and_50_characters")
+        }
       />
-      <button
-        onClick={handleContinue}
-        className="w-full py-2 bg-main text-white rounded-lg shadow-md hover:bg-mainHover transition duration-200 ease-in-out mt-5"
-      >
-        {t("save")}
-      </button>
-    </ReactModal>
+      <div className="mt-5 w-full">
+        <ButtonFunc
+          onClick={handleContinue}
+          text={t("save")}
+          loading={loading}
+        />
+      </div>
+    </ModalComp>
   );
 };
 

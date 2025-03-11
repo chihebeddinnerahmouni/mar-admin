@@ -236,6 +236,13 @@
 "release": "Release",
 "unrelease": "Unrelease",
 "loading": "Loading",
+"description_must_be_between_60_and_500_characters": "Description must be between 60 and 500 characters",
+  "images_at_server": "Images at server must be more than 5",
+  "server_image": "Server image", 
+  "please_enter_valid_values_for_all_fields": "Please enter valid values for all fields",
+    "minimum_hours_should_be_less_than_maximum_hours": "Minimum hours should be less than maximum hours!",
+"unavailable_to_work": "Unavailable to work",
+
 
 
 

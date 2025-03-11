@@ -1,11 +1,13 @@
-import ReactModal from "react-modal";
 import { useTranslation } from "react-i18next";
-import React, { useState } from "react";
-import Swal from "sweetalert2";
-// import axios from "axios";
-// import { useParams } from "react-router-dom";
+import React, { useState, useCallback } from "react";
+import axios from "axios";
+import { useParams } from "react-router-dom";
 import { FaMinusCircle, FaCamera } from "react-icons/fa";
-
+import ModalComp from "../../components/ui/modals/ModalComp";
+import { axios_toast_error } from "../../functions/axios_toast_error";
+import ButtonFunc from "../ui/buttons/Button";
+import Title from "../ui/modals/Title";
+import { toast } from "react-hot-toast";
 
 interface UpdatePricesProps {
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -13,96 +15,93 @@ interface UpdatePricesProps {
 }
 
 const UpdateImages: React.FC<UpdatePricesProps> = ({ setIsOpen, images }) => {
-    const { t } = useTranslation();
-      const [imageList, setImageList] = useState(images);
-  // const { myBoatId } = useParams<{ myBoatId: string }>();
-  const url = import.meta.env.VITE_SERVER_URL_LISTING;
+  const { t } = useTranslation();
+  const [imageList, setImageList] = useState<any[]>(images);
+  const { myBoatId } = useParams<{ myBoatId: string }>();
+  const [loading, setLoading] = useState(false);
+  const urlList = import.meta.env.VITE_SERVER_URL_LISTING;
 
-  const removeImage = (index: number) => {
-    const newImageList = imageList.filter((_: any, i: any) => i !== index);
-    setImageList(newImageList);
-    };
-    
+  // Remove image from imageList
+  const removeImage = useCallback(
+    (index: number) => {
+      const numberOfImagesWithId = imageList.filter((image) => image.id).length;
+      if (imageList[index].id && numberOfImagesWithId < 6) {
+        toast.error(t("images_at_server"), {
+          style: { border: "1px solid #FF385C", color: "#FF385C" },
+        });
+        return;
+      }
+      const newImageList = imageList.filter((_, i) => i !== index);
+      setImageList(newImageList);
+    },
+    [imageList]
+  );
 
-    const handleAddImage = (event: React.ChangeEvent<HTMLInputElement>) => {
+  // Add images to imageList (for manual upload)
+  const handleAddImage = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
       if (event.target.files) {
         const newImages = Array.from(event.target.files).map((file) => ({
           url: URL.createObjectURL(file),
+          file,
         }));
         setImageList([...imageList, ...newImages]);
       }
-    };
+    },
+    [imageList]
+  );
 
-    const handleContinue = () => {
-      
-        if (imageList.length < 5) {
-          Swal.fire({
-            title: t("ops"),
-            text: t("please_add_at_least_5_images"),
-            timer: 3000,
-            timerProgressBar: true,
-            width: 400,
-            customClass: {
-              confirmButton: "custom-confirm-button",
-            },
-          });
-          return;
-        }
+  // Submit images
+  const handleContinue = async () => {
+    if (imageList.length < 5) {
+      toast.error(t("please_add_at_least_5_images"), {
+        style: { border: "1px solid #FF385C", color: "#FF385C" },
+      });
+      return;
+    }
+    setLoading(true);
+    const formData = new FormData();
+    for (const image of imageList) {
+      if (image.id) {
+        const response = await fetch(`${urlList}/${image.url}`);
+        const blob = await response.blob();
+        const file = new File([blob], "image.jpg", { type: "image/jpeg" });
+        formData.append("images", file);
+      } else {
+        formData.append("images", image.file);
+      }
+    }
 
-    // const formData = new FormData();
-    // formData.append("title", newTitle);
-
-    // axios
-    //   .put(`${url}/api/listing/listings/${myBoatId}`, formData, {
-    //     headers: {
-    //       Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-    //     },
-    //   })
-    //   .then(() => {
-    //     Swal.fire({
-    //       title: t("great"),
-    //       text: t("prices_updated_successfully"),
-    //       icon: "success",
-    //       timer: 2000,
-    //       showConfirmButton: false,
-    //       timerProgressBar: true,
-    //       customClass: {
-    //         confirmButton: "custom-confirm-button",
-    //       },
-    //     });
-    //     setIsOpen(false);
-    //     window.location.reload();
-    //   })
-    //   .catch(() => {
-    //     Swal.fire({
-    //       title: t("oops"),
-    //       text: t("something_went_wrong_try_again"),
-    //       icon: "error",
-    //       timer: 2000,
-    //       timerProgressBar: true,
-    //       customClass: {
-    //         confirmButton: "custom-confirm-button",
-    //       },
-    //     });
-    //   });
+    try {
+      await axios.put(`${urlList}/api/listing/listings/${myBoatId}`, formData, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+        },
+      });
+      window.location.reload();
+    } catch (err: any) {
+      setLoading(false);
+      axios_toast_error(err, t);
+    }
   };
 
+  // console.log(imageList);
   return (
-    <ReactModal
-      isOpen={true}
-      onRequestClose={() => setIsOpen(false)}
-      className="flex flex-col items-center justify-center w-full bg-white p-3 rounded-10 shadow-hardShadow md:w-[500px] "
-      overlayClassName="fixed inset-0 backdrop-blur-[7px] bg-opacity-20 bg-black z-20 flex items-center justify-center px-4"
-    >
-      <p className="mb-5 text-[25px] font-bold">{t("update_images")}</p>
-      <div className="grid grid-cols-3 gap-4 w-full max-h-[400px] overflow-auto">
+    <ModalComp onClose={() => setIsOpen(false)}>
+      <Title title={t("update_images")} />
+      <div className="grid grid-cols-3 gap-4 w-full">
         {imageList.map((image: any, index: number) => (
-          <div key={index} className="relative">
+          <div key={index} className="relative rounded-lg overflow-hidden">
             <img
-              src={image.id ? url + "/" + image.url : image.url}
+              src={image.id ? `${urlList}/${image.url}` : image.url}
               alt={`Boat image ${index + 1}`}
-              className="w-full h-24 md:h-32 object-cover object-center rounded-lg shadow-sm"
+              className="w-full h-24 md:h-32 object-cover object-center shadow-sm"
             />
+            {image.id && (
+              <p className="text-xs py-0.5 text-center bg-green-800 text-white absolute bottom-0 w-full">
+                {t("server_image")}
+              </p>
+            )}
             <button
               onClick={() => removeImage(index)}
               className="absolute top-2 left-2 text-red-500 text-xl"
@@ -122,13 +121,14 @@ const UpdateImages: React.FC<UpdatePricesProps> = ({ setIsOpen, images }) => {
           />
         </label>
       </div>
-      <button
-        onClick={handleContinue}
-        className="w-full py-2 bg-main text-white rounded-lg shadow-md hover:bg-mainHover transition duration-200 ease-in-out mt-5"
-      >
-        {t("save")}
-      </button>
-    </ReactModal>
+      <div className="w-full mt-5">
+        <ButtonFunc
+          text={t("save")}
+          onClick={handleContinue}
+          loading={loading}
+        />
+      </div>
+    </ModalComp>
   );
 };
 

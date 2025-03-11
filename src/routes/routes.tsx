@@ -13,7 +13,6 @@ import Submissions from "../pages/Submissions.tsx";
 import Documents from "../pages/documents/Documents.tsx";
 import CheckDocuments from "../pages/documents/CheckDocuments.tsx";
 import MakeListings from "../pages/make listing/MakeListings.tsx";
-import AuthLayout from "../layout/authLayout.tsx";
 import Login from "../components/auth/Login.tsx";
 import CheckListing from "../pages/make listing/CheckListing.tsx";
 import Bookings from "../pages/Bookings.tsx";
@@ -47,12 +46,9 @@ export const router = createBrowserRouter([
       { path: "inquiries/:bookingId", element: <Bookings /> },
     ],
   },
-  {
-    element: <AuthLayout />,
-    children: [
-      { path: "/login", element: <Login /> },
-    ],
-  },
+
+  { path: "/login", element: <Login /> },
+
   {
     path: "*",
     element: <NoPage />,

@@ -69,7 +69,23 @@ const CheckListing = () => {
     Swal.fire("success", t("great"));
     navigate("/listings");
   },
-});
+  });
+  
+    const response = useCallback(
+      (resp: boolean) => {
+        mutate({
+          values: {
+            validated: resp,
+            blocked: !resp,
+            block_reason: "This is a test reason",
+          },
+          listingId: listingId!,
+        });
+      },
+      [listingId, mutate]
+    );
+
+
 
 if (isLoading)
   return (
@@ -82,17 +98,6 @@ if (error) {
   return null;
   }
   
-  const response = useCallback((resp: boolean) => { 
-    mutate({
-      values: {
-        validated: resp,
-        blocked: !resp,
-        block_reason: "This is a test reason",
-      },
-      listingId: listingId!,
-    });
-  }, [listingId, mutate]);
-
 
 
   

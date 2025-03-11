@@ -1,4 +1,3 @@
-// import { GrValidate } from "react-icons/gr";
 import { useTranslation } from "react-i18next";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import { useState } from "react";
@@ -16,7 +15,7 @@ const Validated = ({ blocked, title, id }: any) => {
       <div className="preferedDate flex items-center gap-4">
         {isOpen && (
           <BlockUnblocModal
-            setClose={setIsOpen}
+            setClose={() => setIsOpen(false)}
             blocked={blocked}
             title={title}
             id={id}

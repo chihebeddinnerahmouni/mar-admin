@@ -10,7 +10,7 @@ import Availability from "../../components/update boat/Availability";
 import SpeceficDates from "../../components/update boat/SpeceficDates";
 import axios from "axios";
 import LoadingLine from "../../components/ui/LoadingLine";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import Images from "../../components/update boat/Images";
 import Reviews from "../../components/update boat/Reviews";
@@ -32,6 +32,12 @@ const UpdateBoat = () => {
     queryFn: fetchBoat,
   });
 
+  useEffect(() => {
+    if (error) axios_error_handler(error, t);
+  }, [error]);
+  if (error) return null;
+
+
   if (isLoading) {
     return (
       <div className="w-full h-screen">
@@ -40,10 +46,6 @@ const UpdateBoat = () => {
     );
   }
 
-  if (error) {
-    axios_error_handler(error, t);
-    return null
-  }
 
 
   return (

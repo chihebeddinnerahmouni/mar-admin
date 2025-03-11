@@ -13,7 +13,7 @@ const Owner = ({ details }: any) => {
   return (
     <div className="w-full p-3 bg-white mt-5 rounded-10 shadow-sm flex items-center gap-4">
       <LazyLoadImage
-        src={url + "/" + details.owner.image}
+        src={details.owner.image ? url + "/" + details.owner.image : "/anonyme.jpg"}
         alt="profile"
         className="w-[60px] h-[60px] object-cover object-center rounded-50"
         effect="blur"

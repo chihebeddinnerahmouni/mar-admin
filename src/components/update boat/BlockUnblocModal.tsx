@@ -1,233 +1,76 @@
-import ReactModal from "react-modal";
-import React, { useState } from "react";
-import TextField from "@mui/material/TextField";
+import React from "react";
 import axios from "axios";
-import LoadingButton from "../ui/LoadingButton";
-import Swal from "sweetalert2";
-import { MdBlock } from "react-icons/md";
-import { CgUnblock } from "react-icons/cg";
 import { useTranslation } from "react-i18next";
+import ModalComp from "../ui/modals/ModalComp";
+import Title from "../ui/modals/Title";
+import ButtonFunc from "../ui/buttons/Button";
+import { useMutation } from "@tanstack/react-query";
+import { axios_toast_error } from "../../functions/axios_toast_error";
 
 interface DeleteModalProps {
-  setClose: (isOpen: boolean) => void;
-    blocked: any;
+  setClose: () => void;
+  blocked: any;
   id: number;
   title: string;
 }
-ReactModal.setAppElement("#root");
+
+const toggleBlock = async (id: number, blocked: boolean) => {
+  const url = import.meta.env.VITE_SERVER_URL_LISTING;
+  const { data } = await axios.put(
+    `${url}/api/listing/listings/${id}/status`,
+    {
+      blocked: !blocked,
+      block_reason: "This is a test reason",
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+      },
+    }
+  );
+  return data;
+};
 
 const BlockUnblocModal: React.FC<DeleteModalProps> = ({
   setClose,
   blocked,
-    title,
-    id,
+  title,
+  id,
 }) => {
-  const [reason, setReason] = useState("");
-  const [loading, setLoading] = useState(false);
-    const mainColor = "#FF385C";
-    const { t } = useTranslation();
-  const url = import.meta.env.VITE_SERVER_URL_LISTING;
+  const { t } = useTranslation();
 
-const handleBlock = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setLoading(true);
-        axios
-          .put(
-            `${url}/api/listing/listings/${id}/status`,
-            {
-            //   validated: true,
-              blocked: true,
-              block_reason: "This is a test reason",
-            },
-            {
-              headers: {
-                Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-              },
-            }
-          )
-            .then(() => {
-            setLoading(false);
-            Swal.fire(
-              {
-                icon: "success",
-                title: t("greate"),
-                showConfirmButton: false,
-              }
-            );
-            window.location.reload();
-            // console.log(res.data);
-          })
-          .catch((err) => {
-              console.log(err);
-                setLoading(false);
-            Swal.fire("Error!", err.message, "error");
-          });
-    };
-    
-
-
-    const handleUnblock = (e: React.MouseEvent) => {
-        e.stopPropagation();
-        setLoading(true);
-        axios
-          .put(
-            `${url}/api/listing/listings/${id}/status`,
-            {
-            //   validated: true,
-              blocked: false,
-              block_reason: "This is a test reason",
-            },
-            {
-              headers: {
-                Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-              },
-            }
-          )
-          .then(() => {
-             Swal.fire({
-               icon: "success",
-               title: t("greate"),
-               showConfirmButton: false,
-             });
-            window.location.reload();
-            // console.log(res.data);
-          })
-          .catch((err) => {
-            // console.log(err);
-             if (err.message === "Network Error") {
-               Swal.fire({
-                 icon: "error",
-                 title: t("network_error"),
-                 text: t("please_try_again"),
-                 customClass: {
-                   confirmButton: "custom-confirm-button",
-                 },
-               })
-            //        .then(() => {
-            //      window.location.reload();
-            //    });
-             }
-            setLoading(false);
-          });
-        }
-
+  const { mutate, isPending } = useMutation({
+    mutationFn: () => toggleBlock(id, blocked),
+    onSuccess: () => {
+      window.location.reload();
+    },
+    onError: (err) => {
+      axios_toast_error(err, t);
+    },
+  });
 
   return (
-    <ReactModal
-      isOpen={true}
-      onRequestClose={() => setClose(false)}
-      className={" bg-white rounded-lg p-4 shadow-hardShadow lg:p-6"}
-      overlayClassName={
-        "fixed bg-black bg-opacity-10 backdrop-blur-[7px] inset-0 flex items-center justify-center mt-[60px] lg:mt-[80px]"
-      }
-    >
-      {!blocked && (
-        <>
-          <h1 className="text-2xl font-bold text-center lg:text-3xl">
-            {t("block_boat")}
-          </h1>
-          <p className="text-gray-500 text-center mt-5 lg:text-lg">
-            {t("are_you_sure_you_want_to")}{" "}
-            <strong className="text-red-400">{t("block")}</strong> {title} ?
-          </p>
+    <ModalComp onClose={setClose}>
+      <Title title={t("block_boat")} />
 
-          <TextField
-            label={t("reason_for_block")}
-            value={reason}
-            onChange={(e) => setReason(e.target.value)}
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                "& fieldset": {
-                  borderColor: "grey",
-                },
-                "&:hover fieldset": {
-                  borderColor: "grey",
-                },
-                "&.Mui-focused fieldset": {
-                  borderColor: mainColor,
-                },
-              },
-              "& .MuiInputLabel-root": {
-                color: "gray",
-              },
-              "& .MuiInputLabel-root.Mui-focused": {
-                color: mainColor,
-              },
-            }}
-          />
-
-          <div className="buttons flex w-full mt-3 gap-2">
-            <button
-              className="w-full bg-gray-200 text-gray-700 px-4 py-2 rounded-lg"
-              onClick={(e) => {
-                e.stopPropagation();
-                setClose(false);
-              }}
-            >
-              {t("cancel")}
-            </button>
-            <button
-              className="w-full bg-red-500 text-white px-4 py-2 rounded-lg flex items-center justify-center"
-              onClick={handleBlock}
-              disabled={loading}
-            >
-              {loading ? (
-                <LoadingButton />
-              ) : (
-                <>
-                  <span className="mx-1">{t("block")}</span>
-                  <MdBlock />
-                </>
-              )}
-            </button>
-          </div>
-        </>
-      )}
-
-      {blocked && (
-        <>
-          <h1 className="text-2xl font-bold text-center lg:text-3xl">
-            {t("unblock_boat")}
-          </h1>
-          <p className="text-gray-500 text-center mt-2 lg:text-lg">
-            {t("are_you_sure_you_want_to")}{" "}
-            <strong className="text-green-400">{t("unblock")}</strong> {title} ?
-          </p>
-          <div className="buttons flex w-full mt-6 gap-2">
-            <button
-              className="w-full bg-gray-200 text-gray-700 px-4 py-2 rounded-lg"
-              onClick={(e) => {
-                e.stopPropagation();
-                setClose(false);
-              }}
-            >
-              {t("cancel")}
-            </button>
-            <button
-              className="w-full bg-green-500 text-white px-4 py-2 rounded-lg flex items-center justify-center"
-              onClick={handleUnblock}
-              disabled={loading}
-            >
-              {loading ? (
-                <LoadingButton />
-              ) : (
-                <>
-                    <span className="mx-1">
-                        {t("unblock")}
-                  </span>
-                  <CgUnblock />
-                </>
-              )}
-            </button>
-          </div>
-        </>
-      )}
-    </ReactModal>
+      <p className="text-gray-500 text-center mt-5 lg:text-lg">
+        {t("are_you_sure_you_want_to")}{" "}
+        <strong className={`${blocked ? "text-green-400" : "text-red-400"}`}>
+          {blocked ? t("unblock") : t("block")}
+        </strong>
+        {title} ?
+      </p>
+      <div className="buttons flex w-full mt-7 gap-2">
+        <ButtonFunc text={t("cancel")} color="gray" onClick={setClose} />
+        <ButtonFunc
+          text={blocked ? t("unblock") : t("block")}
+          onClick={() => mutate()}
+          loading={isPending}
+          {...(blocked && { color: "green" })}
+        />
+      </div>
+    </ModalComp>
   );
 };
-
 
 export default BlockUnblocModal;

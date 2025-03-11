@@ -1,7 +1,6 @@
 import React from "react";
 import StarRatings from "react-star-ratings";
 import { useTranslation } from "react-i18next";
-import Swal from "sweetalert2";
 import {
   FaTrash,
 } from "react-icons/fa";
@@ -9,7 +8,7 @@ import axios from "axios";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
 import { axios_error_handler } from "../../functions/axios_error_handler";
-
+import Swal from "sweetalert2";
 
 
 const ShipDetails = ({ ship }: any) => {
@@ -39,16 +38,12 @@ const ShipDetails = ({ ship }: any) => {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .delete(`${url}api/listing/listings/${ship.id}`, {
+          .delete(`${url}/api/listing/listings/${ship.id}`, {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("jwt")}`,
             },
           })
           .then(() => {
-            Swal.fire({
-              title: t("greate"),
-              showConfirmButton: false,
-            });
             window.location.reload();
           })
           .catch((err) => {

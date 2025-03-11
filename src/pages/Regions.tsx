@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import axios from "axios";
 import LoadingLine from "../components/ui/LoadingLine";
 import { useTranslation } from "react-i18next";
@@ -20,17 +20,17 @@ const Regions = () => {
     queryFn: fetchData,
   });
 
+  useEffect(() => {
+    if (error) axios_error_handler(error, t);
+  }, [error]);
+  if (error) return null;
+
   if (isLoading) {
     return (
       <div className="w-full h-screen">
         <LoadingLine />
       </div>
     );
-  }
-
-  if (error) {
-    axios_error_handler(error, t);
-    return null;
   }
 
   return (

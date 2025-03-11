@@ -14,7 +14,6 @@ import { useTranslation } from "react-i18next";
 import AddRegionModal from "./AddRegionModal";
 import DeleteRegionModal from "./DeleteRegionModal";
 
-
 const RegionsTable = ({ regions }: any) => {
   const [isDeleteOpen, setIsDeleteOpen] = useState<boolean>(false);
   const [selectedCategory, setSelectedCategory] = useState<any>(null);
@@ -28,13 +27,13 @@ const RegionsTable = ({ regions }: any) => {
 
   return (
     <>
-          {isFormVisible && <AddRegionModal setClose={setIsFormVisible} />}
-          {isDeleteOpen && (
-            <DeleteRegionModal
-              setClose={setIsDeleteOpen}
-              region={selectedCategory}
-            />
-          )}
+      {isFormVisible && <AddRegionModal setClose={() => setIsFormVisible(false)} />}
+      {isDeleteOpen && (
+        <DeleteRegionModal
+          setClose={() => setIsDeleteOpen(false)}
+          region={selectedCategory}
+        />
+      )}
       <TableContainer component={Paper} className="rounded-lg">
         <Table>
           <TableHead sx={{ fontSize: "bold" }}>

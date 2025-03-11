@@ -1,293 +1,168 @@
 import React, { useState, useEffect } from "react";
-import ReactModal from "react-modal";
-import { Button, Box, Typography, TextField } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import LoadingButton from "../ui/LoadingButton";
 import axios from "axios";
-// import Swal from "sweetalert2";
-import { InputAdornment, IconButton } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
-import LoadingLine from "../ui/LoadingLine";
-// import { useParams } from "react-router-dom";
 import {
   FormControl,
   FormControlLabel,
   RadioGroup,
   Radio,
 } from "@mui/material";
+import ModalComp from "../ui/modals/ModalComp";
+import { useParams } from "react-router-dom";
+import { axios_toast_error } from "../../functions/axios_toast_error";
+import InputNumber from "../ui/inputs/InputNumber";
+import InputDate from "../ui/inputs/InputDate";
+import Title from "../ui/modals/Title";
+import ButtonFunc from "../ui/buttons/Button";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import {toast} from "react-hot-toast";
 
 interface DeleteModalProps {
-  setClose: (isOpen: boolean) => void;
+  setClose: () => void;
+}
+const url = import.meta.env.VITE_SERVER_URL_LISTING;
+
+const fetshBalance = async (userId: string) => {
+  const res = await axios.get(`${url}/api/transactions/balances/${userId}`, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+    },
+  });
+  return res.data;
 }
 
-ReactModal.setAppElement("#root");
+const SendData = async (userId: string, data: any) => { 
+  const res = await axios.post(`${url}/api/transactions/balances/${userId}`, data, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+    },
+  });
+  return res.data;
+}
+
+
 
 const UpdateReleasedModal: React.FC<DeleteModalProps> = ({ setClose }) => {
   const {
     // i18n,
     t } = useTranslation();
-  // const [loading, setLoading] = useState(false);
-  const loading = false;
-  const [loadingData, setLoadingData] = useState(true);
-  const [balance, setBalance] = useState(0);
-  const [releaseDate, setReleaseDate] = useState("");
+  const [balance, setBalance] = useState<number>(0);
+  const [releaseDate, setReleaseDate] = useState<string>("");
   const [releaseOption, setReleaseOption] = useState("release");
-  const url = import.meta.env.VITE_SERVER_URL_LISTING;
-  // const { userId } = useParams<{ userId: string }>();
+  const { userId } = useParams<{ userId: string }>();
   const mainColor = "#FF385C";
 
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: (data: any) => SendData(userId!, data),
+    onError: (error) => {
+      axios_toast_error(error, t);
+    },
+    onSuccess: () => {
+      setClose();
+    },
+  })
+
+  const { data, error, isLoading } = useQuery({
+    queryKey: ["getUserBalances", userId],
+    queryFn: () => fetshBalance(userId!),
+    enabled: !!userId,
+  })
+
   useEffect(() => {
-    axios
-      .get(url + "/api/transactions/balances/14", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-        },
-      })
-      .then(() => {
-        // setBalance(res.data.balance);
-        // setReleaseDate(res.data.releaseDate);
-        // setLoadingData(false);
-      })
-      .catch((err) => {
-        console.log(err);
-        setBalance(2156467);
-        setReleaseDate("");
-        setLoadingData(false);
-      });
-    //   .catch((err) => {
-    //     if (err.message === "Network Error") {
-    //       Swal.fire({
-    //         title: t("network_error"),
-    //         text: t("please_try_again"),
-    //         customClass: {
-    //           confirmButton: "custom-confirm-button",
-    //         },
-    //       }).then(() => {
-    //         window.location.reload();
-    //       });
-    //     }
-    //     window.location.reload();
-    //   });
-  }, []);
+    if (error) axios_toast_error(error, t);
+  }, [error]);
+  
+  useEffect(() => { 
+    if (data) {
+      setBalance(data.balances[0].balance_amount);
+    }
+  }, [data]);
 
-  const handleSubmit = (e: React.FormEvent) => {
-      e.preventDefault();
-    //   console.log(balance);
-    //   console.log(releaseDate);
-      //     console.log(releaseOption);
-      
-      // const data = {
-      //   balance: balance,
-      //   releaseDate: releaseDate,
-      //   releaseOption: releaseOption,
-      // }
 
-    // setLoading(true);
-    // axios
-    //   .delete(url + "/admin/categories/" + category.id, {
-    //     headers: {
-    //       Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-    //     },
-    //   })
-    //   .then(() => {
-    //     window.location.reload();
-    //   })
-    //   .catch((err) => {
-    //     if (err.message === "Network Error") {
-    //       Swal.fire({
-    //         title: t("network_error"),
-    //         text: t("please_try_again"),
-    //         customClass: {
-    //           confirmButton: "custom-confirm-button",
-    //         },
-    //       }).then(() => {
-    //         window.location.reload();
-    //       });
-    //     }
-    //     setLoading(false);
-    //   });
+  const handleSubmit = () => {
+
+    if (!balance || !releaseDate) return toast.error(t("please_fill_all_fields"), {
+      style: { border: "1px solid #FF385C", color: "#FF385C" },
+    });
+
+    const data = {
+      balance: balance,
+      releaseDate: releaseDate,
+      releaseOption: releaseOption,
+    };
+    mutate(data);
   };
 
-  if (loadingData) {
-    return (
-      <ReactModal
-        isOpen={true}
-        onRequestClose={() => setClose(false)}
-        className={
-          "bg-white w-full rounded-lg p-6 shadow-lg max-w-[500px] mx-auto h-[400px] overflow-auto"
-        }
-        overlayClassName={
-          "fixed bg-black bg-opacity-10 backdrop-blur-[7px] inset-0 flex items-center justify-center p-4 z-10 mt-[60px] lg:mt-[80px]"
-        }
-      >
-        <LoadingLine />
-      </ReactModal>
-    );
-  }
-
   return (
-    <ReactModal
-      isOpen={true}
-      onRequestClose={() => setClose(false)}
-      className={
-        "bg-white w-full rounded-lg p-6 shadow-lg max-w-[500px] mx-auto overflow-auto"
-      }
-      overlayClassName={
-        "fixed bg-black bg-opacity-10 backdrop-blur-[7px] inset-0 flex items-center justify-center p-4 z-10 mt-[60px] lg:mt-[80px]"
-      }
-    >
-      <Typography
-        variant="h4"
-        component="h2"
-        gutterBottom
-        sx={{
-          textAlign: "center",
-        }}
-      >
-        {t("update_balance")}
-      </Typography>
-      <Box mt={4}>
-        <TextField
-          label={t("balance")}
-          type="number"
-          value={balance}
-          onChange={(e) => setBalance(Number(e.target.value))}
-          fullWidth
-          sx={{
-            "& .MuiOutlinedInput-root": {
-              "& fieldset": {
-                borderColor: "grey",
-              },
-              "&:hover fieldset": {
-                borderColor: "grey",
-              },
-              "&.Mui-focused fieldset": {
-                borderColor: mainColor,
-              },
-            },
-            "& .MuiInputLabel-root": {
-              color: "gray",
-            },
-            "& .MuiInputLabel-root.Mui-focused": {
-              color: mainColor,
-            },
-          }}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton onClick={() => setBalance(0)} edge="end">
-                  <CloseIcon className="text-red-500" />
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
-        />
-        <TextField
-          label={t("release_date")}
-          type="date"
-          inputProps={{
-            min: new Date().toISOString().split("T")[0],
-          }}
-          value={releaseDate}
-          onChange={(e) => setReleaseDate(e.target.value)}
-          fullWidth
-          sx={{
-            mt: 2,
-            "& .MuiOutlinedInput-root": {
-              "& fieldset": {
-                borderColor: "grey",
-              },
-              "&:hover fieldset": {
-                borderColor: "grey",
-              },
-              "&.Mui-focused fieldset": {
-                borderColor: mainColor,
-              },
-            },
-            "& .MuiInputLabel-root": {
-              color: "gray",
-            },
-            "& .MuiInputLabel-root.Mui-focused": {
-              color: mainColor,
-            },
-          }}
-          InputLabelProps={{
-            shrink: true,
-          }}
-        />
-      </Box>
+    <ModalComp onClose={setClose}>
+      {isLoading ? (
+        <LoadingButton />
+      ) : (
+        <>
+          <Title title={t("update_balance")} />
+          <div className="mt-4 space-y-4">
+            <InputNumber
+              label={t("balance")}
+              value={balance.toString()}
+              // value={"767"}
+              setValue={(e: any) => setBalance(Number(e.target.value))}
+            />
+            <InputDate
+              value={releaseDate}
+              setValue={(e: any) => setReleaseDate(e.target.value)}
+            />
+          </div>
 
-      <FormControl component="fieldset" sx={{ mt: 2 }}>
-        <RadioGroup
-          row
-          value={releaseOption}
-          onChange={(e) => setReleaseOption(e.target.value)}
-        >
-          <FormControlLabel
-            value="release"
-            control={
-              <Radio
-                sx={{
-                  color: mainColor,
-                  "&.Mui-checked": {
-                    color: mainColor,
-                  },
-                }}
+          <FormControl component="fieldset" sx={{ mt: 2 }}>
+            <RadioGroup
+              row
+              value={releaseOption}
+              onChange={(e) => setReleaseOption(e.target.value)}
+            >
+              <FormControlLabel
+                value="release"
+                control={
+                  <Radio
+                    sx={{
+                      color: mainColor,
+                      "&.Mui-checked": {
+                        color: mainColor,
+                      },
+                    }}
+                  />
+                }
+                label={t("release")}
               />
-            }
-            label={t("release")}
-          />
-          <FormControlLabel
-            value="unrelease"
-            control={
-              <Radio
-                sx={{
-                  color: mainColor,
-                  "&.Mui-checked": {
-                    color: mainColor,
-                  },
-                }}
+              <FormControlLabel
+                value="unrelease"
+                control={
+                  <Radio
+                    sx={{
+                      color: mainColor,
+                      "&.Mui-checked": {
+                        color: mainColor,
+                      },
+                    }}
+                  />
+                }
+                label={t("unrelease")}
               />
-            }
-            label={t("unrelease")}
-          />
-        </RadioGroup>
-      </FormControl>
+            </RadioGroup>
+          </FormControl>
 
-      <form onSubmit={handleSubmit}>
-        <Box display="flex" justifyContent="flex-end" gap={2} mt={4}>
-          <Button
-            variant="outlined"
-            onClick={() => setClose(false)}
-            sx={{
-              color: mainColor,
-              backgroundColor: "white",
-              borderColor: mainColor,
-              width: "90px",
-              height: "40px",
-            }}
-          >
-            {t("cancel")}
-          </Button>
-          <Button
-            disabled={loading}
-            variant="contained"
-            sx={{
-              color: "white",
-              width: "90px",
-              height: "40px",
-              backgroundColor: mainColor,
-              "&:hover": {
-                backgroundColor: mainColor,
-              },
-            }}
-            type="submit"
-          >
-            {loading ? <LoadingButton /> : t("update")}
-          </Button>
-        </Box>
-      </form>
-    </ReactModal>
+          <div className="buttons flex gap-2 mt-4">
+            <ButtonFunc onClick={setClose} text={t("cancel")} color="grey" />
+            <ButtonFunc
+              onClick={handleSubmit}
+              text={t("send")}
+              loading={isPending}
+            />
+          </div>
+        </>
+      )}
+    </ModalComp>
   );
 };
 

@@ -35,7 +35,7 @@ const BalanceSection = ({ released, unreleased }: { released: number; unreleased
 
           {isRealesedModalOpen && (
             <UpdateReleasedModal
-              setClose={setIsRealesedModalOpen}
+              setClose={() => setIsRealesedModalOpen(false)}
             />
           )}
 

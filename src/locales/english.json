@@ -233,6 +233,9 @@
 "status": "Status",
 "created_at": "Created At",
 
+"release": "Release",
+"unrelease": "Unrelease",
+
 
 
 

@@ -1,66 +1,43 @@
 import { useTranslation } from "react-i18next";
 import axios from "axios";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import LoadingLine from "../../components/ui/LoadingLine";
-import isLoggedIn from "../../lib/isLogedin";
-import { useNavigate } from "react-router-dom";
 import BalanceSection from "../../components/users/Balance";
 import TransactionsTable from "../../components/users/TransactionsTable";
 import { useParams } from "react-router-dom";
-import Swal from "sweetalert2";
+import { useQuery } from "@tanstack/react-query";
+import { axios_error_handler } from "../../functions/axios_error_handler";
+
+
+
+const fetshData = async (userId: string) => {
+  const urlListing = import.meta.env.VITE_SERVER_URL_LISTING;
+  const res = await axios.get(`${urlListing}/api/transactions/user/${userId}`, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+    },
+  });
+  return res.data;
+}
+
+
 
 const TransactionsUser = () => {
   const { t } = useTranslation();
-  const [transactions, setTransactions] = useState<any>([]);
-  const [loading, setLoading] = useState(true);
-  const [released, setReleased] = useState(0);
-  const [unreleased, setUnreleased] = useState(0);
-  const urlListing = import.meta.env.VITE_SERVER_URL_LISTING;
-  const navigate = useNavigate();
   const { userId } = useParams();
 
-  useEffect(() => {
-    const fetshdata = () => {
-      axios
-        .get(`${urlListing}/api/transactions/user/${userId}`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-          },
-        })
-        .then((res) => {
-          // console.log(res.data);
-          setTransactions(res.data.transactions);
-          setReleased(res.data.releasedBalance);
-          setUnreleased(res.data.unreleasedBalance);
-          setLoading(false);
-        })
-        .catch((err) => {
-          if (err.message === "Network Error") {
-            Swal.fire({
-              icon: "error",
-              title: t("network_error"),
-              text: t("please_try_again"),
-              customClass: {
-                confirmButton: "custom-confirm-button",
-              },
-            }).then(() => {
-              window.location.reload();
-            });
-          }
-        });
-    };
+  const { data, error, isLoading } = useQuery({
+    queryKey: ["userTransactions", userId],
+    queryFn: () => fetshData(userId!),
+    enabled: !!userId,
+  })
 
-    if (!isLoggedIn()) {
-      return navigate("/?page=1");
-    }
-    fetshdata();
-    // setTransactions(data.transactions);
-    // setReleased(data.releasedBalance);
-    // setUnreleased(data.unreleasedBalance);
-    // setLoading(false);
-  }, []);
+  useEffect(() => { 
+    if (error) axios_error_handler(error, t);
+  }, [error]);
+  if (error) return null;
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="w-full h-screen">
         <LoadingLine />
@@ -77,10 +54,14 @@ const TransactionsUser = () => {
           {t("transactions")}
         </h1>
 
-        {released !== undefined && unreleased !== undefined && (
-          <BalanceSection released={released} unreleased={unreleased} />
-        )}
-        {transactions.length === 0 ? (
+        {data.releasedBalance !== undefined &&
+          data.unreleasedBalance !== undefined && (
+            <BalanceSection
+              released={data.releasedBalance}
+              unreleased={data.unreleasedBalance}
+            />
+          )}
+        {data.transactions.length === 0 ? (
           <div className="no-transactions text-center p-4 bg-yellow-100 border border-yellow-400 rounded-lg">
             <h2 className="text-xl font-bold text-yellow-700">
               {t("no_transactions")}
@@ -90,7 +71,7 @@ const TransactionsUser = () => {
             </p>
           </div>
         ) : (
-          <TransactionsTable rows={transactions} />
+          <TransactionsTable rows={data.transactions} />
         )}
       </div>
     </div>
@@ -98,40 +79,3 @@ const TransactionsUser = () => {
 };
 
 export default TransactionsUser;
-
-// const data = {
-//   transactions: [
-//     {
-//       id: 8,
-//       transaction_type: "payment",
-//       amount: 25242,
-//       createdAt: "2024-11-14T17:32:26.000Z",
-//       listing: {
-//         title: "chiheb's boat",
-//         description: "boat",
-//       },
-//       boatOwner: {
-//         id: 14,
-//         name: "zakaria",
-//         surname: "amrani",
-//       },
-//     },
-//     {
-//       id: 7,
-//       transaction_type: "payment",
-//       amount: 25221,
-//       createdAt: "2024-11-14T17:29:28.000Z",
-//       listing: {
-//         title: "chiheb's boat",
-//         description: "boat",
-//       },
-//       boatOwner: {
-//         id: 14,
-//         name: "zakaria",
-//         surname: "amrani",
-//       },
-//     },
-//   ],
-//   releasedBalance: 0,
-//   unreleasedBalance: 12000,
-// };

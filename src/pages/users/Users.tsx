@@ -20,12 +20,11 @@ const Users = () => {
   
   const fetchData = useCallback(async () => { 
     const url = import.meta.env.VITE_SERVER_URL_USERS;
-    // const res = await axios.get(url + "/admin/user/users?block=false&suspend=false");
     const res = await axios.get(url + "/admin/user/users");
     return res.data;
   }, []);
 
-  const { data, error, isLoading, refetch } = useQuery({
+  const { data, error, isLoading } = useQuery({
     queryKey: ['getUsers'],
     queryFn: fetchData
   });
@@ -65,7 +64,6 @@ const Users = () => {
         </div>
         <TableUsers
           users={data}
-          refetch={refetch}
         />
       </div>
     );

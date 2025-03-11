@@ -182,7 +182,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
 }
 
 // Main Table component
-export default function EnhancedTable({ users, refetch }: { users: any; refetch: any }) {
+export default function EnhancedTable({ users }: { users: any }) {
   const [order, setOrder] = React.useState<Order>("asc");
   const [orderBy, setOrderBy] = React.useState<keyof Data>("name");
   const [page, setPage] = React.useState(0);
@@ -353,8 +353,6 @@ export default function EnhancedTable({ users, refetch }: { users: any; refetch:
                       <BlockUserModal
                         setClose={() => setBlockedUserId(null)}
                         user={user}
-                        refetch={refetch}
-                        onClose={() => setBlockedUserId(null)}
                       />
                     )}
                   </TableRow>

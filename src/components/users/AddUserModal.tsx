@@ -9,10 +9,11 @@ import ButtonFunc from "../ui/buttons/Button";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { axios_error_handler } from "../../functions/axios_error_handler";
-
+import { toast } from "react-hot-toast";
+import ModalComp from "../ui/modals/ModalComp";
 
 interface DeleteModalProps {
-    setClose: (isOpen: number) => void;
+  setClose: () => void;
 }
 ReactModal.setAppElement("#root");
 
@@ -23,14 +24,13 @@ const createUser = async (body: any) => {
 };
 
 const AddUserModal: React.FC<DeleteModalProps> = ({ setClose }) => {
-    const [firstName, setFirstName] = useState("");
-    const [lastName, setLastName] = useState("");
-    const [email, setEmail] = useState("");
-    const [phone, setPhone] = useState("");
-    const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const { t } = useTranslation();
-
 
   const { mutate, isPending } = useMutation({
     mutationFn: createUser,
@@ -42,16 +42,31 @@ const AddUserModal: React.FC<DeleteModalProps> = ({ setClose }) => {
     },
   });
 
-
   const handleAddUser = () => {
-    const array = [firstName, lastName, email, phone, password, confirmPassword];
+    const array = [
+      firstName,
+      lastName,
+      email,
+      phone,
+      password,
+      confirmPassword,
+    ];
     const check = array.some((item) => item === "");
-    if (check) {
-      alert("Please fill in all fields");
-    }
-    if (password !== confirmPassword) {
-      alert("Passwords do not match");
-    }
+    if (check)
+      return toast.error(t("please_fill_all_fields"), {
+        style: {
+          border: "1px solid #FF0000",
+          color: "#FF0000",
+        },
+      });
+    if (password !== confirmPassword)
+      return toast.error(t("passwords_do_not_match"), {
+        style: {
+          border: "1px solid #FF0000",
+          color: "#FF0000",
+        },
+      });
+
     const body = {
       name: firstName,
       surname: lastName,
@@ -62,65 +77,58 @@ const AddUserModal: React.FC<DeleteModalProps> = ({ setClose }) => {
     mutate(body);
   };
 
-
-    return (
-      <ReactModal
-        isOpen={true}
-        onRequestClose={() => setClose(0)}
-        className={"bg-white rounded-lg p-4 shadow-hardShadow lg:p-6"}
-        overlayClassName={
-          "fixed bg-black bg-opacity-10 backdrop-blur-[7px] inset-0 flex items-center justify-center p-4"
-        }
-      >
-        <div className="space-y-4">
-          <div className="flex gap-4 items-center w-full">
-            <InputText
-              label={t("first_name")}
-              value={firstName}
-              setValue={(e: any) => setFirstName(e.target.value)}
-            />
-            <InputText
-              label={t("last_name")}
-              value={lastName}
-              setValue={(e: any) => setLastName(e.target.value)}
-            />
-          </div>
-
-          <div className="flex gap-4 items-center w-full">
-            <InputEmail
-              label={t("email")}
-              value={email}
-              setValue={(e: any) => setEmail(e.target.value)}
-            />
-            <InputTel
-              label={t("phone")}
-              value={phone}
-              setValue={(e: any) => setPhone(e)}
-            />
-          </div>
-
-          <div className="flex gap-4 items-center w-full">
-            <InputPassword
-              label={t("password")}
-              value={password}
-              setValue={(e: any) => setPassword(e.target.value)}
-            />
-            <InputPassword
-              label={t("confirm_password")}
-              value={confirmPassword}
-              setValue={(e: any) => setConfirmPassword(e.target.value)}
-            />
-          </div>
-          <div className="mt-5 w-full">
-            <ButtonFunc
-              text={t("save")}
-              onClick={handleAddUser}
-              loading={isPending}
-            />
-          </div>
+  return (
+    <ModalComp onClose={setClose}>
+      <div className="space-y-4">
+        <div className="flex gap-4 items-center w-full">
+          <InputText
+            label={t("first_name")}
+            value={firstName}
+            setValue={(e: any) => setFirstName(e.target.value)}
+          />
+          <InputText
+            label={t("last_name")}
+            value={lastName}
+            setValue={(e: any) => setLastName(e.target.value)}
+          />
         </div>
-      </ReactModal>
-    );
+
+        <div className="flex gap-4 items-center w-full">
+          <InputEmail
+            label={t("email")}
+            value={email}
+            setValue={(e: any) => setEmail(e.target.value)}
+          />
+          <InputTel
+            label={t("phone")}
+            value={phone}
+            setValue={(e: any) => setPhone(e)}
+          />
+        </div>
+
+        <div className="flex gap-4 items-center w-full">
+          <InputPassword
+            label={t("password")}
+            value={password}
+            setValue={(e: any) => setPassword(e.target.value)}
+          />
+          <InputPassword
+            label={t("confirm_password")}
+            value={confirmPassword}
+            setValue={(e: any) => setConfirmPassword(e.target.value)}
+          />
+        </div>
+        <div className="mt-5 w-full">
+          <ButtonFunc
+            text={t("save")}
+            onClick={handleAddUser}
+            loading={isPending}
+          />
+        </div>
+      </div>
+    </ModalComp>
+    
+  );
 };
 
 export default AddUserModal;

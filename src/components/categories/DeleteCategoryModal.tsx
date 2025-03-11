@@ -4,7 +4,7 @@ import { Button, Box, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import LoadingButton from "../ui/LoadingButton";
 import axios from "axios";
-import Swal from "sweetalert2";
+import { axios_error_handler } from "../../functions/axios_error_handler";
 
 interface DeleteModalProps {
   setClose: (isOpen: boolean) => void;
@@ -40,17 +40,7 @@ const DeleteCategoryModal: React.FC<DeleteModalProps> = ({
           window.location.reload();
         })
         .catch((err) => {
-          if (err.message === "Network Error") {
-            Swal.fire({
-              title: t("network_error"),
-              text: t("please_try_again"),
-              customClass: {
-                confirmButton: "custom-confirm-button",
-              },
-            }).then(() => {
-              window.location.reload();
-            });
-          }
+          axios_error_handler(err, t);
           setLoading(false);
         });
   };

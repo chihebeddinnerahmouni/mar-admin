@@ -2,13 +2,14 @@ import { useState } from "react";
 import { IoMdEye } from "react-icons/io";
 import { IoMdEyeOff } from "react-icons/io";
 
-
 interface InputTextProps {
   value: string;
   setValue: any;
   label: string;
   error?: boolean;
   helperText?: string | false | undefined;
+  bgColor?: string;
+  readOnly?: boolean;
 }
 
 const InputPassword = ({
@@ -17,17 +18,16 @@ const InputPassword = ({
   label,
   error,
   helperText,
+  bgColor = "",
+  readOnly = false,
 }: InputTextProps) => {
-
-    const [showPassword, setShowPassword] = useState(false);
-
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleClickShowPassword = (e: any) => {
     e.preventDefault();
+    if (readOnly) return;
     setShowPassword((show) => !show);
-  }
-
-
+  };
 
   return (
     <div className="password w-full">
@@ -42,7 +42,7 @@ const InputPassword = ({
         </div>
         <input
           type={showPassword ? "text" : "password"}
-          className={`w-full border rounded-lg p-3 pr-10 focus:ring-2 transition outline-none ${
+          className={`w-full border rounded-lg p-3 pr-10 focus:ring-2 transition outline-none ${bgColor} ${
             error
               ? "border-red-500 focus:ring-red-400 focus:border-red-400"
               : "border-gray-300 focus:ring-rose-300 focus:border-rose-300"
@@ -51,6 +51,7 @@ const InputPassword = ({
           // required
           value={value}
           onChange={setValue}
+          readOnly={readOnly}
         />
       </div>
       {helperText && (

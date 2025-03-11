@@ -1,19 +1,17 @@
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
-
-
+import InputPassword from "../../components/ui/inputs/InputPassword";
 
 const Password = () => {
   const { t } = useTranslation();
   return (
     <div className="w-full flex flex-col gap-2">
       <p className="font-semibold">{t("password")}</p>
-      <input
-        type="password"
+      <InputPassword
         value={"password"}
-        className="firstname bg-emptyInput w-full p-1 rounded-[5px] border-1 border-darkGrey outline-none"
-        placeholder={t("password")}
-        readOnly
+        setValue={() => {}}
+        label={t("password")}
+        readOnly={true}
       />
       <Link
         to={"/account/change-password"}
@@ -23,5 +21,5 @@ const Password = () => {
       </Link>
     </div>
   );
-}
+};
 export default Password;

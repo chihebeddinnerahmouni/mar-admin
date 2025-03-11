@@ -1,117 +1,104 @@
+import { useEffect, useState, useCallback } from "react";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import { useTranslation } from "react-i18next";
 import ProfilePic from "../../components/user account/ProfilePic";
 import Names from "../../components/user account/Names";
 import Email from "../../components/user account/Email";
 import Password from "../../components/user account/Password";
 import Phone from "../../components/user account/Phone";
-import { useTranslation } from "react-i18next";
-import { useEffect, useState } from "react";
-import axios from "axios";
-import LoadingLine from "../../components/ui/LoadingLine";
-import Swal from "sweetalert2";
-// import { useNavigate } from "react-router-dom";
+import ButtonFuc from "../../components/ui/buttons/Button";
+import { axios_error_handler } from "../../functions/axios_error_handler";
+import { toast } from "react-hot-toast";
 import { useParams } from "react-router-dom";
-import LoadingButton from "../../components/ui/LoadingButton";
+import LoadingLine from "../../components/ui/LoadingLine";
 
-const AccountUser = () => {
-  const { t } = useTranslation();
-  const [loading, setLoading] = useState(true);
-  const [LoadingSend, setLoadingSend] = useState(false);
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-    const [phone, setPhone] = useState("");
-    const [profilePic, setProfilePic] = useState("");
-//   const navigate = useNavigate();
+
+interface ResponseData {
+  message: string;
+}
+
+const fetshUserData = async (userId: string) => {
   const url = import.meta.env.VITE_SERVER_URL_USERS;
-    const token = localStorage.getItem("jwt");
-    const { userId } = useParams();
+  const response = await axios.get(`${url}/api/user/${userId}`, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+    },
+  });
+  return response.data;
+}
 
-  useEffect(() => {
-    // if (!isLoggedIn()) {
-    //   return navigate("/");
-    // }
+const updateUserProfile = async (userData: any, userId: string) => {
+  const url = import.meta.env.VITE_SERVER_URL_USERS;
+  const response = await axios.put<ResponseData>(
+    `${url}/admin/user/profile/${userId}`,
+    {
+      name: userData.firstName,
+      surname: userData.lastName,
+      phoneNumber: `+${userData.phone}`,
+      languageSpoken: "arabic",
+      description: "I am a user, hi!",
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+      },
+    }
+  );
+  return response.data;
+};
 
-    axios
-      .get(`${url}/api/user/${userId}`, {
-        headers: {
-          // Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhbXJhemFrYXJpYTRAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzMwMjI0MDQ2LCJleHAiOjE3MzAyMjc2NDZ9.zWKGJVTBMXYopubVbo4qTb6KHMgdFhsS2Mty5-msIaQ`,
-        //   Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((res) => {
-        // console.log(res.data);
-        setFirstName(res.data.name);
-        setLastName(res.data.surname);
-        setEmail(res.data.email);
-        setPhone(res.data.phoneNumber);
-        setProfilePic(res.data.profilePicture);
-          setLoading(false);
-        //   console.log(res.data);
-      })
-      .catch((err) => {
-        if (err.message === "Network Error") {
-          Swal.fire({
-            icon: "error",
-            title: t("network_error"),
-            text: t("please_try_again"),
-            customClass: {
-              confirmButton: "custom-confirm-button",
-            },
-          }).then(() => {
-            window.location.reload();
-          });
-        }
+
+
+
+const Account = () => {
+  const { t } = useTranslation();
+  const [firstName, setFirstName] = useState<string>("");
+  const [lastName, setLastName] = useState<string>("");
+  const [phone, setPhone] = useState<string>("");
+  const { userId } = useParams();
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: (userData: any) => updateUserProfile(userData, userId!),
+    onSuccess: () => {
+      window.location.reload();
+    },
+    onError: (error: any) => {
+      axios_error_handler(error, t);
+    },
+  });
+
+  const { data: user, isLoading, error } = useQuery({
+    queryKey: ["getUser", userId],
+    queryFn: () => fetshUserData(userId!),
+  });
+
+  useEffect(() => { 
+    if (error) axios_error_handler(error, t);
+  }, [error]);
+
+  useEffect(() => { 
+    if (user) {
+      setFirstName(user.name);
+      setLastName(user.surname);
+      setPhone(user.phoneNumber);
+    }
+  }, [user]);
+
+
+
+  const send = useCallback(() => {
+    const array = [firstName, lastName, phone];
+    if (array.some((item) => item === ""))
+      return toast.error(t("please_fill_all_fields"), {
+        style: { border: "1px solid #FF385C", color: "#FF385C" },
       });
-  }, []);
+    mutate({ firstName, lastName, phone });
+  }, [firstName, lastName, phone, mutate]);
 
-  const send = () => {
-    const check = !firstName || !lastName || !phone;
-    if (check) return alert(t("please_fill_all_fields"));
 
-    setLoadingSend(true);
-
-    axios
-      .put(
-        `${url}/admin/user/profile/${userId}`,
-        {
-          name: firstName,
-          surname: lastName,
-          phoneNumber: `+${phone}`,
-          languageSpoken: "arabic",
-          description: "I am a user, hi!",
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
-      .then((res) => {
-        setLoadingSend(false);
-        Swal.fire({
-          icon: "success",
-          title: t(res.data.message),
-          showConfirmButton: false,
-          timer: 3000,
-        });
-        window.location.reload();
-      })
-      .catch((err) => {
-        if (err.message === "Network Error") {
-          Swal.fire({
-            icon: "error",
-            title: t("network_error"),
-            text: t("please_try_again"),
-            customClass: {
-              confirmButton: "custom-confirm-button",
-            },
-          });
-          setLoadingSend(false);
-        }
-      });
-  };
-
-  if (loading) {
+  if (error) return null
+  if (isLoading) {
     return (
       <div className="w-full h-screen">
         <LoadingLine />
@@ -121,26 +108,21 @@ const AccountUser = () => {
 
   return (
     <div className="w-full px-4 flex justify-center">
-      <div className="content w-full mt-[40px] flex flex-col gap-4 pb-10 md:gap-6 md:w-[450px] lg:w-[550px] lg:mt-[170px]">
-        <ProfilePic profilePic={profilePic} />
+      <div className="content w-full mt-[100px] flex flex-col gap-4 pb-10 md:gap-6 md:w-[450px] lg:w-[550px] lg:mt-[170px]">
+        <ProfilePic profilePic={user?.profilePicture} />
         <Names
           firstName={firstName}
           lastName={lastName}
           setFirstName={setFirstName}
           setLastName={setLastName}
         />
-        <Email email={email} />
+        <Email email={user.email ? user.email : ""} />
         <Password />
         <Phone phone={phone} setPhone={setPhone} />
-        <button
-          className="w-[80px] h-[40px] bg-main rounded-[5px] text-white hover:bg-mainHover"
-          onClick={send}
-        >
-          {LoadingSend ? <LoadingButton /> : t("save")}
-        </button>
+        <ButtonFuc text={t("save")} onClick={send} loading={isPending} />
       </div>
     </div>
   );
 };
 
-export default AccountUser;
+export default Account;

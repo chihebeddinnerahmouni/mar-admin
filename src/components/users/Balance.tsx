@@ -9,7 +9,7 @@ const BalanceSection = ({ released, unreleased }: { released: number; unreleased
 
 
   const { t } = useTranslation();
-  const [isRealesedModalOpen, setIsRealesedModalOpen] = useState(true);
+  const [isRealesedModalOpen, setIsRealesedModalOpen] = useState(false);
 
     return (
       <div className="flex flex-col w-full">

@@ -60,7 +60,7 @@ const UpdateReleasedModal: React.FC<DeleteModalProps> = ({ setClose }) => {
       axios_toast_error(error, t);
     },
     onSuccess: () => {
-      setClose();
+      window.location.reload();
     },
   })
 

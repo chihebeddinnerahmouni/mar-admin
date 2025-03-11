@@ -1,4 +1,5 @@
 import { Button } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
 
 interface ButtonProps {
@@ -14,14 +15,13 @@ interface ButtonProps {
 
 const ButtonFunc = ({ text, loading = false, type = "button", color = mainColor, textColor = "white", onClick }: ButtonProps) => {
 
-  // console.log(loading);
+  const { t } = useTranslation();
 
   return (
     <Button
       variant="outlined"
       fullWidth
       disabled={loading}
-      // loading={loading}
       type={type}
       onClick={onClick ? onClick : () => {}}
       sx={{
@@ -36,7 +36,7 @@ const ButtonFunc = ({ text, loading = false, type = "button", color = mainColor,
         },
       }}
     >
-      {loading ? "Loading..." : text}
+      {loading ? t("loading") + "..." : text}
     </Button>
   );
 };

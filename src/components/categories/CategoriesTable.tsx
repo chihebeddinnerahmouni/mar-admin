@@ -39,11 +39,11 @@ const CategoriesTable = ({
     <>
       {isDeleteOpen && (
         <DeleteCategoryModal
-          setClose={setIsDeleteOpen}
+          setClose={() => setIsDeleteOpen(false)}
           category={selectedCategory}
         />
       )}
-      {isFormVisible && <AddCategoryModal setClose={setIsFormVisible} />}
+      {isFormVisible && <AddCategoryModal setClose={() => setIsFormVisible(false)} />}
       <TableContainer component={Paper} className="rounded-lg">
         <Table>
           <TableHead sx={{ fontSize: "bold" }}>

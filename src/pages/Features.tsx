@@ -1,5 +1,5 @@
 import FeaturesTable from '../components/features/FeaturesTable'
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import LoadingLine from '../components/ui/LoadingLine';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
@@ -21,6 +21,11 @@ const Features = () => {
     queryFn: fetshData,
   })
 
+    useEffect(() => {
+      if (error) axios_error_handler(error, t);
+    }, [error]);
+    if (error) return null;
+
   if (isLoading) {
     return (
       <div className="w-full h-screen">
@@ -29,10 +34,6 @@ const Features = () => {
     )
   }
 
-  if (error) {
-    axios_error_handler(error, t);
-    return null
-  }
   
 
 

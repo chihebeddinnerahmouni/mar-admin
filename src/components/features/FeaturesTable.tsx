@@ -25,11 +25,11 @@ export default function BasicTable({ rows }: any) {
     <>
       {isDeleteOpen && (
         <DeleteFeatureModal
-          setClose={setIsDeleteopen}
+          setClose={() => setIsDeleteopen(false)}
           feature={selectedRowId}
         />
       )}
-      {isAddOpen && <AddFeature setClose={setIsAddOpen} />}
+      {isAddOpen && <AddFeature setClose={()=> setIsAddOpen(false)} />}
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>

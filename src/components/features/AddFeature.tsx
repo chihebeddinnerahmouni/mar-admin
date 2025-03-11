@@ -1,29 +1,29 @@
 import { useTranslation } from "react-i18next";
 import React, { useState } from "react";
 import axios from "axios";
-import Swal from "sweetalert2";
 import IconButton from "@mui/material/IconButton";
-import CloseIcon from "@mui/icons-material/Close";
 import Avatar from "@mui/material/Avatar";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import InputText from "../ui/inputs/InputText";
 import ButtonFunc from "../ui/buttons/Button";
-
+import ModalComp from "../ui/modals/ModalComp";
+import Title from "../ui/modals/Title";
+import { axios_toast_error } from "../../functions/axios_toast_error";
+import {toast} from "react-hot-toast";
 
 interface UpdatePricesProps {
-    setClose: React.Dispatch<React.SetStateAction<boolean>>;
+  setClose: () => void;
 }
 
 const AddFeature: React.FC<UpdatePricesProps> = ({ setClose }) => {
-    const { t } = useTranslation();
-    const [engName, setEngName] = useState("");
+  const { t } = useTranslation();
+  const [engName, setEngName] = useState("");
   const [arName, setArName] = useState("");
   const [image, setImage] = useState<any>();
   const [imagePreview, setImagePreview] = useState<any>();
   const [loading, setLoading] = useState(false);
-  
-  const url = import.meta.env.VITE_SERVER_URL_LISTING;
 
+  const url = import.meta.env.VITE_SERVER_URL_LISTING;
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -32,73 +32,38 @@ const AddFeature: React.FC<UpdatePricesProps> = ({ setClose }) => {
     }
   };
 
-
-
   const handleContinue = () => {
-    
     const check = !engName || !image || !arName;
-    if (check) return alert(t("please_fill_all_fields"));
+    if (check) return toast.error(t("please_fill_all_fields"), {
+      style: { border: "1px solid #FF385C", color: "#FF385C" },
+    });
 
     setLoading(true);
 
-        const formData = new FormData();
-      formData.append("name", engName);
-      formData.append("arabic_name", arName);
-      formData.append("image", image);
-      
-        axios
-          .post(`${url}/admin/listing/features`, formData, {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-            },
-          })
-          .then(() => {
-            // console.log(res.data);
-            setLoading(false);
-            Swal.fire({
-              title: t("great"),
-              text: t("success"),
-              icon: "success",
-              timer: 2000,
-              showConfirmButton: false,
-              timerProgressBar: true,
-              customClass: {
-                confirmButton: "custom-confirm-button",
-              },
-            });
-            setClose(false);
-            window.location.reload();
-          })
-          .catch((err) => {
-            setLoading(false);
-            // console.log(err.response.data);
-            Swal.fire({
-              title: t("oops"),
-              text: t(err.response.data),
-              icon: "error",
-              timer: 2000,
-              timerProgressBar: true,
-              customClass: {
-                confirmButton: "custom-confirm-button",
-              },
-            });
-          });  
-    };
+    const formData = new FormData();
+    formData.append("name", engName);
+    formData.append("arabic_name", arName);
+    formData.append("image", image);
 
-  
-    return (
-      <div className="mb-5 bg-white p-5 rounded-[10px] shadow-md relative flex flex-col items-center">
-        <div className="cancel absolute top-2 right-2">
-          <IconButton
-            size="small"
-            sx={{ color: "red" }}
-            onClick={() => setClose(false)}
-          >
-            <CloseIcon />
-          </IconButton>
-        </div>
-        <p className="mb-5 text-[25px] font-bold">{t("add_feature")}</p>
+    axios
+      .post(`${url}/admin/listing/features`, formData, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+        },
+      })
+      .then(() => {
+        window.location.reload();
+      })
+      .catch((err) => {
+        setLoading(false);
+        axios_toast_error(err, t);
+      });
+  };
 
+  return (
+    <ModalComp onClose={setClose}>
+      <div className="bg-white relative flex flex-col items-center">
+        <Title title={t("add_feature")} />
         <input
           type="file"
           accept="image/*"
@@ -117,7 +82,7 @@ const AddFeature: React.FC<UpdatePricesProps> = ({ setClose }) => {
             )}
           </IconButton>
         </label>
-        <div className=" w-full flex gap-3">
+        <div className="mt-3 w-full flex gap-3">
           <InputText
             label={t("english_name")}
             value={engName}
@@ -129,15 +94,21 @@ const AddFeature: React.FC<UpdatePricesProps> = ({ setClose }) => {
             setValue={(e: any) => setArName(e.target.value)}
           />
         </div>
-        <div className="w-full mt-5">
-          <ButtonFunc
-            text={t("save")}
-            onClick={handleContinue}
-            loading={loading}
-          />
+        <div className="mt-5 w-full flex gap-2 justify-end">
+          <div className="w-[100px]">
+            <ButtonFunc text={t("cancel")} onClick={setClose} color="grey" />
+          </div>
+          <div className="w-[100px]">
+            <ButtonFunc
+              text={t("save")}
+              onClick={handleContinue}
+              loading={loading}
+            />
+          </div>
         </div>
       </div>
-    );
+    </ModalComp>
+  );
 };
 
 export default AddFeature;

@@ -4,7 +4,7 @@ import { FaUsers } from "react-icons/fa";
 import { GiCaptainHatProfile } from "react-icons/gi";
 import { FaUser } from "react-icons/fa";
 import axios from "axios";
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import LoadingLine from '../../components/ui/LoadingLine';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
@@ -29,6 +29,10 @@ const Users = () => {
     queryFn: fetchData
   });
 
+    useEffect(() => {
+      if (error) axios_error_handler(error, t);
+    }, [error]);
+    if (error) return null;
 
   if (isLoading) {
     return (
@@ -38,10 +42,7 @@ const Users = () => {
     );
   }
 
-  if (error) {
-    axios_error_handler(error, t);
-    return null;
-  }
+
 
 
 

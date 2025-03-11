@@ -1,4 +1,4 @@
-import React, {useCallback} from "react";
+import React, {useCallback, useEffect} from "react";
 import CategoriesTable from "../components/categories/CategoriesTable";
 import LoadingLine from "../components/ui/LoadingLine";
 import axios from "axios";
@@ -31,6 +31,10 @@ const Categories: React.FC = () => {
     queryFn: fetshData,
   });
 
+  useEffect(() => {
+    if (error) axios_error_handler(error, t);
+  }, [error]);
+  if (error) return null;
 
   if (isLoading) {
     return (
@@ -40,10 +44,8 @@ const Categories: React.FC = () => {
     )
   }
 
-  if (error) {
-    axios_error_handler(error, t);
-    return null;
-  }
+
+  
 
   return (
     <div className={`md:p-8 mx-auto p-4 md:px-[40px] lg:max-w-[700px]`}>

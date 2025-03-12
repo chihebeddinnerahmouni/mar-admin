@@ -1,65 +1,98 @@
-import ReactModal from "react-modal";
-import { useTranslation } from "react-i18next";
+import { Menu, MenuItem } from "@mui/material";
 import SwitchLangMobile from "./SwitchLangMobile";
-// import { useContext } from "react";
-// import { AppContext } from "../../App";
-import { IoIosLogOut } from "react-icons/io";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+import { IoIosLogOut } from "react-icons/io";
 import { useQueryClient } from "@tanstack/react-query";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
 
-
-ReactModal.setAppElement("#root");
 interface Props {
-  setClose: React.Dispatch<React.SetStateAction<boolean>>;
-  data: any;
+  isMenuOpen: boolean;
+  setIsMenuOpen: any;
+  anchorEl: any;
+  user: any;
 }
 
-const DropDownMenuModal = ({ setClose, data }: Props) => {
-  const { i18n, t } = useTranslation();
-  const url = import.meta.env.VITE_SERVER_URL_USERS as string;
-  // const { profilePicture, name, surname } = useContext(AppContext);
-  const queryClient = useQueryClient();
-
-  const navigate = useNavigate();
-
-
+const OnlineDropMenu = ({ isMenuOpen, setIsMenuOpen, anchorEl, user }: Props) => {
 
   return (
-    <ReactModal
-      isOpen={true}
-      onRequestClose={() => setClose(false)}
-      className={`z-50 outline-none bg-white absolute w-[220px] top-[-4px] py-3 px-4 lg:top-[-5px] lg:w-[280px] rounded-20 shadow-hardShadow ${
-        i18n.language === "en"
-          ? "right-3 md:right-[50px] lg:right-[80px] 2xl:right-[120px]"
-          : "left-3 md:left-[50px] lg:right-[80px] 2xl:right-[120px]"
-      }`}
-      overlayClassName={`fixed inset-0 backdrop-filter backdrop-blur-[7px] mt-[74px] lg:mt-[95px] z-50`}
+    <Menu
+      anchorEl={anchorEl}
+      open={isMenuOpen}
+      onClose={setIsMenuOpen}
+      PaperProps={{
+        style: {
+          borderRadius: "10px",
+          marginTop: "10px",
+        },
+      }}
+      BackdropProps={{
+        style: {
+          backdropFilter: "blur(10px)",
+        },
+      }}
     >
-      <div className="user flex items-center gap-2">
-        <img
-          src={
-            data.profilePicture
-              ? url + "/" + data?.profilePicture
-              : "/anonyme.jpg"
-          }
-          alt="profile, picture"
-          className="w-[35px] h-[35px] object-cover object-center rounded-50"
-        />
-        <p className="text-sm text-writingMainDark font-medium">
-          {data?.name} {data?.surname}
-        </p>
-      </div>
-
-      <hr className="my-3" />
-
+      <User user={user} />
       <SwitchLangMobile />
+      <Disconnect />
+    </Menu>
+  );
+};
 
-      <hr className="my-3 lg:hidden" />
+export default OnlineDropMenu;
 
+
+
+
+
+
+
+const User = ({user}: {user: any}) => {
+  const url = import.meta.env.VITE_SERVER_URL_USERS;
+  return (
+    <MenuItem
+      sx={{
+        "&:hover": { backgroundColor: "#f5f5f5" },
+        fontFamily: "Cairo, sans-serif",
+      }}
+      className="user flex items-center gap-2"
+    >
+      <LazyLoadImage
+        src={
+          user?.profilePicture ? `${url}/${user?.profilePicture}` : "/anonyme.jpg"
+        }
+        alt="profile, picture"
+        effect="blur"
+        className="w-[35px] h-[35px] object-cover object-center rounded-50"
+      />
+      <p className="text-writingMainDark font-medium">
+        {user?.name} {user?.surname}
+      </p>
+    </MenuItem>
+  );
+};
+
+
+
+
+
+const Disconnect = () => {
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
+  return (
+    <MenuItem
+      sx={{
+        "&:hover": { backgroundColor: "#f5f5f5" },
+        fontFamily: "Cairo, sans-serif",
+      }}
+      className="user flex items-center gap-2"
+    >
       <button
         onClick={() => {
           localStorage.removeItem("jwt");
-          setClose(false);
           queryClient.clear();
           navigate("/login");
         }}
@@ -68,8 +101,7 @@ const DropDownMenuModal = ({ setClose, data }: Props) => {
         <IoIosLogOut className="text-[20px]" />
         <span>{t("logout")}</span>
       </button>
-    </ReactModal>
+    </MenuItem>
   );
 };
 
-export default DropDownMenuModal;

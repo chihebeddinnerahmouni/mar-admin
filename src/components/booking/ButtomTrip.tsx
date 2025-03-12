@@ -9,13 +9,27 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import { MdOutlineStopCircle } from "react-icons/md";
 import { axios_toast_error } from "../../functions/axios_toast_error";
+import { Menu, MenuItem } from "@mui/material";
+
 
 const url = import.meta.env.VITE_SERVER_URL_LISTING;
 
 
 const ButtomTrip = ({ setSelected, details }: any) => {
+
+
   const { t, i18n } = useTranslation();
-  const [isOptionsOn, setIsOptionsOn] = useState(false);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
+  const handleOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const Icon = anchorEl ? FaChevronUp : FaChevronDown;
 
   return (
     <div
@@ -25,7 +39,7 @@ const ButtomTrip = ({ setSelected, details }: any) => {
           : "lg:right-0 lg:left-[350px]"
       }`}
     >
-      <button
+      {/* <button
         className="relative w-full h-full rounded-20 bg-main text-white font-medium md:w-[530px] xl:w-[630px]"
         onClick={() => setIsOptionsOn(!isOptionsOn)}
       >
@@ -36,25 +50,60 @@ const ButtomTrip = ({ setSelected, details }: any) => {
           <FaChevronUp className="inline-block ml-2" />
         )}
         {isOptionsOn && details.status !== "cancelled" && <Options setSelected={setSelected} details={details} />}
+      </button> */}
+      <button
+        className="relative w-full h-full rounded-20 bg-main text-white font-medium md:w-[530px] xl:w-[630px]"
+        onClick={handleOpen}
+      >
+        {t("options")} <Icon className="inline-block ml-2" />
       </button>
+      <Options
+        setSelected={setSelected}
+        details={details}
+        anchorEl={anchorEl}
+        handleClose={handleClose}
+      />
     </div>
   );
 };
 
 export default ButtomTrip;
 
-const Options = ({ setSelected, details }: any) => {
-
-  const { i18n, t } = useTranslation();
+const Options = ({
+  setSelected,
+  details,
+  anchorEl,
+  handleClose,
+}: {
+  setSelected: any;
+  details: any;
+  anchorEl: any;
+  handleClose: any;
+}) => {
+  const { t } = useTranslation();
   const { inboxId } = useParams();
 
   return (
-    <div
-      className={`options absolute p-3 rounded-10 bg-white shadow-hardShadow text-writingMainDark bottom-[50px] flex flex-col gap-3 items-start lg:bottom-[60px] ${
-        i18n.language === "en" ? "left-0" : "right-0"
-      }`}
+    <Menu
+      anchorOrigin={{
+        vertical: "top",
+        horizontal: "left",
+      }}
+      transformOrigin={{
+        vertical: "bottom",
+        horizontal: "left",
+      }}
+      BackdropProps={{
+        style: {
+          backgroundColor: "rgba(0, 0, 0, 0.05)",
+          backdropFilter: "blur(5px)",
+        },
+      }}
+      anchorEl={anchorEl}
+      open={Boolean(anchorEl)}
+      onClose={handleClose}
     >
-      <MessagesComp t={t} setSelected={setSelected} />
+      <MessagesComp t={t} setSelected={setSelected} handleClose={handleClose} />
       {details.status === "pending" && <AcceptComp t={t} inboxId={inboxId} />}
       {details.status === "pending" ||
         (details.status === "confirmed" && (
@@ -63,22 +112,38 @@ const Options = ({ setSelected, details }: any) => {
       {details.status === "ongoing" && (
         <ServiceEndComp t={t} inboxId={inboxId} />
       )}
-    </div>
+    </Menu>
   );
 };
 
 
 
 
-const MessagesComp = ({ t, setSelected }: { t: any; setSelected: any }) => {
+const MessagesComp = ({
+  t,
+  setSelected,
+  handleClose,
+}: {
+  t: any;
+    setSelected: any;
+    handleClose: any;
+}) => {
   return (
-    <div
-      className="flex items-center h-full px-4 cursor-pointer gap-3"
-      onClick={() => setSelected("messages")}
-    >
+    <MenuItem
+      onClick={() => {
+        handleClose();
+        setSelected("messages");
+      }}
+      sx={{
+        "&:hover": {
+          backgroundColor: "rgba(0,0,0,0.1)",
+        },
+      }}
+    ><div className="flex w-full items-center justify-center cursor-pointer gap-3">
       <LuSendHorizonal className="text-2xl" />
-      <p className="">{t("messages")}</p>
-    </div>
+        <p className="">{t("messages")}</p>
+      </div>
+    </MenuItem>
   );
 };
 
@@ -112,16 +177,19 @@ const AcceptComp = ({
   };
 
   return (
-    <>
-      <hr className="w-full border-1 border-gray-200" />
-      <div
-        className="flex items-center h-full px-4 cursor-pointer gap-3"
-        onClick={acceptInquiry}
-      >
+    <MenuItem
+      onClick={acceptInquiry}
+      sx={{
+        "&:hover": {
+          backgroundColor: "rgba(0,0,0,0.1)",
+        },
+      }}
+    >
+      <div className="flex w-full items-center justify-center cursor-pointer gap-3">
         <FaCheck className="text-2xl" />
         <p className="">{t("accept_inquiry")}</p>
       </div>
-    </>
+    </MenuItem>
   );
 };
 
@@ -156,16 +224,19 @@ const CancelComp = ({
   };
 
   return (
-    <>
-      <hr className="w-full border-1 border-gray-200" />
-      <div
-        className="flex items-center h-full px-4 cursor-pointer gap-3"
-        onClick={cancel}
-      >
+    <MenuItem
+      onClick={cancel}
+      sx={{
+        "&:hover": {
+          backgroundColor: "rgba(0,0,0,0.1)",
+        },
+      }}
+    >
+      <div className="flex w-full items-center justify-center cursor-pointer gap-3">
         <MdOutlineCancel className="text-2xl" />
         <p className="">{t("cancel_inquiry")}</p>
       </div>
-    </>
+    </MenuItem>
   );
 };
 const ServiceEndComp = ({
@@ -197,15 +268,18 @@ const ServiceEndComp = ({
   };
 
   return (
-    <>
-      <hr className="w-full border-1 border-gray-200" />
-      <div
-        className="flex items-center h-full px-4 cursor-pointer gap-3"
-        onClick={serviceEnd}
-      >
+    <MenuItem
+      onClick={serviceEnd}
+      sx={{
+        "&:hover": {
+          backgroundColor: "rgba(0,0,0,0.1)",
+        },
+      }}
+    >
+      <div className="flex w-full items-center justify-center cursor-pointer gap-3">
         <MdOutlineStopCircle className="text-2xl" />
         <p className="">{t("end_of_service")}</p>
       </div>
-    </>
+    </MenuItem>
   );
 };

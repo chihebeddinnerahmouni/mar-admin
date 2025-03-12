@@ -139,12 +139,10 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
 // Main Table component
 export default function EnhancedTable({ rows }: {rows: any[]}) {
 
-  // const [selected, setSelected] = React.useState<readonly number[]>([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [searchQuery, setSearchQuery] = React.useState("");
-  const url = import.meta.env.VITE_SERVER_URL_USERS;
-  const { i18n, t } = useTranslation();
+ 
 
 
 
@@ -179,101 +177,11 @@ export default function EnhancedTable({ rows }: {rows: any[]}) {
                 const labelId = `enhanced-table-checkbox-${index}`;
 
                 return (
-                  <TableRow
-                    hover
-                    role="checkbox"
-                    tabIndex={-1}
+                  <TableRowPart 
                     key={index}
-                    sx={{
-                      cursor: "pointer",
-                      bgcolor: "inherit",
-                      "&.Mui-selected": {
-                        bgcolor: "rgba(255, 0, 0, 0.1) !important",
-                      },
-                      "&.Mui-selected:hover": {
-                        bgcolor: "rgba(139, 0, 0, 0.1) !important",
-                      },
-                    }}
-                  >
-                    <TableCell
-                      component="th"
-                      id={labelId}
-                      scope="row"
-                      align="center"
-                      padding="normal"
-                      sx={{ display: "flex", justifyContent: "center" }}
-                    >
-                      <LazyLoadImage
-                        alt={`${row.name}'s profile`}
-                        src={row.user.profilePicture ? url + "/" + row.user.profilePicture : "/anonyme.jpg"}
-                        effect="blur"
-                        className="w-[40px] h-[40px] rounded-full object-cover object-center"
-                      />
-                    </TableCell>
-                    <TableCell
-                      className="text-nowrap"
-                      align="center"
-                      padding="normal"
-                    >
-                      {row.user.name + " " + row.user.surname}
-                    </TableCell>
-                    <TableCell
-                      align="center"
-                      padding="normal"
-                      className="text-nowrap"
-                    >
-                      {row.user.phoneNumber}
-                    </TableCell>
-                    <TableCell
-                      align="center"
-                      padding="normal"
-                      className="text-nowrap"
-                    >
-                      {row.user.email}
-                    </TableCell>
-                    <TableCell
-                      className="text-nowrap"
-                      align="center"
-                      padding="normal"
-                    >
-                      {t(row.submission.business_type)}
-                    </TableCell>
-                    <TableCell align="center" className="text-nowrap">
-                      {
-                        i18n.language === "en"
-                        ? row.submission.boat_type.en
-                        : row.submission.boat_type.ar
-                      }
-                    </TableCell>
-                    <TableCell className="text-nowrap" align="center">
-                      {
-                        i18n.language === "en"
-                        ? row.submission.city.en
-                        : row.submission.city.ar
-                      }
-                    </TableCell>
-                    <TableCell align="right">
-                      <Box
-                        sx={{
-                          display: "flex",
-                          justifyContent: "flex-end",
-                          alignItems: "center",
-                        }}
-                      >
-                        <IconButton
-                          onClick={(event) => {
-                            event.stopPropagation();
-                            window.open(
-                              `documents/check-document/${row.submission.id}`,
-                              "_blank"
-                            );
-                          }}
-                        >
-                          <RemoveRedEyeIcon className="text-green-500 hover:text-green-700" />
-                        </IconButton>
-                      </Box>
-                    </TableCell>
-                  </TableRow>
+                    labelId={labelId}
+                    row={row}
+                  />
                 );
               })}
             </TableBody>
@@ -292,3 +200,98 @@ export default function EnhancedTable({ rows }: {rows: any[]}) {
     </Box>
   );
 }
+
+
+const TableRowPart = ({ 
+  labelId, 
+  row,
+
+}: { 
+    labelId: string,
+    row: any,
+  }) => {
+  
+   const url = import.meta.env.VITE_SERVER_URL_USERS;
+   const { i18n, t } = useTranslation();
+
+  return (
+    <TableRow
+      hover
+      role="checkbox"
+      tabIndex={-1}
+      sx={{
+        cursor: "pointer",
+        bgcolor: "inherit",
+        "&.Mui-selected": {
+          bgcolor: "rgba(255, 0, 0, 0.1) !important",
+        },
+        "&.Mui-selected:hover": {
+          bgcolor: "rgba(139, 0, 0, 0.1) !important",
+        },
+      }}
+    >
+      <TableCell
+        component="th"
+        id={labelId}
+        scope="row"
+        align="center"
+        padding="normal"
+        sx={{ display: "flex", justifyContent: "center" }}
+      >
+        <LazyLoadImage
+          alt={`${row.name}'s profile`}
+          src={
+            row.user.profilePicture
+              ? url + "/" + row.user.profilePicture
+              : "/anonyme.jpg"
+          }
+          effect="blur"
+          className="w-[40px] h-[40px] rounded-full object-cover object-center"
+        />
+      </TableCell>
+      <TableCell className="text-nowrap" align="center" padding="normal">
+        {row.user.name + " " + row.user.surname}
+      </TableCell>
+      <TableCell align="center" padding="normal" className="text-nowrap">
+        {row.user.phoneNumber}
+      </TableCell>
+      <TableCell align="center" padding="normal" className="text-nowrap">
+        {row.user.email}
+      </TableCell>
+      <TableCell className="text-nowrap" align="center" padding="normal">
+        {t(row.submission.business_type)}
+      </TableCell>
+      <TableCell align="center" className="text-nowrap">
+        {i18n.language === "en"
+          ? row.submission.boat_type.en
+          : row.submission.boat_type.ar}
+      </TableCell>
+      <TableCell className="text-nowrap" align="center">
+        {i18n.language === "en"
+          ? row.submission.city.en
+          : row.submission.city.ar}
+      </TableCell>
+      <TableCell align="right">
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "flex-end",
+            alignItems: "center",
+          }}
+        >
+          <IconButton
+            onClick={(event) => {
+              event.stopPropagation();
+              window.open(
+                `documents/check-document/${row.submission.id}`,
+                "_blank"
+              );
+            }}
+          >
+            <RemoveRedEyeIcon className="text-green-500 hover:text-green-700" />
+          </IconButton>
+        </Box>
+      </TableCell>
+    </TableRow>
+  );
+} 

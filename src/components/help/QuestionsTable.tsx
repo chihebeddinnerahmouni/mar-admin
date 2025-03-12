@@ -68,8 +68,8 @@ const TableOfQuestions = ({
   return (
     <div className="overflow-x-auto">
       {isAddQstOpen && (
-        <AddQst setClose={setIsAddQstOpen} categoriesArray={helpCat} />
-        )}
+        <AddQst setClose={() => setIsAddQstOpen(false)} categoriesArray={helpCat} />
+      )}
       <table className="min-w-full bg-white">
         <thead>
           <tr>
@@ -111,7 +111,7 @@ const TableOfQuestions = ({
                   <td colSpan={2} className="border px-4 py-2 ">
                     <div
                       dangerouslySetInnerHTML={{ __html: question.answer }}
-                      />
+                    />
                   </td>
                 </tr>
               )}

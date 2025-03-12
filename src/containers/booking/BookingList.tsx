@@ -15,7 +15,7 @@ import { db } from "../../lib/firebaseConfig";
 import Filter from "../../components/booking/Filter";
 import options from "../../assets/files/filter_categories";
 import { useTranslation } from "react-i18next";
-import { IoSearchSharp } from "react-icons/io5";
+import InputSearch from "../../components/ui/inputs/InputSearch";
 
 
 const BookingList = () => {
@@ -109,34 +109,19 @@ const BookingList = () => {
           selectedFilter={selectedFilter}
           setSelectedFilter={setSelectedFilter}
         />
-        <div
-          className="search relative w-full"
-          onSubmit={(e) => {
-            e.preventDefault;
-            fetchConversations()
+        <InputSearch
+          value={clientSearch}
+          setValue={(e: any) => {
+            setClientSearch(e.target.value);
+            searchByName(e.target.value);
           }}
-        >
-          <input
-            type="text"
-            value={clientSearch}
-            onChange={(e) => {
-              setClientSearch(e.target.value)
-              searchByName(e.target.value)
-            }}
-            placeholder={t("search_by_client_name") + "..."}
-            className={`px-2 h-[54px] w-full border rounded-40 outline-main font-semibold bg-emptyInput ${
-              i18n.language === "ar" ? "pl-7" : "pr-7"
-            }`}
-          />
-          <button
-            type="submit"
-            className={`absolute top-1/2 transform -translate-y-1/2 bg-main h-[50px] w-[50px] flex items-center justify-center rounded-50 hover:bg-mainHover ${
-              i18n.language === "ar" ? "left-1" : "right-1"
-            }`}
-          >
-            <IoSearchSharp className={`text-white text-[18px] `} />
-          </button>
-        </div>
+          label={t("search_by_client_name")}
+          onClick={(e: any) => {
+            e.preventDefault();
+            fetchConversations();
+          }}
+          i18n={i18n}
+        />
         {filteredConversations.map((inboxItem: any, index: number) => (
           <BookingItemComp key={index} item={inboxItem} />
         ))}
@@ -149,3 +134,77 @@ const BookingList = () => {
 export default BookingList;
 
 
+// import { useState } from "react";
+// import { useTranslation } from "react-i18next";
+// import { FaChevronDown, FaChevronUp } from "react-icons/fa6";
+// import Menu from "@mui/material/Menu";
+// import MenuItem from "@mui/material/MenuItem";
+// import Button from "@mui/material/Button";
+// import options from "../../assets/files/filter_categories";
+
+
+// const Filter = ({ selectedFilter, setSelectedFilter }: any) => {
+//   const { t, i18n } = useTranslation();
+//   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+//   const isFilterOpen = Boolean(anchorEl);
+
+//   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+//     setAnchorEl(event.currentTarget);
+//   };
+
+//   const handleClose = () => {
+//     setAnchorEl(null);
+//   };
+
+//   return (
+//     <div className="relative w-full">
+//       <Button
+//         className="flex items-center gap-3 text-sm text-main"
+//         onClick={handleClick}
+//         sx={{ fontFamily: "Cairo, sans-serif" }}
+//       >
+//         <span className="text-main">{t(selectedFilter)}</span>{" "}
+//         {isFilterOpen ? (
+//           <FaChevronUp className="text-main" />
+//         ) : (
+//           <FaChevronDown className="text-main" />
+//         )}
+//       </Button>
+
+//       <Menu
+//         anchorEl={anchorEl}
+//         open={isFilterOpen}
+//         onClose={handleClose}
+//         anchorOrigin={{
+//           vertical: "bottom",
+//           horizontal: i18n.language === "en" ? "left" : "right",
+//         }}
+//         transformOrigin={{
+//           vertical: "top",
+//           horizontal: i18n.language === "en" ? "left" : "right",
+//         }}
+//       >
+//         {options.map((option, index) => (
+//           <MenuItem
+//             key={index}
+//             sx={{
+//               "&:hover": {
+//                 backgroundColor: "#f7f7f7",
+//               },
+//               width: "200px",
+//               fontFamily: "Cairo, sans-serif",
+//             }}
+//             onClick={() => {
+//               setSelectedFilter(option);
+//               handleClose();
+//             }}
+//           >
+//             {t(option)}
+//           </MenuItem>
+//         ))}
+//       </Menu>
+//     </div>
+//   );
+// };
+
+// export default Filter;

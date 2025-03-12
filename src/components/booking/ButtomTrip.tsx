@@ -7,9 +7,10 @@ import { MdOutlineCancel } from "react-icons/md";
 import { FaCheck } from "react-icons/fa6";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import Swal from "sweetalert2";
 import { MdOutlineStopCircle } from "react-icons/md";
+import { axios_toast_error } from "../../functions/axios_toast_error";
 
+const url = import.meta.env.VITE_SERVER_URL_LISTING;
 
 
 const ButtomTrip = ({ setSelected, details }: any) => {
@@ -45,110 +46,136 @@ export default ButtomTrip;
 const Options = ({ setSelected, details }: any) => {
 
   const { i18n, t } = useTranslation();
-  const url = import.meta.env.VITE_SERVER_URL_LISTING;
   const { inboxId } = useParams();
 
+  return (
+    <div
+      className={`options absolute p-3 rounded-10 bg-white shadow-hardShadow text-writingMainDark bottom-[50px] flex flex-col gap-3 items-start lg:bottom-[60px] ${
+        i18n.language === "en" ? "left-0" : "right-0"
+      }`}
+    >
+      <MessagesComp t={t} setSelected={setSelected} />
+      {details.status === "pending" && <AcceptComp t={t} inboxId={inboxId} />}
+      {details.status === "pending" ||
+        (details.status === "confirmed" && (
+          <CancelComp t={t} inboxId={inboxId} />
+        ))}
+      {details.status === "ongoing" && (
+        <ServiceEndComp t={t} inboxId={inboxId} />
+      )}
+    </div>
+  );
+};
 
-  // console.log(details);
 
+
+
+const MessagesComp = ({ t, setSelected }: { t: any; setSelected: any }) => {
+  return (
+    <div
+      className="flex items-center h-full px-4 cursor-pointer gap-3"
+      onClick={() => setSelected("messages")}
+    >
+      <LuSendHorizonal className="text-2xl" />
+      <p className="">{t("messages")}</p>
+    </div>
+  );
+};
+
+
+
+
+const AcceptComp = ({
+  t,
+  inboxId,
+}: {
+  t: any;
+  inboxId: any;
+}) => {
   const acceptInquiry = () => {
     axios
-      .post(`${url}/api/bookings/from-inquiry/${inboxId}`, {}, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-        },
-      })
+      .post(
+        `${url}/api/bookings/from-inquiry/${inboxId}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+          },
+        }
+      )
       .then(() => {
         window.location.reload();
       })
       .catch((err) => {
-        if (err.message === "Network Error") {
-          Swal.fire({
-            icon: "error",
-            title: t("network_error"),
-            text: t("please_try_again"),
-            customClass: {
-              confirmButton: "custom-confirm-button",
-            },
-          });
-        }
+        axios_toast_error(err, t);
       });
-  }
-  
+  };
 
+  return (
+    <>
+      <hr className="w-full border-1 border-gray-200" />
+      <div
+        className="flex items-center h-full px-4 cursor-pointer gap-3"
+        onClick={acceptInquiry}
+      >
+        <FaCheck className="text-2xl" />
+        <p className="">{t("accept_inquiry")}</p>
+      </div>
+    </>
+  );
+};
+
+
+
+
+
+
+
+
+const CancelComp = ({
+  t,
+  inboxId,
+}: {
+  t: any;
+  inboxId: any;
+  }) => {
+   
   const cancel = () => {
-
-    const isBoatOwner = localStorage.getItem("isBoatOwner") === "true";
-    if (isBoatOwner) {
       axios
-        .patch(
-          `${url}/api/bookings/inquiries/${inboxId}/cancel`,
-          {},
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-            },
-          }
-        )
+        .get(`${url}/api/bookings/inquiries/${inboxId}/cancel/user`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+          },
+        })
         .then(() => {
           window.location.reload();
-          Swal.fire({
-            icon: "success",
-            title: t("inquiry_cancelled"),
-            customClass: {
-              confirmButton: "custom-confirm-button",
-            },
-          });
         })
         .catch((err) => {
-          if (err.message === "Network Error") {
-            Swal.fire({
-              icon: "error",
-              title: t("network_error"),
-              text: t("please_try_again"),
-              customClass: {
-                confirmButton: "custom-confirm-button",
-              },
-            });
-          }
+          axios_toast_error(err, t);
         });
-    } else {
-      axios
-        .get(
-          `${url}/api/bookings/inquiries/${inboxId}/cancel/user`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-            },
-          }
-        )
-        .then(() => {
-          window.location.reload();
-          Swal.fire({
-            icon: "success",
-            title: t("inquiry_cancelled"),
-            customClass: {
-              confirmButton: "custom-confirm-button",
-            },
-          });
-        })
-        .catch((err) => {
-          if (err.message === "Network Error") {
-            Swal.fire({
-              icon: "error",
-              title: t("network_error"),
-              text: t("please_try_again"),
-              customClass: {
-                confirmButton: "custom-confirm-button",
-              },
-            });
-          }
-        });
-     }
-  }
-  
+  };
 
-
+  return (
+    <>
+      <hr className="w-full border-1 border-gray-200" />
+      <div
+        className="flex items-center h-full px-4 cursor-pointer gap-3"
+        onClick={cancel}
+      >
+        <MdOutlineCancel className="text-2xl" />
+        <p className="">{t("cancel_inquiry")}</p>
+      </div>
+    </>
+  );
+};
+const ServiceEndComp = ({
+  t,
+  inboxId,
+}: {
+  t: any;
+  inboxId: any;
+  }) => {
+   
   const serviceEnd = () => {
     // Cannot finish booking as the end date has not yet passed
     axios
@@ -163,100 +190,22 @@ const Options = ({ setSelected, details }: any) => {
       )
       .then(() => {
         window.location.reload();
-        Swal.fire({
-          icon: "success",
-          title: t("service_ended"),
-          customClass: {
-            confirmButton: "custom-confirm-button",
-          },
-        });
       })
       .catch((err) => {
-        if (err.message === "Network Error") {
-          Swal.fire({
-            icon: "error",
-            title: t("network_error"),
-            text: t("please_try_again"),
-            customClass: {
-              confirmButton: "custom-confirm-button",
-            },
-          });
-        }
+        axios_toast_error(err, t);
       });
-  }
+  };
 
   return (
-    <div
-      className={`options absolute p-3 rounded-10 bg-white shadow-hardShadow text-writingMainDark bottom-[50px] flex flex-col gap-3 items-start lg:bottom-[60px] ${
-        i18n.language === "en" ? "left-0" : "right-0"
-      }`}
-    >
-      {/* messages */}
-      {/* {details.status !== "cancelled" && ( */}
+    <>
+      <hr className="w-full border-1 border-gray-200" />
       <div
         className="flex items-center h-full px-4 cursor-pointer gap-3"
-        onClick={() => setSelected("messages")}
+        onClick={serviceEnd}
       >
-        <LuSendHorizonal className="text-2xl" />
-        <p className="">{t("messages")}</p>
+        <MdOutlineStopCircle className="text-2xl" />
+        <p className="">{t("end_of_service")}</p>
       </div>
-      {/* )} */}
-
-      {/* accept */}
-      {details.status === "pending" && (
-        <>
-          <hr className="w-full border-1 border-gray-200" />
-
-          <div
-            className="flex items-center h-full px-4 cursor-pointer gap-3"
-            onClick={acceptInquiry}
-          >
-            <FaCheck className="text-2xl" />
-            <p className="">{t("accept_inquiry")}</p>
-          </div>
-        </>
-      )}
-
-      {/* cancel inquiry */}
-
-      {details.status === "pending" || details.status === "confirmed" ? (
-        <>
-          <hr className="w-full border-1 border-gray-200" />
-          <div
-            className="flex items-center h-full px-4 cursor-pointer gap-3"
-            onClick={cancel}
-          >
-            <MdOutlineCancel className="text-2xl" />
-            <p className="">{t("cancel_inquiry")}</p>
-          </div>
-        </>
-      ) : null}
-
-      {details.status === "ongoing" && (
-        <>
-          <hr className="w-full border-1 border-gray-200" />
-          <div
-            className="flex items-center h-full px-4 cursor-pointer gap-3"
-            onClick={serviceEnd}
-          >
-            <MdOutlineStopCircle className="text-2xl" />
-            <p className="">{t("end_of_service")}</p>
-          </div>
-        </>
-      )}
-
-      {/* {details.status === "finished" && (
-        <>
-          <hr className="w-full border-1 border-gray-200" />
-          <div
-            className="flex items-center h-full px-4 cursor-pointer gap-3"
-            onClick={() => navigate(`/review/${details.listingDetails.id}`)}
-          >
-            <FaRegStar className="text-2xl" />
-            <p className="">{t("evaluate")}</p>
-          </div>
-        </>
-      )} */}
-    </div>
+    </>
   );
 };

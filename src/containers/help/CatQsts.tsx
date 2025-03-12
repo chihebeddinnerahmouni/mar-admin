@@ -93,7 +93,7 @@ const CatQsts = ({ helpCat, selectedCat, handleCategoryClick }: any) => {
       </div>
       {isDeleteCatOpen && (
         <DeleteCategoryQst
-          setClose={setIsDeleteCatOpen}
+          setClose={() => setIsDeleteCatOpen(false)}
           cat={deleteCatObject}
         />
       )}
@@ -105,7 +105,7 @@ const CatQsts = ({ helpCat, selectedCat, handleCategoryClick }: any) => {
       >
         {isMobile ? "+" : t("add_category")}
       </button>
-      {isAddQstOpen && <AddQuestionCat setClose={setIsAddQstOpen} />}
+      {isAddQstOpen && <AddQuestionCat setClose={() => setIsAddQstOpen(false)} />}
     </div>
   );
 };

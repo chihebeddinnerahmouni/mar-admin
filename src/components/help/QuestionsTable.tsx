@@ -24,24 +24,18 @@ const TableOfQuestions = ({
   categoryId: number;
   helpCat: any[];
 }) => {
-  // const questions = getQuestionsByCategory(categoryId);
   const [selectedQuestionId, setSelectedQuestionId] = useState<number | null>(
     null
   );
-  // const [questions, setQuestions] = useState<any[]>([]);
   const [isAddQstOpen, setIsAddQstOpen] = useState(false);
   const url = import.meta.env.VITE_SERVER_URL_HELP;
   const { t } = useTranslation();
 
-  const { data: questions, error: questionsError } = useQuery<IQuestion[]>({
+  const { data: questions } = useQuery<IQuestion[]>({
     queryKey: ["questions", categoryId],
     queryFn: () => getQuestionsByCategory(categoryId),
     enabled: categoryId !== 0,
   });
-
-  if (questionsError) {
-    axios_error_handler(questionsError, t);
-  }
   
   const handleRowClick = (id: number) => {
     setSelectedQuestionId(selectedQuestionId === id ? null : id);
@@ -61,10 +55,6 @@ const TableOfQuestions = ({
         axios
           .delete(`${url}/questions/${id}`)
           .then(() => {
-            Swal.fire({
-              icon: "success",
-              title: t("greate"),
-            });
             window.location.reload();
           })
           .catch((err) => {

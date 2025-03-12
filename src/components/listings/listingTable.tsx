@@ -137,7 +137,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
 }
 
 // Main Table component
-export default function EnhancedTable({ rows }: any) {
+export default function EnhancedTable({ rows }: {rows: any[]}) {
   const order = "asc";
   const orderBy = "name";
   const [selected, setSelected] = React.useState<readonly number[]>([]);

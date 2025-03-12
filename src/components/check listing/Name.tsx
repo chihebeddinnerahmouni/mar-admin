@@ -10,7 +10,7 @@ const Name: React.FC<NamePicProps> = ({ title }) => {
   return (
     <div className="relative w-full p-2 bg-white mt-5 rounded-10 shadow-sm flex items-center gap-4">
       <p>
-        <MdDriveFileRenameOutline className="text-writingGrey text-[30px]" />
+        <MdDriveFileRenameOutline className="text-writingGrey text-[30px] min-w-[40px]" />
       </p>
       <div className="text">
         <p className="font-bold">{t("name")}</p>

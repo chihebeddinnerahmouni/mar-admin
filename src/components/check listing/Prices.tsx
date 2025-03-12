@@ -9,7 +9,7 @@ const Prices = ({ prices }: any) => {
       <p className="text-sm font-medium text-writingMainDark">{t("price")}</p>
 
       <div className="preferedDate mt-3 flex items-center gap-4">
-        <FaMoneyBillWave className="text-writingGrey text-[30px]" />
+        <FaMoneyBillWave className="text-writingGrey text-[30px] min-w-[40px]" />
         <div className="text flex flex-col gap-2 w-full">
           <table className="prices w-full">
             <thead className="border-b">

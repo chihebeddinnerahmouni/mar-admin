@@ -16,7 +16,7 @@ const SpeceficDates = ({ prices }: any) => {
       </p>
 
       <div className="preferedDate mt-3 flex items-center gap-4">
-        <MdOutlineTipsAndUpdates className="text-writingGrey text-[30px]" />
+        <MdOutlineTipsAndUpdates className="text-writingGrey text-[30px] min-w-[40px]" />
         <div className="text flex flex-col gap-2 w-full">
           {prices[0].date_specific_price.length > 0 ? (
             <table className="prices w-full">

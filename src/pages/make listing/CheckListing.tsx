@@ -12,14 +12,11 @@ import Location from "../../components/check listing/Location";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import LoadingLine from "../../components/ui/LoadingLine";
-import Swal from "sweetalert2";
-import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import LoadingButton from "../../components/ui/LoadingButton";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { axios_error_handler } from "../../functions/axios_error_handler";
-import { useCallback } from "react";
-
+import { useEffect } from "react";
+import ButtonsCont from "../../containers/listing/ButtonsCont";
 
 const url = import.meta.env.VITE_SERVER_URL_LISTING as string;
 const fetshListing = async ( listingId: string) => {
@@ -27,29 +24,8 @@ const fetshListing = async ( listingId: string) => {
   return data;
 }
 
-const responseFunc = async (
-  values: {
-    validated: boolean;
-    blocked: boolean;
-    block_reason: string;
-  },
-  listingId: string
-) => {
-  const { data } = await axios.put(
-    `${url}/api/listing/listings/${listingId}/status`,
-    values,
-    {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-      },
-    }
-  );
-  return data;
-};
-
 const CheckListing = () => {
   const { listingId } = useParams<{ listingId: string }>();
-  const navigate = useNavigate();
   const { t } = useTranslation();
 
   const { data, error, isLoading } = useQuery({
@@ -58,32 +34,11 @@ const CheckListing = () => {
   });
 
   
-
-  const { mutate, isPending } = useMutation({
-  mutationFn: ({ values, listingId }: { values: { validated: boolean; blocked: boolean; block_reason: string }; listingId: string }) =>
-    responseFunc(values, listingId),
-  onError: (error) => {
-    axios_error_handler(error, t);
-  },
-  onSuccess: () => {
-    Swal.fire("success", t("great"));
-    navigate("/listings");
-  },
-  });
   
-    const response = useCallback(
-      (resp: boolean) => {
-        mutate({
-          values: {
-            validated: resp,
-            blocked: !resp,
-            block_reason: "This is a test reason",
-          },
-          listingId: listingId!,
-        });
-      },
-      [listingId, mutate]
-    );
+  useEffect(() => {
+    if (error) axios_error_handler(error, t);
+  }, [error]);
+  if (error) return null;
 
 
 
@@ -93,38 +48,19 @@ if (isLoading)
       <LoadingLine />
     </div>
   );
-if (error) {
-  axios_error_handler(error, t);
-  return null;
-  }
-  
 
+  
 
   
   return (
     <div className="p-4 md:p-8 lg:max-w-[700px] mx-auto pb-10 px-4 md:px-[40px]">
       <h1 className="text-3xl md:text-4xl font-extrabold mb-4 text">
-        Details of {data.owner.name} {data.owner.surname}'s data
+        {t("details_of")} {data.title}
       </h1>
       <p className="text-sm md:text-base text-gray-600 mb-8">
-        This is what {data.owner.name} uploaded as informations for his/her
-        listsing.
+        {t("this_is_what")} {data.owner.name} {t("has_entered_as_informations")}
       </p>
-
-      <div className="buttons bg-creme h-[60px] flex justify-end items-center gap-4 mb-8 sticky top-[60px] lg:top-[80px] z-10">
-        <button
-          className="bg-green-500 text-white w-[90px] h-10 rounded hover:bg-green-600"
-          onClick={() => response(true)}
-        >
-          {isPending ? <LoadingButton /> : t("accept")}
-        </button>
-        <button
-          className="bg-main text-white w-[90px] h-10 rounded hover:bg-mainHover"
-          onClick={() => response(false)}
-        >
-          {isPending ? <LoadingButton /> : t("refuse")}
-        </button>
-      </div>
+      <ButtonsCont listingId={data.id} />
 
       <Name title={data.title} />
       <Desc description={data.description} />
@@ -146,124 +82,235 @@ export default CheckListing;
 
 
 
-// const listing = {
-//   id: 11,
-//   title: "Beautiful Beach Boat",
-//   description: "Enjoy a serene boat trip with scenic beach views.",
-//     rating: 0,
-//     guests: 10,
-//     category: "Boat",
-//   latitude: 25.277,
-//   longitude: 55.2962,
+// const listingTest = {
+//   id: 25,
+//   title: "قارب خاص للرحلات الرومانسية",
+//   description:
+//     "استمتع بجو هادئ ورومانسي على هذا القارب المصمم خصيصًا للأزواج. يتميز بتصميم مريح مع إضاءة خافتة ومقاعد مريحة، مما يجعله مثاليًا لقضاء أوقات خاصة تحت ضوء القمر.",
+//   rating: 0,
+//   latitude: 36.461,
+//   longitude: 4.53837,
 //   validated: true,
 //   blocked: false,
 //   block_reason: "This is a test reason",
-//   user_id: 1,
+//   user_id: 4,
 //   isFavourite: false,
 //   owner: {
-//     id: 1,
-//     name: "zakaria",
-//     surname: "amrani",
-//     email: "amrazakaria4@gmail.com",
-//     image: "uploads/avatars/1731949975858.jpg",
-//     createdAt: "18/11/2024",
+//     id: 4,
+//     name: "Osama",
+//     surname: "Alghadi",
+//     email: "Osama@gmail.com",
+//     image: "uploads/avatars/1739987979837.jpg",
+//     createdAt: "19/02/2025",
 //   },
-//   createdAt: "2024-11-18T17:49:19.000Z",
-//   updatedAt: "2024-11-18T17:51:00.000Z",
+//   createdAt: "2025-02-19T18:10:20.000Z",
+//   updatedAt: "2025-03-01T16:24:35.000Z",
 //   Images: [
 //     {
-//       id: 51,
-//       listing_id: 11,
-//       url: "uploads/1731952159020-V-CLASS-PAGE-IMAGE.png",
-//       createdAt: "2024-11-18T17:49:19.000Z",
-//       updatedAt: "2024-11-18T17:49:19.000Z",
+//       id: 117,
+//       listing_id: 25,
+//       url: "/public/map.png",
+//       createdAt: "2025-02-19T18:10:20.000Z",
+//       updatedAt: "2025-02-19T18:10:20.000Z",
 //     },
 //     {
-//       id: 52,
-//       listing_id: 11,
-//       url: "uploads/1731952159021-V-CLASS-PAGE-IMAGE.png",
-//       createdAt: "2024-11-18T17:49:19.000Z",
-//       updatedAt: "2024-11-18T17:49:19.000Z",
+//       id: 118,
+//       listing_id: 25,
+//       url: "/public/map.png",
+//       createdAt: "2025-02-19T18:10:20.000Z",
+//       updatedAt: "2025-02-19T18:10:20.000Z",
 //     },
 //     {
-//       id: 53,
-//       listing_id: 11,
-//       url: "uploads/1731952159022-V-CLASS-PAGE-IMAGE.png",
-//       createdAt: "2024-11-18T17:49:19.000Z",
-//       updatedAt: "2024-11-18T17:49:19.000Z",
+//       id: 119,
+//       listing_id: 25,
+//       url: "/public/map.png",
+//       createdAt: "2025-02-19T18:10:20.000Z",
+//       updatedAt: "2025-02-19T18:10:20.000Z",
 //     },
 //     {
-//       id: 54,
-//       listing_id: 11,
-//       url: "uploads/1731952159023-V-CLASS-PAGE-IMAGE.png",
-//       createdAt: "2024-11-18T17:49:19.000Z",
-//       updatedAt: "2024-11-18T17:49:19.000Z",
+//       id: 120,
+//       listing_id: 25,
+//       url: "/public/map.png",
+//       createdAt: "2025-02-19T18:10:20.000Z",
+//       updatedAt: "2025-02-19T18:10:20.000Z",
 //     },
 //     {
-//       id: 55,
-//       listing_id: 11,
-//       url: "uploads/1731952159024-V-CLASS-PAGE-IMAGE.png",
-//       createdAt: "2024-11-18T17:49:19.000Z",
-//       updatedAt: "2024-11-18T17:49:19.000Z",
+//       id: 121,
+//       listing_id: 25,
+//       url: "/public/map.png",
+//       createdAt: "2025-02-19T18:10:20.000Z",
+//       updatedAt: "2025-02-19T18:10:20.000Z",
 //     },
 //   ],
-//   region: "Al Riadh",
-//     Features: [{
-//         id: 1,
-//         arName: "المرحاض",
-//         enName: "Toilet",
-//     }, {
-//         id: 2,
-//         arName: "المطبخ",
-//         enName: "Kitchen",
-//         }, {
-//         id: 3,
-//         arName: "المكيف",
-//         enName: "Air conditioning",
-//     }
-//     ],
-//   Benefits: [],
-//   Availabilities: [
+//   region: "Jeddah",
+//   Features: [
 //     {
-//       id: 21,
-//       listing_id: 11,
-//       start_date: "2024-12-01",
-//       end_date: "2024-12-15",
-//       reserved: true,
-//       createdAt: "2024-11-18T17:49:19.000Z",
-//       updatedAt: "2024-11-18T17:49:19.000Z",
+//       id: 1,
+//       name: "full bathroom",
+//       arabic_name: "حمام كامل",
+//       image: "uploads/features/1739965026155-boat.png",
+//       createdAt: "2025-02-19T11:37:06.000Z",
+//       updatedAt: "2025-02-19T11:37:06.000Z",
+//       ListingFeatures: {
+//         createdAt: "2025-02-19T18:10:20.000Z",
+//         updatedAt: "2025-02-19T18:10:20.000Z",
+//         feature_id: 1,
+//         listing_id: 25,
+//       },
 //     },
 //     {
-//       id: 22,
-//       listing_id: 11,
-//       start_date: "2024-12-15",
-//       end_date: "2024-12-16",
-//       reserved: true,
-//       createdAt: "2024-11-18T17:49:19.000Z",
-//       updatedAt: "2024-11-18T17:49:19.000Z",
-//     }
-//   ],
-//   Prices: [
+//       id: 2,
+//       name: "GPS Navigation",
+//       arabic_name: "نظام تحديد المواقع",
+//       image: "uploads/features/1739986020000-boat.png",
+//       createdAt: "2025-02-19T17:27:00.000Z",
+//       updatedAt: "2025-02-19T17:27:00.000Z",
+//       ListingFeatures: {
+//         createdAt: "2025-02-19T18:10:20.000Z",
+//         updatedAt: "2025-02-19T18:10:20.000Z",
+//         feature_id: 2,
+//         listing_id: 25,
+//       },
+//     },
+//     {
+//       id: 3,
+//       name: "Life Jackets",
+//       arabic_name: "سترات النجاة",
+//       image: "uploads/features/1739986034738-boat.png",
+//       createdAt: "2025-02-19T17:27:14.000Z",
+//       updatedAt: "2025-02-19T17:27:14.000Z",
+//       ListingFeatures: {
+//         createdAt: "2025-02-19T18:10:20.000Z",
+//         updatedAt: "2025-02-19T18:10:20.000Z",
+//         feature_id: 3,
+//         listing_id: 25,
+//       },
+//     },
+//     {
+//       id: 6,
+//       name: "Bluetooth Sound System",
+//       arabic_name: "نظام صوت بلوتوث",
+//       image: "uploads/features/1739986073682-boat.png",
+//       createdAt: "2025-02-19T17:27:53.000Z",
+//       updatedAt: "2025-02-19T17:27:53.000Z",
+//       ListingFeatures: {
+//         createdAt: "2025-02-19T18:10:20.000Z",
+//         updatedAt: "2025-02-19T18:10:20.000Z",
+//         feature_id: 6,
+//         listing_id: 25,
+//       },
+//     },
+//     {
+//       id: 5,
+//       name: "Sunshade Canopy",
+//       arabic_name: "مظلة الشمس",
+//       image: "uploads/features/1739986062025-boat.png",
+//       createdAt: "2025-02-19T17:27:42.000Z",
+//       updatedAt: "2025-02-19T17:27:42.000Z",
+//       ListingFeatures: {
+//         createdAt: "2025-02-19T18:10:20.000Z",
+//         updatedAt: "2025-02-19T18:10:20.000Z",
+//         feature_id: 5,
+//         listing_id: 25,
+//       },
+//     },
+//     {
+//       id: 4,
+//       name: "Fishing Equipment",
+//       arabic_name: "معدات الصيد",
+//       image: "uploads/features/1739986049880-boat.png",
+//       createdAt: "2025-02-19T17:27:29.000Z",
+//       updatedAt: "2025-02-19T17:27:29.000Z",
+//       ListingFeatures: {
+//         createdAt: "2025-02-19T18:10:20.000Z",
+//         updatedAt: "2025-02-19T18:10:20.000Z",
+//         feature_id: 4,
+//         listing_id: 25,
+//       },
+//     },
+//     {
+//       id: 7,
+//       name: "Underwater Lights",
+//       arabic_name: "أضواء تحت الماء",
+//       image: "uploads/features/1739986085361-boat.png",
+//       createdAt: "2025-02-19T17:28:05.000Z",
+//       updatedAt: "2025-02-19T17:28:05.000Z",
+//       ListingFeatures: {
+//         createdAt: "2025-02-19T18:10:20.000Z",
+//         updatedAt: "2025-02-19T18:10:20.000Z",
+//         feature_id: 7,
+//         listing_id: 25,
+//       },
+//     },
+//     {
+//       id: 8,
+//       name: "Luxury Seating",
+//       arabic_name: "مقاعد فاخرة",
+//       image: "uploads/features/1739986096820-boat.png",
+//       createdAt: "2025-02-19T17:28:16.000Z",
+//       updatedAt: "2025-02-19T17:28:16.000Z",
+//       ListingFeatures: {
+//         createdAt: "2025-02-19T18:10:20.000Z",
+//         updatedAt: "2025-02-19T18:10:20.000Z",
+//         feature_id: 8,
+//         listing_id: 25,
+//       },
+//     },
+//     {
+//       id: 9,
+//       name: "Diving Platform",
+//       arabic_name: "منصة الغوص",
+//       image: "uploads/features/1739986109570-boat.png",
+//       createdAt: "2025-02-19T17:28:29.000Z",
+//       updatedAt: "2025-02-19T17:28:29.000Z",
+//       ListingFeatures: {
+//         createdAt: "2025-02-19T18:10:20.000Z",
+//         updatedAt: "2025-02-19T18:10:20.000Z",
+//         feature_id: 9,
+//         listing_id: 25,
+//       },
+//     },
 //     {
 //       id: 11,
-//       listing_id: 11,
-//       price_per_hour: 420,
-//       date_specific_price: [
-//         {
-//           date: "2024-12-25",
-//           price: 320,
-//           min_hours: 3,
-//         },
-//         {
-//           date: "2024-12-31",
-//           price: 300,
-//           min_hours: 2,
-//         },
-//       ],
-//       min_hours: 2,
+//       name: "Wi-Fi Internet",
+//       arabic_name: "إنترنت واي فاي",
+//       image: "uploads/features/1739986166887-boat.png",
+//       createdAt: "2025-02-19T17:29:26.000Z",
+//       updatedAt: "2025-02-19T17:29:26.000Z",
+//       ListingFeatures: {
+//         createdAt: "2025-02-19T18:10:20.000Z",
+//         updatedAt: "2025-02-19T18:10:20.000Z",
+//         feature_id: 11,
+//         listing_id: 25,
+//       },
+//     },
+//     {
+//       id: 10,
+//       name: "Cooler & Ice Box",
+//       arabic_name: "صندوق تبريد وثلج",
+//       image: "uploads/features/1739986121490-boat.png",
+//       createdAt: "2025-02-19T17:28:41.000Z",
+//       updatedAt: "2025-02-19T17:28:41.000Z",
+//       ListingFeatures: {
+//         createdAt: "2025-02-19T18:10:20.000Z",
+//         updatedAt: "2025-02-19T18:10:20.000Z",
+//         feature_id: 10,
+//         listing_id: 25,
+//       },
+//     },
+//   ],
+//   Benefits: [],
+//   Availabilities: [],
+//   Prices: [
+//     {
+//       id: 23,
+//       listing_id: 25,
+//       price_per_hour: 1800,
+//       date_specific_price: [],
+//       min_hours: 1,
 //       max_hours: 6,
-//       createdAt: "2024-11-18T17:49:19.000Z",
-//       updatedAt: "2024-11-18T17:49:19.000Z",
+//       createdAt: "2025-02-19T18:10:20.000Z",
+//       updatedAt: "2025-02-19T18:10:20.000Z",
 //     },
 //   ],
 //   priceRange: {

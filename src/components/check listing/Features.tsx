@@ -7,7 +7,7 @@ const Guests = ({ features }: any) => {
   return (
     <div className="w-full p-4 bg-white mt-5 rounded-10 shadow-sm relative">
       <div className="preferedDate flex items-center gap-4">
-        <MdFeaturedVideo className="text-writingGrey text-[30px]" />
+        <MdFeaturedVideo className="text-writingGrey text-[30px] min-w-[40px]" />
         <div className="datesAgain">
           <p className="font-bold">{t("features")}</p>
           <div className="flex gap-1">

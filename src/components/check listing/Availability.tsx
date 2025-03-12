@@ -25,7 +25,7 @@ const Availability = ({ availabilities }: any) => {
       </p>
       <div className="preferedDate mt-4 flex items-center gap-4">
         <div className="icon">
-          <MdOutlineEventBusy className="text-writingGrey text-[32px]" />
+          <MdOutlineEventBusy className="text-writingGrey text-[32px] min-w-[40px]" />
         </div>
 
         <div className="w-full">

@@ -238,6 +238,13 @@
   "minimum_hours_should_be_less_than_maximum_hours": "يجب أن تكون الساعات الدنيا أقل من الساعات القصوى",
   "unavailable_to_work": "غير متاح للعمل",
   "please_select_a_choice": "يرجى تحديد خيار",
+  "listings_management": "إدارة القوائم",
+  "explore_and_manage_listings" : "استكشف وأدر القوائم مع رؤى تفصيلية حول كل نوع من القوارب",
+  "details_of": "تفاصيل",
+  "has_entered_as_informations": "قد دخل كمعلومات",
+
+
+
 
   "a": "أ"
 }

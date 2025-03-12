@@ -243,6 +243,11 @@
   "minimum_hours_should_be_less_than_maximum_hours": "Minimum hours should be less than maximum hours!",
   "unavailable_to_work": "Unavailable to work",
   "please_select_a_choice": "Please select a choice",
+  "Listings Management": "Listings Management",
+  "explore_and_manage_listings": "Explore and manage listings with detailed insights into each type of boat available for rental.",
+  "details_of": "Details of",
+  "has_entered_as_informations": "has entered as informations",
+
 
   "a": "A"
 }

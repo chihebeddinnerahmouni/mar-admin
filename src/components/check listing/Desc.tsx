@@ -49,7 +49,7 @@ const Desc = ({ description }: any) => {
     <div className="w-full p-4 bg-white mt-5 rounded-10 shadow-sm relative">
       <div className="preferedDate flex items-center gap-4">
         <p>
-          <CiTextAlignLeft className="text-writingGrey text-[30px]" />
+          <CiTextAlignLeft className="text-writingGrey text-[30px] min-w-[40px]" />
         </p>
 
         <div className="text">

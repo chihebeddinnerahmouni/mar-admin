@@ -25,7 +25,7 @@ const DocumentComp = ({ document }: any) => {
 
 
   return (
-    <Card className="shadow-lg rounded-lg overflow-hidden relative">
+    <Card className="overflow-hidden relative">
       <CardContent>
         <Typography variant="h5" component="h2">
           {document.document_type}

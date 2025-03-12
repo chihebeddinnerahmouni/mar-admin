@@ -207,42 +207,37 @@
   "released_balance": "الرصيد المفرج عنه",
   "unreleased_balance": "الرصيد غير المفرج عنه",
   "transaction_type": "نوع المعاملة",
- "payment": "دفع",
-"payout": "استلام",
-"no_transactions_yet": "لا توجد معاملات بعد",
-"no_transactions": "لا توجد معاملات",
-"business_type": "نوع العمل",
+  "payment": "دفع",
+  "payout": "استلام",
+  "no_transactions_yet": "لا توجد معاملات بعد",
+  "no_transactions": "لا توجد معاملات",
+  "business_type": "نوع العمل",
 
-"update_released_balance": "تحديث الرصيد المفرج عنه",
-"update_unreleased_balance": "تحديث الرصيد غير المفرج عنه",
-"update_balance": "تحديث الرصيد",
-"balance": "الرصيد",
-"release_date": "تاريخ الإصدار",
+  "update_released_balance": "تحديث الرصيد المفرج عنه",
+  "update_unreleased_balance": "تحديث الرصيد غير المفرج عنه",
+  "update_balance": "تحديث الرصيد",
+  "balance": "الرصيد",
+  "release_date": "تاريخ الإصدار",
 
-"visitors": "الزوار",
-"monthly_visitors": "الزوار الشهريين",
+  "visitors": "الزوار",
+  "monthly_visitors": "الزوار الشهريين",
 
-"something_went_wrong": "حدث خطأ ما",
-"select_an_option": "اختر خيارًا",
+  "something_went_wrong": "حدث خطأ ما",
+  "select_an_option": "اختر خيارًا",
 
-"status": "الحالة",
-"created_at": "تم الإنشاء في",
+  "status": "الحالة",
+  "created_at": "تم الإنشاء في",
 
-"release": "إصدار",
-"unrelease": "إلغاء الإصدار",
-"loading": "تحميل",
-"description_must_be_between_60_and_500_characters": "يجب أن يكون الوصف بين 60 و 500 حرف",
-"images_at_server": "يجب أن تكون الصور على الخادم أكثر من 5",
-"server_image": "صور الخادم",
-"please_enter_valid_values_for_all_fields": "يرجى إدخال قيم صالحة لجميع الحقول",
+  "release": "إصدار",
+  "unrelease": "إلغاء الإصدار",
+  "loading": "تحميل",
+  "description_must_be_between_60_and_500_characters": "يجب أن يكون الوصف بين 60 و 500 حرف",
+  "images_at_server": "يجب أن تكون الصور على الخادم أكثر من 5",
+  "server_image": "صور الخادم",
+  "please_enter_valid_values_for_all_fields": "يرجى إدخال قيم صالحة لجميع الحقول",
   "minimum_hours_should_be_less_than_maximum_hours": "يجب أن تكون الساعات الدنيا أقل من الساعات القصوى",
-"unavailable_to_work": "غير متاح للعمل",
-"please_select_a_choice": "يرجى تحديد خيار",
-
-
-
-
-
+  "unavailable_to_work": "غير متاح للعمل",
+  "please_select_a_choice": "يرجى تحديد خيار",
 
   "a": "أ"
 }

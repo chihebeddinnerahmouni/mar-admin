@@ -110,7 +110,7 @@
   "hide": "Hide",
   "start": "Start",
   "end": "End",
-    "search_by_boat_name": "Search by Boat Name",
+  "search_by_boat_name": "Search by Boat Name",
   "search_by_owner_name": "Search by Owner Name",
 
   "regions_management": "Regions Management",
@@ -208,48 +208,41 @@
 
   "transactions": "Transactions",
   "amount": "Amount",
-"released_balance": "Released Balance",
-"unreleased_balance": "Unreleased Balance",
-"transaction_type": "Transaction Type",
-"payment": "Payment",
-"payout": "Payout",
-"no_transactions_yet": "No transactions yet",
-"no_transactions": "No Transactions",
+  "released_balance": "Released Balance",
+  "unreleased_balance": "Unreleased Balance",
+  "transaction_type": "Transaction Type",
+  "payment": "Payment",
+  "payout": "Payout",
+  "no_transactions_yet": "No transactions yet",
+  "no_transactions": "No Transactions",
 
-"business_type": "Business Type",
+  "business_type": "Business Type",
 
-"update_released_balance": "Update Released Balance",
-"update_unreleased_balance": "Update Unreleased Balance",
-"update_balance": "Update Balance",
-"balance": "Balance",
-"release_date": "Release Date",
+  "update_released_balance": "Update Released Balance",
+  "update_unreleased_balance": "Update Unreleased Balance",
+  "update_balance": "Update Balance",
+  "balance": "Balance",
+  "release_date": "Release Date",
 
-"visitors": "Visitors",
-"monthly_visitors": "Monthly Visitors",
+  "visitors": "Visitors",
+  "monthly_visitors": "Monthly Visitors",
 
-"something_went_wrong": "Something went wrong",
-"select_an_option": "Select an option",
+  "something_went_wrong": "Something went wrong",
+  "select_an_option": "Select an option",
 
-"status": "Status",
-"created_at": "Created At",
+  "status": "Status",
+  "created_at": "Created At",
 
-"release": "Release",
-"unrelease": "Unrelease",
-"loading": "Loading",
-"description_must_be_between_60_and_500_characters": "Description must be between 60 and 500 characters",
+  "release": "Release",
+  "unrelease": "Unrelease",
+  "loading": "Loading",
+  "description_must_be_between_60_and_500_characters": "Description must be between 60 and 500 characters",
   "images_at_server": "Images at server must be more than 5",
-  "server_image": "Server image", 
+  "server_image": "Server image",
   "please_enter_valid_values_for_all_fields": "Please enter valid values for all fields",
-    "minimum_hours_should_be_less_than_maximum_hours": "Minimum hours should be less than maximum hours!",
-"unavailable_to_work": "Unavailable to work",
+  "minimum_hours_should_be_less_than_maximum_hours": "Minimum hours should be less than maximum hours!",
+  "unavailable_to_work": "Unavailable to work",
   "please_select_a_choice": "Please select a choice",
-
-
-
-
-
-
-
 
   "a": "A"
 }

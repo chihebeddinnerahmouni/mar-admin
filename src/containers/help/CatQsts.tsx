@@ -4,6 +4,7 @@ import AddQuestionCat from '../../components/help/AddQuestionCat';
 import { useState, useRef, useEffect } from 'react';
 import { FaTrash } from "react-icons/fa";
 import { useTranslation } from 'react-i18next';
+import ButtonFunc from '../../components/ui/buttons/Button';
 
 
 const CatQsts = ({ helpCat, selectedCat, handleCategoryClick }: any) => {
@@ -61,53 +62,84 @@ const CatQsts = ({ helpCat, selectedCat, handleCategoryClick }: any) => {
 
   return (
     <div
-      className="container flex w-full items-start justify-between unselectableCss"
+      className="container flex justify-between w-full items-center mb-4 unselectableCss"
       ref={containerRef}
     >
-      <div className="overflow-auto whitespace-nowrap flex mb-4 gap-3 max-w-[260px] md:max-w-[400px] lg:max-w-[600px]">
+      <div className="overflow-auto whitespace-nowrap flex gap-3 max-w-[260px] md:max-w-[400px] lg:max-w-[600px]">
         {helpCat.map((cat: any) => (
-          <div
-            key={cat.id}
-            className={`py-2 cursor-pointer flex ${
-              selectedCat === cat.id
-                ? "text-black font-bold"
-                : "text-writingGrey"
-            }`}
-            onClick={() => handleCategoryClick(cat.id)}
-          >
-            <span>{i18n.language === "en" ? cat.name : cat.arabic_name}</span>
-            <button
-              className={`mx-3 ${
-                selectedCat === cat.id ? "text-red-500" : "text-writingGrey"
-              }`}
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsDeleteCatOpen(true);
-                setDeleteCatObject(cat);
-              }}
-            >
-              <FaTrash className="text-sm" />
-            </button>
-          </div>
+          <CatComponent
+            cat={cat}
+            selectedCat={selectedCat}
+            handleCategoryClick={handleCategoryClick}
+            setIsDeleteCatOpen={setIsDeleteCatOpen}
+            setDeleteCatObject={setDeleteCatObject}
+            i18n={i18n}
+          />
         ))}
       </div>
+      <div className="">
+        <ButtonFunc
+          onClick={() => {
+            setIsAddQstOpen(true);
+          }}
+          color="green"
+          text={isMobile ? "+" : t("add_category")}
+        />
+      </div>
+
       {isDeleteCatOpen && (
         <DeleteCategoryQst
           setClose={() => setIsDeleteCatOpen(false)}
           cat={deleteCatObject}
         />
       )}
-      <button
-        className="bg-main text-white px-4 py-2 rounded"
-        onClick={() => {
-          setIsAddQstOpen(true);
-        }}
-      >
-        {isMobile ? "+" : t("add_category")}
-      </button>
-      {isAddQstOpen && <AddQuestionCat setClose={() => setIsAddQstOpen(false)} />}
+      {isAddQstOpen && (
+        <AddQuestionCat setClose={() => setIsAddQstOpen(false)} />
+      )}
     </div>
   );
 };
 
 export default CatQsts;
+
+
+const CatComponent = ({
+  cat,
+  selectedCat,
+  handleCategoryClick,
+  setIsDeleteCatOpen,
+  setDeleteCatObject,
+  i18n,
+}:{
+  cat: any,
+  selectedCat: number,
+  handleCategoryClick: (id: number) => void,
+  setIsDeleteCatOpen: (value: boolean) => void,
+  setDeleteCatObject: (value: any) => void,
+  i18n: any
+}) => {
+
+  return (
+    <div
+      key={cat.id}
+      className={`py-2 cursor-pointer flex items-center justify-between ${
+        selectedCat === cat.id ? "text-black font-bold" : "text-writingGrey"
+      }`}
+      onClick={() => handleCategoryClick(cat.id)}
+    >
+      <span>{i18n.language === "en" ? cat.name : cat.arabic_name}</span>
+      <button
+        className={`mx-3 ${
+          selectedCat === cat.id ? "text-red-500" : "text-writingGrey"
+        }`}
+        onClick={(e) => {
+          e.stopPropagation();
+          setIsDeleteCatOpen(true);
+          setDeleteCatObject(cat);
+        }}
+      >
+        <FaTrash className="text-sm" />
+      </button>
+    </div>
+  );
+}

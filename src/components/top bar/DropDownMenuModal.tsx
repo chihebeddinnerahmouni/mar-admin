@@ -34,7 +34,7 @@ const OnlineDropMenu = ({ isMenuOpen, setIsMenuOpen, anchorEl, user }: Props) =>
       }}
     >
       <User user={user} />
-      <SwitchLangMobile />
+      <LanguageItem />
       <Disconnect />
     </Menu>
   );
@@ -74,6 +74,20 @@ const User = ({user}: {user: any}) => {
 };
 
 
+const LanguageItem = () => {
+
+  return (
+    <MenuItem
+      sx={{
+        "&:hover": { backgroundColor: "#f5f5f5" },
+        fontFamily: "Cairo, sans-serif",
+      }}
+      className="user flex items-center gap-2"
+    >
+      <SwitchLangMobile />
+    </MenuItem>
+  );
+}
 
 
 

@@ -9,13 +9,18 @@ import { axios_error_handler } from "../../functions/axios_error_handler";
 import ButtonFunc from "../ui/buttons/Button";
 import ModalComp from "../ui/modals/ModalComp";
 import Title from "../ui/modals/Title";
-import {toast} from "react-hot-toast";
+import { toast } from "react-hot-toast";
+
 
 interface UpdatePricesProps {
   setClose: () => void;
+  refetch: any;
 }
 
-const AddCategoryModal: React.FC<UpdatePricesProps> = ({ setClose }) => {
+const AddCategoryModal: React.FC<UpdatePricesProps> = ({
+  setClose,
+  refetch,
+}) => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [engName, setEngName] = useState("");
@@ -39,10 +44,8 @@ const AddCategoryModal: React.FC<UpdatePricesProps> = ({ setClose }) => {
         },
       })
       .then(() => {
-        // console.log(res);
-        setLoading(false);
-        setClose;
-        window.location.reload();
+        refetch();
+        setClose();
       })
       .catch((err) => {
         axios_error_handler(err, t);
@@ -52,9 +55,10 @@ const AddCategoryModal: React.FC<UpdatePricesProps> = ({ setClose }) => {
 
   const handleContinue = useCallback(() => {
     const check = !engName || !image || !arName;
-    if (check) return toast.error(t("please_fill_all_fields"), {
-      style: { border: "1px solid #FF385C", color: "#FF385C" },
-    });
+    if (check)
+      return toast.error(t("please_fill_all_fields"), {
+        style: { border: "1px solid #FF385C", color: "#FF385C" },
+      });
     setLoading(true);
     const formData = new FormData();
     formData.append("name", engName);

@@ -19,21 +19,17 @@ import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
 
 
-const CategoriesTable = ({
-  categories,
-}: any) => {
-
+const CategoriesTable = ({ categories, refetch }: { categories: any , refetch: any}) => {
   const [isDeleteOpen, setIsDeleteOpen] = useState<boolean>(false);
   const [selectedCategory, setSelectedCategory] = useState<any>(null);
   const [isFormVisible, setIsFormVisible] = useState<boolean>(false);
   const url = import.meta.env.VITE_SERVER_URL_CATEGORY;
   const { t } = useTranslation();
 
-
   const handleDeleteClick = (category: any) => {
     setSelectedCategory(category);
     setIsDeleteOpen(true);
-  }
+  };
 
   return (
     <>
@@ -41,9 +37,15 @@ const CategoriesTable = ({
         <DeleteCategoryModal
           setClose={() => setIsDeleteOpen(false)}
           category={selectedCategory}
+          refetch={refetch}
         />
       )}
-      {isFormVisible && <AddCategoryModal setClose={() => setIsFormVisible(false)} />}
+      {isFormVisible && (
+        <AddCategoryModal
+          setClose={() => setIsFormVisible(false)}
+          refetch={refetch}
+        />
+      )}
       <TableContainer component={Paper} className="rounded-lg">
         <Table>
           <TableHead sx={{ fontSize: "bold" }}>

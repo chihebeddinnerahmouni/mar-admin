@@ -13,33 +13,35 @@ interface DeleteModalProps {
     name: string;
     arabic_name: string;
   };
+  refetch: any;
 }
 
 
 const DeleteCategoryModal: React.FC<DeleteModalProps> = ({
   setClose,
-  category
+  category,
+  refetch,
 }) => {
-
   const { i18n, t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const url = import.meta.env.VITE_SERVER_URL_CATEGORY;
 
   const handleSubmit = () => {
     setLoading(true);
-      axios
-        .delete(url + "/admin/categories/" + category.id, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-          },
-        })
-        .then(() => {
-          window.location.reload();
-        })
-        .catch((err) => {
-          axios_error_handler(err, t);
-          setLoading(false);
-        });
+    axios
+      .delete(url + "/admin/categories/" + category.id, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+        },
+      })
+      .then(() => {
+        refetch();
+        setClose();
+      })
+      .catch((err) => {
+        axios_error_handler(err, t);
+        setLoading(false);
+      });
   };
 
   return (
@@ -52,14 +54,10 @@ const DeleteCategoryModal: React.FC<DeleteModalProps> = ({
         </strong>
         ?
       </div>
-      
+
       <div className="flex mt-4 gap-2 justify-end">
         <div className="">
-          <ButtonFunc
-            onClick={setClose}
-            text={t("cancel")}
-            color="grey"
-          />
+          <ButtonFunc onClick={setClose} text={t("cancel")} color="grey" />
         </div>
         <div className="">
           <ButtonFunc
@@ -68,7 +66,7 @@ const DeleteCategoryModal: React.FC<DeleteModalProps> = ({
             text={t("delete")}
             loading={loading}
           />
-          </div>
+        </div>
       </div>
     </ModalComp>
   );

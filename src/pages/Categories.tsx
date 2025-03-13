@@ -26,7 +26,7 @@ const Categories: React.FC = () => {
     return res.data;
   }, []);
   
-  const { data, isLoading, error } = useQuery<Category[]>({
+  const { data, isLoading, error, refetch } = useQuery<Category[]>({
     queryKey: ["getCategories"],
     queryFn: fetshData,
   });
@@ -56,7 +56,7 @@ const Categories: React.FC = () => {
         <p className="text-sm md:text-base text-gray-600 mb-8">
           {t("categories_management_description")}
         </p>
-        <CategoriesTable categories={data} />
+        <CategoriesTable categories={data} refetch={refetch} />
       </div>
     </div>
   );

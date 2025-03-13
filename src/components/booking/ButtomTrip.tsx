@@ -33,24 +33,12 @@ const ButtomTrip = ({ setSelected, details }: any) => {
 
   return (
     <div
-      className={`w-full fixed px-4 h-[60px] bg-creme shadow-hoverShadow bottom-0 py-2 lg:h-[70px] flex justify-center items-center lg:ml-[0px] lg:w-auto  ${
+      className={`w-full fixed px-4 h-[60px] bg-creme shadow-hoverShadow bottom-0 py-2 flex justify-center items-center lg:ml-[0px] lg:w-auto  ${
         i18n.language === "ar"
           ? "lg:left-0 lg:right-[350px]"
           : "lg:right-0 lg:left-[350px]"
       }`}
     >
-      {/* <button
-        className="relative w-full h-full rounded-20 bg-main text-white font-medium md:w-[530px] xl:w-[630px]"
-        onClick={() => setIsOptionsOn(!isOptionsOn)}
-      >
-        {t("options")}{" "}
-        {isOptionsOn ? (
-          <FaChevronDown className="inline-block ml-2" />
-        ) : (
-          <FaChevronUp className="inline-block ml-2" />
-        )}
-        {isOptionsOn && details.status !== "cancelled" && <Options setSelected={setSelected} details={details} />}
-      </button> */}
       <button
         className="relative w-full h-full rounded-20 bg-main text-white font-medium md:w-[530px] xl:w-[630px]"
         onClick={handleOpen}
